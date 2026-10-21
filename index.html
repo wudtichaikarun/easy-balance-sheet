@@ -29,7 +29,8 @@ html,body{margin:0;height:100%;background:var(--page);color:var(--ink)}
 body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Sukhumvit Set","Helvetica Neue","Noto Sans Thai",sans-serif;-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit}
 
-.app{display:flex;height:100%}
+/* fixed so mobile Safari can't scroll the page (and the top bar) away behind its toolbar */
+.app{display:flex;position:fixed;inset:0}
 aside{width:var(--side);flex:none;display:flex;flex-direction:column;border-right:1px solid var(--line);background:var(--page)}
 .brand{padding:20px 20px 12px;position:relative}
 .theme{position:absolute;top:16px;right:14px;border:1px solid var(--line);background:var(--card);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;color:var(--ink-2);font-size:1.05rem}
