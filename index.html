@@ -46,6 +46,8 @@ aside{width:var(--side);flex:none;display:flex;flex-direction:column;border-righ
 .search input:focus{border-color:var(--accent)}
 .list{flex:1;overflow:auto;padding:0 12px 16px;display:flex;flex-direction:column;gap:8px}
 .empty{color:var(--ink-3);font-size:.88rem;padding:12px 8px}
+.note{flex:none;margin:0;padding:10px 20px 14px;border-top:1px solid var(--line);font-size:.72rem;line-height:1.5;color:var(--ink-3);display:flex;gap:6px}
+.note i{flex:none;font-size:.9rem;margin-top:1px}
 
 .co{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:12px 14px;cursor:pointer;transition:border-color .15s,background .15s}
 .co:hover{border-color:var(--ink-3)}
@@ -92,6 +94,7 @@ iframe{flex:1;width:100%;border:0;background:var(--page)}
       <input id="q" type="search" placeholder="ค้นหา ticker หรือธุรกิจ" autocomplete="off">
     </label>
     <nav class="list" id="list" aria-label="รายชื่อหุ้น"></nav>
+    <p class="note"><i class="ti ti-info-circle" aria-hidden="true"></i><span>สรุปจากงบการเงินที่ยื่นต่อ SEC เพื่อการศึกษาเท่านั้น <b>ไม่ใช่คำแนะนำการลงทุน</b> ตัวเลขอาจคลาดเคลื่อน ควรตรวจสอบกับเอกสารต้นฉบับก่อนตัดสินใจ</span></p>
   </aside>
   <section class="viewer">
     <div class="bar">
