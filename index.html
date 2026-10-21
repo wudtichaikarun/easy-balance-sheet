@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Easy Balance Sheet</title>
 <meta name="description" content="งบการเงินหุ้นอเมริกาแบบอ่านง่าย: ถ้าบริษัทขายได้ $100 เหลือเท่าไร">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
@@ -31,6 +31,8 @@ button{font:inherit;color:inherit}
 
 /* fixed so mobile Safari can't scroll the page (and the top bar) away behind its toolbar */
 .app{display:flex;position:fixed;inset:0}
+/* keep content out of the iPhone notch / status bar / home indicator (viewport-fit=cover exposes these) */
+.app{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 aside{width:var(--side);flex:none;display:flex;flex-direction:column;border-right:1px solid var(--line);background:var(--page)}
 .brand{padding:20px 20px 12px;position:relative}
 .theme{position:absolute;top:16px;right:14px;border:1px solid var(--line);background:var(--card);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;color:var(--ink-2);font-size:1.05rem}
