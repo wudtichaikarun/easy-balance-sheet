@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LEU Financial Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--page:#FAF9F2;--foot:#8A9077}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--page:#1F231D;--foot:#9AA28C}}
+:root[data-theme="dark"]{--page:#1F231D;--foot:#9AA28C}
+html,body{margin:0;background:var(--page)}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Sukhumvit Set","Helvetica Neue","Noto Sans Thai",sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:720px;margin:0 auto;padding:24px 16px 32px}
+@media (min-width:760px){main{max-width:1180px}}
+@media (min-width:1200px){main{max-width:none;padding:28px 32px 14px}}
+main{overflow-x:clip}
+.foot{font-size:11px;color:var(--foot);margin:12px 4px 0}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body data-fit>
+<main>
+<style>
+.ebs{
+  --bg:#FAF9F2;--card:#ffffff;--card-2:#F2F0E3;--line:#EEEBDC;--track:#E9E6D6;
+  --ink:#333A2B;--ink-2:#4F5745;--ink-3:#6B7460;
+  --in:#2F7F5C;--in-bar:#5CAE86;
+  --out:#A5502F;--out-bar:#D6866A;--out-bar-2:#E8B7A0;
+  --save:#3B6E73;--save-bar:#5E9A9E;
+  --r-card:22px;
+  --fs-2xs:.7059rem;--fs-xs:.8235rem;--fs-sm:1rem;--fs-md:1.2353rem;--fs-lg:1.4118rem;--fs-xl:1.8824rem;--fs-2xl:2.3529rem;--lh-2xs:1.3333;--lh-xs:1.4286;--lh-sm:1.4706;--lh-md:1.381;--lh-lg:1.1667;--lh-xl:1.125;--lh-2xl:1.1;--ls-2xs:-.01em;--ls-xs:-.016em;--ls-sm:-.022em;--ls-md:.011em;--ls-lg:.009em;--ls-xl:.004em;--ls-2xl:0em;--fw-regular:400;--fw-semibold:600;--sp-4xs:.0625rem;--sp-3xs:.125rem;--sp-2xs:.25rem;--sp-xs:.375rem;--sp-sm:.5rem;--sp-md:.75rem;--sp-lg:1rem;--sp-xl:1.25rem;--sp-2xl:1.5rem;--sp-3xl:2rem;--card-pad-y:var(--sp-2xl);--card-pad-x:var(--sp-2xl);--grid-gap:var(--sp-xl);--r-xs:4px;--r-sm:6px;--r-md:12px;--r-pill:999px;--seg-gap:3px;
+  --on-fill:#fff;--on-fill-2:rgba(255,255,255,.85);--tip-bg:#2B2F24;--tip-ink:#EDEFE4;--tip-ink-strong:#ffffff;--tip-ink-2:#C7CDB8;--tip-pill:rgba(255,255,255,.14);--tip-rule:rgba(255,255,255,.12);--tip-link:#DCC17E;
+  --shadow-tip:0 12px 32px rgba(0,0,0,.28);--tint:12%;--tint-half:50%;--hatch-1:26%;--hatch-2:10%;
+  --dur-fast:.15s;--dur-fade:.4s;--dur-grow:1.1s;--ease-out:cubic-bezier(.25,1,.5,1);
+  --r-in:14px;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Sukhumvit Set","Helvetica Neue","Noto Sans Thai",sans-serif;
+  font-family:var(--font);color:var(--ink);font-size:var(--fs-sm);line-height:var(--lh-sm);letter-spacing:var(--ls-sm);-webkit-font-smoothing:antialiased;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ebs{--bg:#1F231D;--card:#2B2F24;--card-2:#20241C;--line:#454B38;--track:#3A3F31;--ink:#FFFFFF;--ink-2:#E4E7DA;--ink-3:#B9C0A8;--in:#7FCBA8;--in-bar:#5CAE86;--out:#E6A088;--out-bar:#D6866A;--out-bar-2:#8E5A47;--save:#8FC1C4;--save-bar:#5E9A9E;--tip-bg:#EDEFE4;--tip-ink:#2B2F24;--tip-ink-strong:#1B2013;--tip-ink-2:#6B7460;--tip-pill:rgba(0,0,0,.08);--tip-rule:rgba(0,0,0,.1);--tip-link:#3B6E73}}
+:root[data-theme="dark"] .ebs{--bg:#1F231D;--card:#2B2F24;--card-2:#20241C;--line:#454B38;--track:#3A3F31;--ink:#FFFFFF;--ink-2:#E4E7DA;--ink-3:#B9C0A8;--in:#7FCBA8;--in-bar:#5CAE86;--out:#E6A088;--out-bar:#D6866A;--out-bar-2:#8E5A47;--save:#8FC1C4;--save-bar:#5E9A9E;--tip-bg:#EDEFE4;--tip-ink:#2B2F24;--tip-ink-strong:#1B2013;--tip-ink-2:#6B7460;--tip-pill:rgba(0,0,0,.08);--tip-rule:rgba(0,0,0,.1);--tip-link:#3B6E73}
+.ebs *{box-sizing:border-box}
+.ebs{display:grid;gap:var(--grid-gap);grid-template-columns:minmax(0,1fr);grid-template-areas:"hd" "p1" "p2" "p3" "p4"}
+@media (min-width:760px){.ebs{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"hd hd" "p1 p2" "p3 p4"}}
+.ebs .pane{min-width:0;display:flex;flex-direction:column;gap:var(--grid-gap);align-self:start}
+
+.ebs .hd{grid-area:hd;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-lg) var(--sp-3xl);flex-wrap:wrap;padding:var(--sp-sm) var(--sp-2xs) var(--sp-2xs)}
+.ebs .brand{display:block}
+.ebs .logo{display:none}
+.ebs h1{font-size:var(--fs-2xl);font-weight:var(--fw-semibold);letter-spacing:var(--ls-2xl);line-height:var(--lh-2xl);margin:0}
+.ebs .lede{font-size:var(--fs-md);line-height:var(--lh-md);color:var(--ink-2);margin:var(--sp-sm) 0 0;font-weight:var(--fw-regular);letter-spacing:var(--ls-md)}
+.ebs .meta{display:flex;flex-direction:column;align-items:flex-end;gap:var(--sp-sm)}
+.ebs .chips{display:flex;gap:var(--sp-sm);flex-wrap:wrap;justify-content:flex-end}
+.ebs .chip{display:inline-flex;align-items:center;gap:var(--sp-xs);height:1.875rem;padding:0 var(--sp-md);border-radius:var(--r-pill);font-size:var(--fs-xs);color:var(--ink);background:var(--card);text-decoration:none;white-space:nowrap}
+.ebs a.chip{color:var(--save)}
+.ebs .dot{width:.5rem;height:.5rem;border-radius:var(--r-pill);display:inline-block}
+
+.ebs .card{background:var(--card);border-radius:var(--r-card);display:flex;flex-direction:column}
+.ebs .card.grow{flex:none}
+.ebs .card-h{padding:var(--card-pad-y) var(--card-pad-x) 0}
+.ebs .card-h .ico{display:none}
+.ebs .eyebrow{font-size:var(--fs-xs);font-weight:var(--fw-semibold);letter-spacing:0;margin:0 0 var(--sp-2xs);color:var(--ink-2)}
+.ebs .eyebrow.in{color:var(--in)}.ebs .eyebrow.out{color:var(--out)}.ebs .eyebrow.save{color:var(--save)}
+.ebs h3{font-size:var(--fs-lg);font-weight:var(--fw-semibold);letter-spacing:var(--ls-lg);line-height:var(--lh-lg);margin:0}
+.ebs .card-b{padding:var(--sp-lg) var(--card-pad-x) var(--sp-xl);display:flex;flex-direction:column;gap:var(--sp-lg);flex:1}
+.ebs .card-f{margin:0 var(--card-pad-x);padding:var(--sp-md) 0 var(--sp-xl);border-top:1px solid var(--line);font-size:var(--fs-2xs);line-height:1.5;color:var(--ink-3)}
+.ebs .card-f b{font-weight:var(--fw-semibold);color:var(--ink-2)}
+.ebs .card-f a{color:var(--save);text-decoration:none}
+.ebs .card-f .src{margin-left:0;font-size:inherit;vertical-align:baseline;gap:.3em;color:var(--ink-3)}
+.ebs .card-f .src i{font-size:.95em}
+.ebs .src .tip-b{max-width:24rem;width:24rem;padding:var(--sp-md) var(--sp-md)}
+.ebs .src-b ul{margin:0;padding:0;list-style:none}
+.ebs .src-b li{padding:var(--sp-2xs) 0;border-top:1px solid var(--tip-rule)}
+.ebs .src-b li:first-child{border-top:0;padding-top:0}
+.ebs .src-b li.src-l{padding-top:var(--sp-xs)}
+.ebs .tip-b a{color:var(--tip-link);text-decoration:none}
+.ebs .tip-b::after{content:"";position:absolute;left:0;right:0;top:100%;height:.6rem}
+.ebs .tip:hover .tip-b,.ebs .tip:focus-within .tip-b{opacity:1;visibility:visible;pointer-events:auto;transform:translate(calc(-50% + var(--dx,0px)),0)}
+
+
+.ebs .say{font-size:var(--fs-sm);color:var(--ink-2);margin:0;line-height:1.5}
+.ebs .say strong{font-weight:var(--fw-semibold);color:var(--ink)}
+.ebs .num{font-variant-numeric:tabular-nums}
+.ebs .kpi{font-size:var(--fs-xl);font-weight:var(--fw-semibold);letter-spacing:var(--ls-xl);line-height:var(--lh-xl);margin:0}
+.ebs .lbl{font-size:var(--fs-xs);color:var(--ink-2);margin:0}
+.ebs .t-in{color:var(--in)!important}.ebs .t-out{color:var(--out)!important}.ebs .t-save{color:var(--save)!important}
+
+.ebs .meter{display:flex;flex-direction:column;gap:var(--sp-sm)}
+.ebs .meter-r{display:flex;justify-content:space-between;align-items:baseline;gap:var(--sp-md);font-size:var(--fs-sm)}
+.ebs .meter-r span:first-child{color:var(--ink)}
+.ebs .meter-r span:last-child{font-weight:var(--fw-semibold);white-space:nowrap}
+.ebs .track{height:.375rem;background:var(--track);border-radius:var(--r-pill);overflow:hidden}
+.ebs .fill{height:100%;border-radius:var(--r-pill);min-width:.375rem;transform-origin:left;animation:ebs-grow var(--dur-grow) var(--ease-out) both}
+.ebs .fill.in{background:var(--in-bar)}.ebs .fill.out{background:var(--out-bar)}.ebs .fill.out2{background:var(--out-bar-2)}.ebs .fill.save{background:var(--save-bar)}
+.ebs .total{display:flex;justify-content:space-between;align-items:baseline;padding-top:var(--sp-lg);border-top:1px solid var(--line);font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+
+.ebs .vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:var(--sp-lg)}
+.ebs .vs .arrow{color:var(--ink-3);font-size:var(--fs-lg);padding-bottom:var(--sp-xs)}
+
+.ebs .yrs{display:grid;gap:var(--sp-xs)}
+.ebs .yrs i{display:block;height:.625rem;border-radius:var(--r-pill);background:var(--track);animation:ebs-fade var(--dur-fade) ease both}
+.ebs .scale{display:flex;justify-content:space-between;font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-sm)}
+
+.ebs .pair{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-lg)}
+.ebs .tile{padding:0}
+.ebs .tile .kpi{font-size:var(--fs-xl);margin-top:var(--sp-2xs)}
+
+.ebs .list{display:flex;flex-direction:column;gap:var(--sp-lg);margin:0;padding:0;list-style:none}
+.ebs .list li{display:grid;grid-template-columns:1.5rem 1fr;gap:var(--sp-md);align-items:start}
+.ebs .list .ico{width:1.5rem;height:1.5rem;display:grid;place-items:center;font-size:var(--fs-md);background:none}
+.ebs .list .ico.in{color:var(--in)}.ebs .list .ico.out{color:var(--out)}.ebs .list .ico.save{color:var(--save)}.ebs .list .ico.neu{color:var(--ink-2)}
+.ebs .list b{display:block;font-size:var(--fs-sm);font-weight:var(--fw-semibold);margin-bottom:var(--sp-3xs)}
+.ebs .list p{margin:0;font-size:var(--fs-sm);color:var(--ink-2)}
+.ebs .mini{height:.3125rem;margin-top:var(--sp-sm)}
+
+.ebs .vc-leg{display:flex;flex-wrap:wrap;gap:var(--sp-xs) var(--sp-lg);font-size:var(--fs-xs);color:var(--ink-2)}
+.ebs .vc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-lg);height:10rem;border-bottom:1px solid var(--line)}
+.ebs .vc-c{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:var(--sp-2xs);height:100%;min-width:0}
+.ebs .vc-v{font-size:var(--fs-xs);font-weight:var(--fw-semibold);line-height:1;color:var(--ink-2);white-space:nowrap}
+.ebs .vc-b{width:min(3.5rem,70%);display:flex;flex-direction:column;gap:2px;transform-origin:bottom;animation:ebs-rise var(--dur-grow) var(--ease-out) both}
+.ebs .vc-b i{display:block;min-height:2px;border-radius:var(--r-xs)}
+.ebs .vc-b i.out{background:var(--out-bar)}.ebs .vc-b i.out2{background:var(--out-bar-2)}
+.ebs .vc-x{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-lg);margin-top:var(--sp-xs);font-size:var(--fs-2xs);color:var(--ink-3);text-align:center}
+.ebs .vc-x .on{color:var(--ink);font-weight:var(--fw-semibold)}
+@keyframes ebs-rise{from{transform:scaleY(0)}}
+@keyframes ebs-grow{from{transform:scaleX(0)}}
+@keyframes ebs-fade{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){.ebs *{animation:none!important}}
+.ebs .tip{position:relative;display:inline-flex;align-items:center;margin-left:.3em;color:var(--ink-3);cursor:help;font-size:.9em;vertical-align:-.08em;outline:none;border-radius:var(--r-pill)}
+.ebs .tip:hover,.ebs .tip:focus-visible{color:var(--save)}
+.ebs .tip-b{position:absolute;bottom:calc(100% + .5rem);left:50%;transform:translate(calc(-50% + var(--dx,0px)),4px);width:max-content;max-width:17rem;padding:var(--sp-sm) var(--sp-md);border-radius:var(--r-md);background:var(--tip-bg);color:var(--tip-ink);font-size:var(--fs-2xs);line-height:1.45;font-weight:var(--fw-regular);letter-spacing:0;text-align:left;white-space:normal;overflow-wrap:anywhere;opacity:0;visibility:hidden;pointer-events:none;transition:opacity var(--dur-fast) ease,transform var(--dur-fast) ease,visibility var(--dur-fast);z-index:30;box-shadow:var(--shadow-tip)}
+.ebs .tip:hover .tip-b,.ebs .tip:focus .tip-b{opacity:1;visibility:visible;transform:translate(calc(-50% + var(--dx,0px)),0)}
+.ebs .tip-b b{display:block;font-weight:var(--fw-semibold);font-size:var(--fs-xs);color:var(--tip-ink-strong)}
+.ebs .tip-b em{display:inline-block;margin-top:var(--sp-2xs);padding:var(--sp-4xs) var(--sp-xs);border-radius:var(--r-pill);background:var(--tip-pill);font-style:normal;font-weight:var(--fw-semibold);font-size:var(--fs-2xs);color:var(--tip-ink)}
+.ebs .tip-b small{display:block;margin-top:var(--sp-xs);color:var(--tip-ink-2);font-size:var(--fs-2xs)}
+.ebs .bsx{display:grid;grid-template-columns:1fr 1fr;gap:var(--seg-gap);min-height:10.5rem}
+.ebs .bsx-c{display:flex;flex-direction:column;justify-content:center;gap:var(--sp-3xs);padding:var(--sp-sm) var(--sp-md);min-height:2.5rem}
+.ebs .bsx-c .bl{font-size:var(--fs-xs);color:var(--ink-2)}
+.ebs .bsx-c .bv{font-size:var(--fs-md);font-weight:var(--fw-semibold);letter-spacing:-.02em;line-height:1.15}
+.ebs .bsx-c .bp{font-size:var(--fs-2xs);font-weight:var(--fw-semibold)}
+.ebs .bsx-a{background:color-mix(in srgb,var(--save-bar) var(--tint),var(--card));border-radius:var(--r-in) 0 0 var(--r-in);color:var(--save)}
+.ebs .bsx-r{display:flex;flex-direction:column;gap:var(--seg-gap)}
+.ebs .bsx-li{background:color-mix(in srgb,var(--out-bar) var(--tint),var(--card));border-radius:0 var(--r-in) 0 0;color:var(--out)}
+.ebs .bsx-eq{background:color-mix(in srgb,var(--in-bar) var(--tint),var(--card));border-radius:0 0 var(--r-in) 0;color:var(--in)}
+.ebs .bsx-c.thin{display:grid;grid-template-columns:1fr auto;align-content:center;align-items:baseline;column-gap:var(--sp-sm);row-gap:var(--sp-4xs);padding:var(--sp-xs) var(--sp-md);min-height:3rem}
+.ebs .bsx-c.thin .bl{grid-column:1/-1;white-space:nowrap}
+.ebs .bsx-c.thin .bv{font-size:var(--fs-sm)}
+.ebs .bsx-c .bl,.ebs .bsx-c .bl .tip{color:var(--ink-2)}
+.ebs .bsxg{position:relative;display:grid;grid-template-columns:1.6rem 1fr 1.6rem;column-gap:0;row-gap:var(--sp-sm)}
+.ebs .bsxg .bsx{min-height:14rem}
+.ebs .bsxg-main{grid-column:2;margin-bottom:var(--sp-3xl)}
+.ebs .bsxg-side{grid-column:3;position:relative}
+.ebs .bsxg-bot{grid-column:1;display:grid;grid-template-columns:1fr 1fr;gap:var(--seg-gap)}
+.ebs .bsxg-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.ebs .g-chip{display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--sp-3xs);font-size:var(--fs-2xs);color:var(--ink-2);line-height:1.25}
+.ebs .g-chip b{font-size:var(--fs-sm);font-weight:var(--fw-semibold);letter-spacing:-.01em;white-space:nowrap}
+.ebs .g-chip small{font-size:var(--fs-2xs);color:var(--ink-3)}
+.ebs .bsxg-side .g-chip{position:absolute;left:0;right:0;align-items:flex-start;text-align:left}
+.ebs .g-chip.k-a b{color:var(--save)}.ebs .g-chip.k-i b{color:var(--ink)}.ebs .g-chip.k-e b{color:var(--in)}
+.ebs .bsx-debt{position:absolute;left:0;right:0;bottom:0;border:0;background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--ink-3) var(--hatch-1),transparent) 0 4px,color-mix(in srgb,var(--ink-3) var(--hatch-2),transparent) 4px 8px);display:flex;align-items:center;justify-content:flex-end;padding:0 var(--sp-sm);pointer-events:none}
+.ebs .bsx-debt span{font-size:var(--fs-2xs);font-weight:var(--fw-semibold);color:var(--ink);background:var(--card);padding:0 var(--sp-2xs);border-radius:var(--r-xs)}
+.ebs .g-chip .g-sum{font-size:var(--fs-2xs);font-weight:var(--fw-semibold);color:var(--ink)}
+.ebs .bsxg-leg{grid-column:1/-1;display:flex;flex-direction:column;gap:var(--sp-2xs)}
+.ebs .g-leg{display:grid;grid-template-columns:1.25rem 5.25rem 1.1rem 1fr auto;align-items:baseline;column-gap:var(--sp-xs);font-size:var(--fs-2xs);color:var(--ink-2)}
+.ebs .g-leg .sw{width:1rem;height:3px;border-radius:2px;align-self:center}
+.ebs .g-leg b{font-weight:var(--fw-semibold);white-space:nowrap}
+.ebs .g-leg small{font-size:var(--fs-2xs);color:var(--ink-3);white-space:nowrap}
+.ebs .g-leg.k-a b{color:var(--save)}.ebs .g-leg.k-a .sw{background:var(--save-bar)}
+.ebs .g-leg.k-i b{color:var(--ink)}.ebs .g-leg.k-i .sw{background:var(--ink-3)}
+.ebs .g-leg.k-e b{color:var(--in)}.ebs .g-leg.k-e .sw{background:var(--in-bar)}
+.ebs .split{display:flex;flex-direction:column;gap:var(--sp-sm);margin:var(--sp-sm) 0 var(--sp-md)}
+.ebs .split-bar{display:flex;gap:var(--seg-gap);height:.875rem}
+.ebs .split-bar .fill{height:100%;border-radius:var(--r-xs);animation:none}
+.ebs .split-bar .fill:first-child{border-radius:var(--r-pill) var(--r-xs) var(--r-xs) var(--r-pill)}.ebs .split-bar .fill:last-child{border-radius:var(--r-xs) var(--r-pill) var(--r-pill) var(--r-xs)}
+.ebs .split-br{display:flex;gap:var(--seg-gap)}
+.ebs .br{position:relative;height:1.15rem;border:3px solid;border-top:0;border-radius:0 0 var(--r-sm) var(--r-sm);margin:0 2px var(--sp-lg)}
+.ebs .br.out{border-color:var(--out-bar)}.ebs .br.in{border-color:var(--in-bar)}
+.ebs .br .pill{position:absolute;left:50%;top:100%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:var(--sp-3xs);padding:var(--sp-3xs) var(--sp-sm);border-radius:var(--r-pill);color:var(--on-fill);font-size:var(--fs-xs);line-height:1.35;font-weight:var(--fw-semibold);white-space:nowrap;letter-spacing:.01em}
+.ebs .br.out .pill{background:var(--out-bar)}.ebs .br.in .pill{background:var(--in-bar)}
+.ebs .br .pill .tip{color:var(--on-fill-2)}
+.ebs .split-bar+.split-bar{margin-top:calc(var(--sp-3xs) * -1)}
+.ebs .split-bar .fill.in2{background:color-mix(in srgb,var(--in-bar) var(--tint-half),var(--card))}
+.ebs .split-bar .fill.mute,.ebs .split-bar .fill.track{background:var(--track)}
+.ebs .split-bar .fill.out2{background:var(--out-bar-2)}
+.ebs .br-sp{height:1px}
+.ebs .br.in2{border-color:color-mix(in srgb,var(--in-bar) var(--tint-half),var(--card))}.ebs .br.in2 .pill{background:var(--in)}
+.ebs .br.mute{border-color:var(--ink-3)}.ebs .br.mute .pill{background:var(--ink-3)}
+.ebs .br.r .pill{left:auto;right:-2px;transform:translateY(-50%)}
+.ebs .split-items{display:flex;flex-direction:column;gap:var(--sp-2xs);margin-bottom:var(--sp-2xs)}
+.ebs .split-items .meter-r{font-size:var(--fs-xs)}
+.ebs .sw{display:inline-block;width:.6rem;height:.6rem;border-radius:3px;margin-right:var(--sp-xs);vertical-align:-.05em}
+.ebs .sw.out{background:var(--out-bar)}.ebs .sw.out2{background:var(--out-bar-2)}.ebs .sw.in{background:var(--in-bar)}.ebs .sw.in2{background:color-mix(in srgb,var(--in-bar) var(--tint-half),var(--card))}
+.ebs .br.top{border-top-width:3px;border-top-style:solid;border-bottom:0;border-radius:var(--r-sm) var(--r-sm) 0 0;margin:var(--sp-lg) 2px 0}
+.ebs .br.top .pill{top:0}
+.ebs .bsx-note{display:flex;justify-content:space-between;font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-xs)}
+
+/* tooltips inside pills / legends / chips must not inherit their nowrap, weight or tone */
+.ebs .tip .tip-b,.ebs .tip .tip-b b,.ebs .tip .tip-b em,.ebs .tip .tip-b small{white-space:normal;letter-spacing:0}
+.ebs .tip .tip-b{font-weight:var(--fw-regular);text-align:left;font-size:var(--fs-2xs);max-width:19rem;padding:var(--sp-md) var(--sp-md)}
+.ebs .tip .tip-b b{font-weight:var(--fw-semibold);font-size:var(--fs-xs);color:var(--tip-ink-strong)}
+.ebs .tip .tip-b small{font-size:var(--fs-2xs);line-height:1.5;color:var(--tip-ink-2)}
+.ebs .bsxg-svg{z-index:0}
+.ebs .tip:hover,.ebs .tip:focus,.ebs .tip:focus-within{z-index:50}
+.ebs .tip .tip-b{z-index:60;background:var(--tip-bg);box-shadow:var(--shadow-tip)}
+
+/* ratio table: label | value | context, columns aligned across rows */
+.ebs .ratio{display:grid;grid-template-columns:minmax(0,1fr) auto auto;column-gap:0;align-items:stretch}
+.ebs .ratio .rr{display:contents}
+.ebs .ratio .rr>*{display:flex;align-items:center;padding:var(--sp-xs) 0;border-top:1px solid var(--line)}
+.ebs .ratio .rr:first-child>*{border-top:0;padding-top:0}
+.ebs .ratio .rl{color:var(--ink);min-width:0}
+.ebs .ratio .rv{justify-content:flex-end;font-weight:var(--fw-semibold);text-align:right;white-space:nowrap}
+.ebs .ratio .rc{justify-content:flex-end;font-size:var(--fs-xs);color:var(--ink-3);text-align:right;white-space:nowrap}
+.ebs .ratio .rr>.rv,.ebs .ratio .rr>.rc{padding-left:var(--sp-md)}
+
+/* waterfall: a later split-bar row starts where its parent segment starts */
+.ebs .split-bar .fill.gap{background:transparent}
+.ebs .split-bar .fill.gap+.fill{border-radius:var(--r-pill) var(--r-xs) var(--r-xs) var(--r-pill)}
+.ebs .split-br+.split-bar{margin-top:var(--sp-xs)}
+
+/* section break inside a merged card: hairline + breathing room, then a small label */
+.ebs .sec{margin:var(--sp-sm) 0 0;padding-top:var(--sp-lg);border-top:1px solid var(--line)}
+.ebs p.sec{font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--ink-2)}
+
+/* income-statement sankey: ribbons scaled to $100 of revenue, labels are HTML so they carry .tip */
+.ebs .sk{position:relative;height:15rem;margin:var(--sp-xs) 0 var(--sp-xs)}
+.ebs .sk>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ebs .sk-k{fill-opacity:.26;transition:fill-opacity var(--dur-fast) ease;cursor:pointer}
+.ebs .sk-r{transition:opacity var(--dur-fast) ease;cursor:pointer}
+.ebs .sk.hl .sk-k{fill-opacity:.07}.ebs .sk.hl .sk-k.on{fill-opacity:.5}
+.ebs .sk.hl .sk-r:not(.on){opacity:.35}
+.ebs .sk-l{position:absolute;transform:translateY(-50%);display:flex;flex-direction:column;gap:0;font-size:var(--fs-2xs);line-height:var(--lh-2xs);color:var(--ink);white-space:nowrap;transition:opacity var(--dur-fast) ease}
+.ebs .sk-l b{font-size:var(--fs-xs);font-weight:var(--fw-semibold);line-height:var(--lh-2xs)}
+.ebs .sk.hl .sk-l:not(.on){opacity:.4}
+.ebs .sk-l .tip{margin-left:.2em}
+.ebs .sk-l.wrap{white-space:normal}.ebs .sk-l.wrap b{white-space:nowrap}
+
+/* wide sections (2026-10-20): still one screen, but a card with a figure spans two of the four columns
+   and splits into two columns inside, so the Sankey ribbons get horizontal room */
+@media (min-width:1200px){
+  .ebs.fit{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-areas:"hd hd hd hd" "pl pl cf cf" "yoy bs bs sum";grid-template-rows:auto auto 1fr;align-items:stretch}
+  .ebs.fit .pane{display:contents}
+  /* cards in one row share its height: the body grows and the footer sits on the bottom edge */
+  .ebs.fit .card{align-self:stretch}
+}
+.ebs .cols{display:grid;gap:var(--sp-lg) var(--sp-3xl)}
+.ebs .col{min-width:0;display:flex;flex-direction:column;gap:var(--sp-lg)}
+@media (min-width:1200px){
+  .ebs.fit .wide .cols{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);align-items:stretch;flex:1}
+  /* the Sankey takes whatever height the row leaves, so a wide card has no empty band */
+  .ebs.fit .wide .col .sk{flex:1 1 auto;height:auto;min-height:15rem}
+  .ebs.fit .wide .cols.even{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ebs.fit .wide .cols>.col>p.sec:first-child{margin-top:0;padding-top:0;border-top:0}
+  .ebs.fit .wide .cols>.col+.col{border-left:1px solid var(--line);padding-left:calc(var(--sp-3xl) * .5);margin-left:calc(var(--sp-3xl) * -.5)}
+  .ebs.fit .wide .cols>.col.say-col{align-self:center}
+}
+.ebs .vsw{display:inline-flex;gap:2px;padding:2px;margin:0 0 var(--sp-md);background:var(--track);border-radius:var(--r-pill)}
+.ebs .vsw button{all:unset;cursor:pointer;font-size:var(--fs-xs);line-height:var(--lh-xs,1.4);padding:var(--sp-2xs) var(--sp-md);border-radius:var(--r-pill);color:var(--ink-2);transition:background var(--dur-fast) var(--ease-out)}
+.ebs .vsw button[aria-pressed="true"]{background:var(--card);color:var(--ink);font-weight:var(--fw-semibold)}
+.ebs .vsw button:focus-visible{outline:2px solid var(--save-bar);outline-offset:1px}
+.ebs [data-view][hidden]{display:none!important}
+.ebs .hy-k{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-sm);margin:0 0 var(--sp-md)}
+.ebs .hy-k>div{background:var(--card-2);border-radius:var(--r-md);padding:var(--sp-sm) var(--sp-md)}
+.ebs .hy-k span{display:block;font-size:var(--fs-xs);color:var(--ink-2)}
+.ebs .hy-k b{display:block;font-size:var(--fs-lg);font-weight:var(--fw-semibold)}
+.ebs .hy-leg{display:flex;flex-wrap:wrap;gap:var(--sp-xs) var(--sp-lg);font-size:var(--fs-xs);color:var(--ink-2);margin:0 0 var(--sp-xs)}
+.ebs .hy-leg>span{display:inline-flex;align-items:center;gap:var(--sp-2xs)}
+.ebs .hy-leg i{display:inline-block;width:.6rem;height:.6rem;border-radius:2px}
+.ebs .hy-leg i.l,.ebs .hy-svg .l{background:var(--out-bar);fill:var(--out-bar)}
+.ebs .hy-leg i.r,.ebs .hy-svg .r{background:var(--in-bar);fill:var(--in-bar)}
+.ebs .hy-leg i.p,.ebs .hy-svg .p{background:var(--save-bar);fill:var(--save-bar)}
+.ebs .hy-svg{display:block;width:100%;height:12rem;overflow:visible}
+.ebs .hy-svg text{font-size:var(--fs-2xs);fill:var(--ink-3);font-variant-numeric:tabular-nums}
+.ebs .hy-svg text.hy-t{fill:var(--ink);font-weight:var(--fw-semibold)}
+.ebs .hy-svg line{stroke:var(--line)}
+.ebs .hy-svg g.yr{cursor:pointer;transition:opacity var(--dur-fast) var(--ease-out)}
+.ebs .hy-svg g.yr.dim{opacity:.4}
+.ebs .hy-read{font-size:var(--fs-xs);color:var(--ink-2);min-height:1.5em;margin:var(--sp-xs) 0 var(--sp-sm)}
+.ebs .hy-read b{color:var(--ink);font-weight:var(--fw-semibold)}
+.ebs .hy-f{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:var(--sp-2xs);padding:var(--sp-3xs) var(--sp-sm);border:1px solid var(--line);border-radius:var(--r-pill);font-size:var(--fs-xs);color:var(--ink);transition:border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out)}
+.ebs .hy-f:hover{border-color:var(--ink-3)}
+.ebs .hy-f:focus-visible{outline:2px solid var(--save-bar);outline-offset:1px}
+.ebs .hy-f[aria-pressed="false"]{color:var(--ink-3);border-style:dashed}
+.ebs .hy-f[aria-pressed="false"] i{background:transparent!important;box-shadow:inset 0 0 0 1.5px var(--ink-3);opacity:1}
+.ebs .hy-hint{font-size:var(--fs-2xs);color:var(--ink-3);align-self:center}
+.ebs .hy-svg line.z{stroke:var(--ink-3)}
+.ebs .hy-svg .ng{opacity:.55}
+</style>
+<h2 class="sr-only">สรุปงบ LEU ไตรมาส 2/2026: รายได้ $176.1M โต 14.0% กำไรขั้นต้น $28 ต่อรายได้ $100 กำไรจากการดำเนินงาน $6 ต่อ $100 กำไรสุทธิ $10 ต่อ $100 กระแสเงินสดอิสระติดลบ $30 ต่อ $100 เงินสด $1,868.5M หนี้เงินกู้ $1,177.5M</h2>
+
+<div class="ebs" id="ebs">
+
+<div class="hd">
+  <div class="brand">
+    <div class="logo"><i class="ti ti-atom" aria-hidden="true"></i></div>
+    <div>
+      <h1>LEU งบไตรมาส 2/2026</h1>
+      <p class="lede">Centrus Energy ขายยูเรเนียมเสริมสมรรถนะให้โรงไฟฟ้านิวเคลียร์ และผลิต HALEU ให้กระทรวงพลังงานสหรัฐ (DOE) ขณะเริ่มสร้างโรงงานเสริมสมรรถนะของตัวเองที่ Piketon รัฐโอไฮโอ สรุปไตรมาส 2 (เม.ย.–มิ.ย. 2026)</p>
+    </div>
+  </div>
+  <div class="meta">
+    <div class="chips">
+      <a class="chip" href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053863/leu-20260630.htm"><i class="ti ti-file-text" aria-hidden="true"></i>10-Q · ไตรมาสสิ้นสุด 30 มิ.ย. 2026</a>
+      <a class="chip" href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053433/ex991-10q2026_08x05.htm"><i class="ti ti-file-text" aria-hidden="true"></i>EX-99.1 · Earnings release</a>
+      <span class="chip">M = ล้าน · B = พันล้าน (ดอลลาร์)</span>
+    </div>
+    <div class="chips">
+      <span class="chip"><span class="dot" style="background:var(--in-bar)"></span>เงินเข้า</span>
+      <span class="chip"><span class="dot" style="background:var(--out-bar)"></span>เงินออก</span>
+      <span class="chip"><span class="dot" style="background:var(--save-bar)"></span>เงินสด</span>
+    </div>
+  </div>
+</div>
+
+<div class="pane" style="grid-area:p1">
+  <section class="card wide" style="grid-area:pl">
+    <div class="card-h"><div><p class="eyebrow in">งบกำไรขาดทุน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Condensed Consolidated Statements of Operations and Comprehensive Income</b><em>Income Statement · P&amp;L</em><small>ไตรมาส 2 ปี 2026 (3 เดือนถึง 30 มิ.ย. 2026) จาก 10-Q</small></span></span></p><h3>ทุก $100 ที่ขายได้ เหลือกำไรสุทธิ $10 แต่กำไรจากธุรกิจเหลือแค่ $6</h3></div></div>
+    <div class="card-b">
+      <div class="cols"><div class="col"><div class="sk" role="img" aria-label="รายได้ $100 แบ่งเป็นกำไรขั้นต้น $28.34 และต้นทุนขาย $71.66 กำไรขั้นต้นแบ่งเป็นต้นทุนพัฒนาเทคโนโลยี $6.13 ขายและบริหาร $14.88 ค่าตัดจำหน่าย $1.42 เหลือกำไรจากการดำเนินงาน $5.91 บวกดอกเบี้ยรับและอื่น ๆ สุทธิ $6.36 หักภาษี $2.73 เหลือกำไรสุทธิ $9.54"><script type="application/json">{"nodes":[{"id":"rev","l":0,"v":100,"c":"in"},{"id":"gp","l":1,"v":28.34,"c":"in"},{"id":"cogs","l":1,"v":71.66,"c":"out"},{"id":"oi","l":2,"v":5.91,"c":"in"},{"id":"inv","l":2,"v":6.36,"c":"in"},{"id":"atc","l":2,"v":6.13,"c":"out"},{"id":"sga","l":2,"v":14.88,"c":"out2"},{"id":"amo","l":2,"v":1.42,"c":"out2"},{"id":"ni","l":3,"v":9.54,"c":"in"},{"id":"tax","l":3,"v":2.73,"c":"out"}],"links":[["rev","gp",28.34],["rev","cogs",71.66],["gp","oi",5.91],["gp","atc",6.13],["gp","sga",14.88],["gp","amo",1.42],["oi","ni",5.91],["inv","ni",3.63],["inv","tax",2.73]]}</script><div class="sk-l" data-for="rev"><span>รายได้<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total revenue</b><em>Revenue · Sales</em><small>$176.1M ในไตรมาสนี้ · SWU $100.0M + Uranium $53.4M + Technical solutions $22.7M</small></span></span></span><b class="num t-in">$100</b></div><div class="sk-l" data-for="gp"><span>กำไรขั้นต้น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Gross profit</b><em>Gross Profit</em><small>= Total revenue − Total cost of sales · ปีก่อน $34.89</small></span></span></span><b class="num t-in">$28.34</b></div><div class="sk-l" data-for="cogs"><span>ต้นทุนขาย<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total cost of sales</b><em>COGS</em><small>SWU and uranium $101.8M + Technical solutions $24.4M · ปีก่อน $65.11</small></span></span></span><b class="num t-out">−$71.66</b></div><div class="sk-l" data-for="oi"><span>กำไรจากการดำเนินงาน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Operating income</b><em>Operating Income</em><small>= Gross profit − Advanced technology costs − SG&amp;A − Amortization · ปีก่อน $21.68</small></span></span></span><b class="num t-in">$5.91</b></div><div class="sk-l" data-for="inv"><span>ดอกเบี้ยรับและอื่น ๆ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Investment income − Interest expense − Nonoperating components of net periodic benefit loss − Other (income) expense, net</b><em>Non-operating, net</em><small>ไม่มีบรรทัดนี้ในงบ คำนวณ = $16.3M − $4.2M − $1.0M + $0.1M = $11.2M · ส่วนใหญ่เป็นดอกเบี้ยจากเงินสด $1.9B ในกองทุนตลาดเงิน</small></span></span></span><b class="num t-in">+$6.36</b></div><div class="sk-l" data-for="atc"><span>ต้นทุนพัฒนาเทคโนโลยี<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Advanced technology costs</b><em>R&amp;D</em><small>งานเครื่องเหวี่ยง American Centrifuge นอกสัญญาลูกค้า รวม Growth Costs ของโครงการขยายโรงงาน $10.6M · ปีก่อน $2.14</small></span></span></span><b class="num t-out">−$6.13</b></div><div class="sk-l" data-for="sga"><span>ขายและบริหาร<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Selling, general and administrative</b><em>SG&amp;A</em><small>รวมค่าตอบแทนเป็นหุ้น $17.7M ซึ่ง $17.2M เป็นรายการครั้งเดียวที่ไม่ใช่เงินสด · ปีก่อน $8.67</small></span></span></span><b class="num t-out">−$14.88</b></div><div class="sk-l" data-for="amo"><span>ค่าตัดจำหน่าย<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Amortization of intangible assets</b><em>Amortization</em><small>สินทรัพย์ไม่มีตัวตนจากการออกจากภาวะล้มละลายปี 2014 ไม่ใช่เงินสด · $2.5M · ปีก่อน $2.39</small></span></span></span><b class="num t-out">−$1.42</b></div><div class="sk-l" data-for="ni"><span>กำไรสุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income and comprehensive income</b><em>Net Income</em><small>$16.8M · ปีก่อน $18.71 ต่อ $100 ($28.9M)</small></span></span></span><b class="num t-in">$9.54</b></div><div class="sk-l" data-for="tax"><span>ภาษี<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Income tax expense</b><em>Income Tax</em><small>$4.8M · อัตราภาษี 22.2% · ภาษีคิดจากกำไรก่อนภาษีรวม $12.27 การแบ่งสายในภาพทำให้ยอดรวมตรงกันเท่านั้น</small></span></span></span><b class="num t-out">−$2.73</b></div></div>
+      </div><div class="col say-col"><p class="say">อัตรากำไรขั้นต้น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Gross profit ÷ Total revenue</b><em>Gross Margin</em><small>คำนวณเอง</small></span></span> ลดจาก 34.9% เป็น <strong>28.3%</strong> เพราะขาย SWU ได้น้อยลง 23% ขณะที่ต้นทุนต่อหน่วยขึ้น 13% และงาน HALEU ของ DOE ขาดทุนขั้นต้น ค่าใช้จ่ายขายและบริหารเพิ่มเกือบเท่าตัวจาก<strong>ค่าตอบแทนเป็นหุ้นของกรรมการ $17.2M ครั้งเดียว</strong> (ไม่ใช่เงินสด) และต้นทุนเตรียมขยายโรงงานเพิ่ม 3 เท่า ไตรมาสนี้<strong>ดอกเบี้ยรับ $16.3M สูงกว่ากำไรจากการดำเนินงาน $10.4M</strong> กำไรสุทธิจึงพึ่งเงินสดที่ระดมมามากกว่าการขายสินค้า</p></div></div>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>ตัวเลขจากงบ</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>Q2 2026: Total revenue $176.1M · ปีก่อน $154.5M</li><li>Total cost of sales $126.2M ($71.66 ต่อ $100) = SWU and uranium $101.8M + Technical solutions $24.4M</li><li>Gross profit $49.9M (28.3%) · ปีก่อน $53.9M (34.9%)</li><li>Advanced technology costs $10.8M · SG&amp;A $26.2M · Amortization of intangible assets $2.5M รวม $39.5M ($22.43 ต่อ $100)</li><li>Operating income $10.4M ($5.91) · ปีก่อน $33.5M ($21.68)</li><li>Investment income $16.3M · Interest expense −$4.2M · Nonoperating pension −$1.0M · Other income $0.1M = +$11.2M</li><li>Income before income taxes $21.6M · Income tax expense $4.8M (22.2%)</li><li>Net income $16.8M ($9.54) · Diluted EPS $0.77 · ปีก่อน $28.9M ($1.59)</li><li>SBC $17.7M อยู่ใน SG&amp;A และ D&amp;A $2.9M รวมอยู่ในบรรทัดข้างบนแล้ว ไม่นับซ้ำ</li><li>Non-GAAP (ของบริษัท): Adjusted operating income $38.7M · Adjusted net income $38.7M · Adjusted diluted EPS $1.77 บวกกลับ Growth Costs $10.6M และ SBC $17.7M</li><li class="src-l">ที่มา: <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053863/leu-20260630.htm">10-Q</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053433/ex991-10q2026_08x05.htm">EX-99.1</a></li></ul></span></span></div>
+  </section>
+  <section class="card grow" style="grid-area:yoy">
+    <div class="card-h"><div><p class="eyebrow in">งบกำไรขาดทุน · เทียบปีก่อน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Year over Year</b><em>YoY</em><small>เทียบไตรมาส 2 ปี 2025 (3 เดือนถึง 30 มิ.ย. 2025) · แยกรายได้ตามบรรทัดในงบกำไรขาดทุนและ Segment</small></span></span></p><h3>รายได้โต 14% เพราะขายยูเรเนียม ส่วนธุรกิจหลักลดลง</h3></div></div>
+    <div class="card-b">
+      <div class="vs">
+        <div><p class="lbl">Q2 2025</p><p class="kpi num">$154.5M</p></div>
+        <i class="ti ti-arrow-right arrow" aria-hidden="true"></i>
+        <div><p class="lbl">Q2 2026</p><p class="kpi num t-in">$176.1M</p></div>
+      </div>
+      <div class="sk" role="img" aria-label="รายได้ไตรมาส 2 ปี 2026 $176.1M มาจากค่าเสริมสมรรถนะ SWU $100.0M ลดลง 20.4% ขายยูเรเนียม $53.4M ซึ่งปีก่อนไม่มี และงานบริการเทคนิค $22.7M ลดลง 21.2%"><script type="application/json">{"nodes":[{"id":"swu","l":0,"v":100.0,"c":"in"},{"id":"u","l":0,"v":53.4,"c":"in"},{"id":"ts","l":0,"v":22.7,"c":"in"},{"id":"rev","l":1,"v":176.1,"c":"in"}],"links":[["swu","rev",100.0],["u","rev",53.4],["ts","rev",22.7]]}</script><div class="sk-l" data-for="swu"><span>ค่าเสริมสมรรถนะ (SWU)<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Separative work units</b><em>SWU · LEU segment</em><small>ค่าบริการเสริมสมรรถนะยูเรเนียม ปริมาณขาย −23% ราคาเฉลี่ย +3% · ปีก่อน $125.7M</small></span></span></span><b class="num t-out">$100.0M <span style="color:var(--ink-3);font-weight:var(--fw-regular)">−20.4%</span></b></div><div class="sk-l" data-for="u"><span>ขายยูเรเนียม<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Uranium</b><em>Uranium · LEU segment</em><small>ปีก่อนไม่มีรายได้นี้ จึงคำนวณ % เติบโตไม่ได้</small></span></span></span><b class="num t-in">$53.4M <span style="color:var(--ink-3);font-weight:var(--fw-regular)">ใหม่</span></b></div><div class="sk-l" data-for="ts"><span>งานบริการเทคนิค<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Technical solutions</b><em>Technical Solutions segment</em><small>งานผลิต HALEU ให้ DOE แบบต้นทุนบวกค่าธรรมเนียม ลดลง $5.9M · ปีก่อน $28.8M</small></span></span></span><b class="num t-out">$22.7M <span style="color:var(--ink-3);font-weight:var(--fw-regular)">−21.2%</span></b></div><div class="sk-l" data-for="rev"><span>รายได้รวม<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total revenue</b><em>Revenue</em><small>ปีก่อน $154.5M</small></span></span></span><b class="num t-in">$176.1M <span style="color:var(--ink-3);font-weight:var(--fw-regular)">+14.0%</span></b></div></div>
+      <p class="say">เป็น<strong>การเติบโตของธุรกิจเดิมทั้งหมด</strong> รายได้ขึ้นลงตามรอบส่งมอบ (ไตรมาส 1 มีเพียง $76.7M) หลังงวดซื้อ Westerman (รายได้ปี 2025 ราว $160M) งวดหน้าจะมีรายได้จากการซื้อกิจการ</p>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>ตัวเลขจากงบ</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>Total revenue $154.5M → $176.1M (+14.0%)</li><li>Separative work units $125.7M → $100.0M (−20.4%) · Uranium $0 → $53.4M · Technical solutions $28.8M → $22.7M (−21.2%)</li><li>LEU segment gross profit $50.7M → $51.6M · Technical Solutions gross profit $3.2M → −$1.7M</li><li>6 เดือน: Total revenue $227.6M → $252.8M (+11.1%)</li><li>ไม่มี Business Combination ในงวด · Westerman Holdings ซื้อ 16 ต.ค. 2026 ราคาราว $116M (เงินสด $95M + หุ้น $21M) บริษัทระบุรายได้ปี 2025 ราว $160M ใน 8-K 11 ก.ย. 2026</li><li class="src-l">ที่มา: <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053863/leu-20260630.htm">10-Q</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053433/ex991-10q2026_08x05.htm">EX-99.1</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026066212/leu-20261016.htm">8-K Westerman</a></li></ul></span></span></div>
+  </section>
+</div>
+
+<div class="pane" style="grid-area:p2">
+  <section class="card wide" style="grid-area:cf">
+    <div class="card-h"><div><p class="eyebrow save">งบกระแสเงินสด<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Condensed Consolidated Statements of Cash Flows</b><em>Cash Flow Statement · CF</em><small>10-Q พิมพ์เฉพาะยอด 6 เดือน ตัวเลขไตรมาส 2 = 6 เดือน − ไตรมาส 1 จาก 10-Q ไตรมาส 1 (คำนวณเอง)</small></span></span></p><h3>ลงทุนสร้างโรงงานจนเงินสดอิสระติดลบ $30 ต่อรายได้ $100 เงินสดพอใช้ราว 8 ปีที่อัตรานี้</h3></div></div>
+    <div class="card-b">
+      <div class="cols even"><div class="col"><p class="lbl" style="font-weight:var(--fw-semibold)">ไตรมาส 2 · ต่อรายได้ $100</p>
+      <div class="sk" style="height:9.5rem" role="img" aria-label="ต่อรายได้ $100: กำไรสุทธิ $9.54 บวกค่าตอบแทนเป็นหุ้น $10.05 และค่าเสื่อมและค่าตัดจำหน่าย $1.65 รวม $21.24 หักรายการอื่น $10.79 เป็นเงินสดจากการดำเนินงาน $10.45 รายจ่ายลงทุน $40.66 สูงกว่านั้น จึงใช้เงินสดที่มีอยู่อีก $30.21 กระแสเงินสดอิสระติดลบ $30.21"><script type="application/json">{"nodes":[{"id":"ni","l":0,"v":9.54,"c":"in"},{"id":"sbc","l":0,"v":10.05,"c":"in"},{"id":"da","l":0,"v":1.65,"c":"in"},{"id":"pre","l":1,"v":21.24,"c":"in"},{"id":"ocf","l":2,"v":10.45,"c":"in"},{"id":"oth","l":2,"v":10.79,"c":"out2"},{"id":"cash","l":2,"v":30.21,"c":"out"},{"id":"capex","l":3,"v":40.66,"c":"out"}],"links":[["ni","pre",9.54],["sbc","pre",10.05],["da","pre",1.65],["pre","ocf",10.45],["pre","oth",10.79],["ocf","capex",10.45],["cash","capex",30.21]]}</script><div class="sk-l" data-for="ni"><span>กำไรสุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income</b><em>Net Income</em><small>$16.8M</small></span></span></span><b class="num t-in">$9.54</b></div><div class="sk-l" data-for="sbc"><span>ค่าตอบแทนเป็นหุ้น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Equity-related compensation</b><em>SBC</em><small>ไตรมาส 2 $17.7M (6 เดือน $18.1M − ไตรมาส 1 $0.4M คำนวณเอง) หักเป็นค่าใช้จ่ายแต่ไม่ได้จ่ายเป็นเงินสด</small></span></span></span><b class="num t-in">+$10.05</b></div><div class="sk-l" data-for="da"><span>ค่าเสื่อมและค่าตัดจำหน่าย<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Depreciation and amortization</b><em>D&amp;A</em><small>ไตรมาส 2 $2.9M (6 เดือน $5.1M − ไตรมาส 1 $2.2M) ไม่ใช่เงินสด</small></span></span></span><b class="num t-in">+$1.65</b></div><div class="sk-l" data-for="pre"><span>ก่อนรายการอื่น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income + SBC + D&amp;A</b><em>Subtotal</em><small>ไม่มีบรรทัดนี้ในงบ คำนวณเอง $37.4M</small></span></span></span><b class="num t-in">$21.24</b></div><div class="sk-l" data-for="ocf"><span>เงินสดจากการดำเนินงาน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Cash provided by (used in) operating activities</b><em>OCF</em><small>ไตรมาส 2 $18.4M (6 เดือน −$16.7M − ไตรมาส 1 −$35.1M) · ปีก่อน $34.17 ต่อ $100</small></span></span></span><b class="num t-in">$10.45</b></div><div class="sk-l" data-for="oth"><span>รายการอื่น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Other adjustments and changes in operating assets and liabilities</b><em>Working Capital · Other</em><small>คำนวณ = OCF − Net income − SBC − D&amp;A (−$19.0M) · 6 เดือน: สต็อกยูเรเนียมเพิ่ม −$92.5M เงินรับล่วงหน้าลดลง −$38.4M หักด้วยยูเรเนียมค้างส่งคืนลูกค้าเพิ่ม +$43.0M</small></span></span></span><b class="num t-out">−$10.79</b></div><div class="sk-l" data-for="cash"><span>ใช้เงินสดที่มีอยู่<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Free cash flow (negative)</b><em>FCF &lt; 0</em><small>รายจ่ายลงทุนสูงกว่าเงินสดจากการดำเนินงาน ส่วนต่าง $53.2M มาจากเงินสดที่มีอยู่ · ไม่มีบรรทัดนี้ในงบ คำนวณเอง</small></span></span></span><b class="num t-out">−$30.21</b></div><div class="sk-l" data-for="capex"><span>รายจ่ายลงทุน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Capital expenditures</b><em>CapEx</em><small>ไตรมาส 2 $71.6M (6 เดือน $94.8M − ไตรมาส 1 $23.2M) · ปีก่อน $3.6M · สร้างโรงงานเสริมสมรรถนะที่ Piketon และสายผลิตเครื่องเหวี่ยงที่ Oak Ridge</small></span></span></span><b class="num t-out">−$40.66</b></div></div>
+      <div class="total"><span>ไตรมาส 2 กระแสเงินสดอิสระ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Cash provided by operating activities − Capital expenditures</b><em>FCF</em><small>ไม่มีบรรทัดนี้ในงบ คำนวณเอง $18.4M − $71.6M = −$53.2M · ปีก่อน +$49.2M (+$31.84 ต่อ $100)</small></span></span></span><span class="num t-out">−$53.2M</span></div>
+      <div class="meter-r"><span>เงินสด<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Cash and cash equivalents</b><em>Cash &amp; Investments</em><small>ไม่มีหลักทรัพย์ลงทุน · ไม่รวมเงินฝากค้ำประกัน (Deposits for financial assurance) $33.4M ซึ่งเป็น restricted cash</small></span></span></span><span class="num t-save">$1.87B</span></div>
+      <div class="meter-r"><span>อัตราใช้เงินต่อเดือน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Free cash flow ÷ 6</b><em>Burn Rate</em><small>คำนวณเอง ใช้ค่าเฉลี่ย 6 เดือน $111.5M ÷ 6 ซึ่งสูงกว่าไตรมาส 2 ($17.7M ต่อเดือน)</small></span></span></span><span class="num t-out">−$18.6M</span></div>
+      <div><p class="lbl">ระยะเวลาที่เงินสดพอใช้<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Cash and cash equivalents ÷ Monthly burn</b><em>Runway</em><small>สมมติอัตราใช้เงินคงที่ ไม่ระดมทุนเพิ่ม ไม่ใช่ประมาณการของบริษัท · ที่อัตราไตรมาส 2 ได้ราว 8.8 ปี</small></span></span> ≈ <b class="num t-save">8.4 ปี</b></p><div class="yrs" data-years="8.4"></div><div class="scale"><span>0</span><span>10 ปี</span></div></div>
+      <p class="say"><strong>รายจ่ายลงทุนเพิ่มจาก $23.2M เป็น $71.6M ในไตรมาสเดียว</strong> และโรงงานใหม่มีมูลค่าหลายพันล้านดอลลาร์ อัตราใช้เงินน่าจะสูงขึ้นอีก</p>
+      </div><div class="col"><p class="sec">6 เดือนแรกปี 2026 · กิจกรรมจัดหาเงิน</p>
+      <div class="sk" style="height:9.5rem" role="img" aria-label="6 เดือน: กระแสเงินสดอิสระติดลบ $111.5M ภาษีแทนพนักงาน $0.4M และอัตราแลกเปลี่ยน $0.2M จ่ายด้วยเงินขายหุ้นเพิ่มทุน $53.9M (48%) และเงินสดที่มีอยู่ $58.2M (52%)"><script type="application/json">{"nodes":[{"id":"atm","l":0,"v":53.9,"c":"in"},{"id":"cash","l":0,"v":58.2,"c":"out"},{"id":"fcf","l":1,"v":111.5,"c":"out"},{"id":"nss","l":1,"v":0.4,"c":"out2"},{"id":"fx","l":1,"v":0.2,"c":"out2"}],"links":[["atm","fcf",53.9],["cash","fcf",57.6],["cash","nss",0.4],["cash","fx",0.2]]}</script><div class="sk-l" data-for="atm"><span>ขายหุ้นเพิ่มทุน (ATM)<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Proceeds from the issuance of common stock, net</b><em>ATM · Equity raised</em><small>ขาย 278,114 หุ้นในไตรมาส 2 ได้ $55.0M ก่อนหักค่าธรรมเนียม</small></span></span></span><b class="num t-in">+$53.9M <span style="color:var(--ink-3);font-weight:var(--fw-regular)">48%</span></b></div><div class="sk-l" data-for="cash"><span>ใช้เงินสดที่มีอยู่<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>(Decrease) in cash, cash equivalents and restricted cash</b><em>Cash on hand</em><small>−$58.2M รวมเงินฝากค้ำประกันที่เพิ่ม $30.5M (escrow สัญญาก่อสร้างกับ Fluor) · เงินสดที่ใช้ได้จริงลดลง $88.7M</small></span></span></span><b class="num t-out">$58.2M <span style="color:var(--ink-3);font-weight:var(--fw-regular)">52%</span></b></div><div class="sk-l" data-for="fcf"><span>กระแสเงินสดอิสระติดลบ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Free cash flow</b><em>FCF</em><small>6 เดือน = OCF −$16.7M − CapEx $94.8M = −$111.5M · ไม่ใช่บรรทัดในงบ คำนวณเอง</small></span></span></span><b class="num t-out">−$111.5M</b></div><div class="sk-l" data-for="nss"><span>ภาษีแทนพนักงาน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Common stock withheld for tax obligations under stock-based compensation plan</b><em>Net-share Settlement</em><small>บริษัทหักหุ้นที่ให้พนักงานไว้ แล้วจ่ายภาษีเป็นเงินสดแทน</small></span></span></span><b class="num t-out">−$0.4M</b></div><div class="sk-l" data-for="fx"><span>อัตราแลกเปลี่ยน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Effect of exchange rate changes on cash</b><em>FX</em><small>ผลจากเงินสกุลยูโรเล็กน้อย</small></span></span></span><b class="num t-out">−$0.2M</b></div></div>
+      <p class="say">ไม่จ่ายปันผล ไม่ซื้อหุ้นคืน หุ้นเพิ่ม 1.5% จากสิ้นปี 2025 หลังงวด<strong>ขายหุ้นและใบสำคัญแสดงสิทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Pre-Funded Warrants · Common Warrants</b><em>Warrant</em><small>Pre-funded 2,005,513 หุ้น ราคาใช้สิทธิ $0.10 · Common warrants 6,992,382 หุ้น 4 ชุด ราคาใช้สิทธิ $226.86–$362.98 อายุ 2–5 ปี</small></span></span> ได้ราว $500M</strong> (ก.ย. 2026) หุ้นใหม่ราว 12.6% เกิด dilution<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Dilution</b><em>Dilution</em><small>สัดส่วนความเป็นเจ้าของของผู้ถือหุ้นเดิมลดลงเมื่อมีหุ้นใหม่เพิ่ม · รวม pre-funded warrants คำนวณเอง</small></span></span> และอาจเพิ่มอีกราว 7M หุ้นถ้าใช้สิทธิ warrants ครบ</p></div></div>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>ตัวเลขจากงบ</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>Q2: OCF $18.4M ($10.45 ต่อ $100) · ปีก่อน $52.8M ($34.17)</li><li>Capital expenditures $71.6M ($40.66) · ปีก่อน $3.6M · ไตรมาส 1 $23.2M</li><li>FCF −$53.2M (−$30.21) ≈ −$17.7M ต่อเดือน · ไตรมาส 1 −$58.3M (OCF −$35.1M − CapEx $23.2M)</li><li>6 เดือน: OCF −$16.7M · CapEx $94.8M · FCF −$111.5M (−$44.11 ต่อรายได้ $100) ≈ −$18.6M ต่อเดือน</li><li>6 เดือน non-cash: Equity-related compensation $18.1M · D&amp;A $5.1M · Deferred tax $7.0M · Amortization of debt issuance costs $2.7M</li><li>PP&amp;E ที่ยังค้างจ่ายใน Accounts payable $21.0M (ยังไม่อยู่ใน CapEx)</li><li>Cash and cash equivalents $1,868.5M (สิ้นปี 2025 $1,957.2M) · Runway $1,868.5M ÷ $18.6M ≈ 101 เดือน</li><li>6 เดือน financing $53.5M = ATM $53.9M − Tax withholding $0.4M</li><li>หุ้น Class A + B: 19,664,565 (31 ธ.ค. 2025) → 19,952,858 (30 มิ.ย. 2026) +1.5%</li><li>หลังงวด: ระดมทุน $500M gross (ก.ย. 2026) 500,000 หุ้น + pre-funded warrants 2,005,513 หุ้น + common warrants 6,992,382 หุ้น · ซื้อ Westerman จ่ายเงินสด $95M + หุ้น $21M · what-if คำนวณเอง: เงินสดราว $2.27B ก่อนหักค่าใช้จ่ายการเสนอขาย</li><li class="src-l">ที่มา: <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053863/leu-20260630.htm">10-Q</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053433/ex991-10q2026_08x05.htm">EX-99.1</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000110465926107103/tm2625019d5_8k.htm">8-K ระดมทุน</a> · <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026066212/leu-20261016.htm">8-K Westerman</a></li></ul></span></span></div>
+  </section>
+</div>
+
+<div class="pane" style="grid-area:p3">
+  <section class="card wide" style="grid-area:bs">
+    <div class="card-h"><div><p class="eyebrow">งบฐานะการเงิน · อัตราส่วน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Condensed Consolidated Balance Sheets + Key financial ratios</b><em>Balance Sheet · Ratios</em><small>งบดุล ณ 30 มิ.ย. 2026 · อัตราส่วนใช้ 12 เดือนล่าสุด ก.ค. 2025–มิ.ย. 2026</small></span></span></p><h3>เงินสดมากกว่าหนี้เงินกู้ $691M แต่กำไร 12 เดือนลดลงกว่าครึ่ง</h3></div></div>
+    <div class="card-b">
+      <div class="cols even"><div class="col"><div class="vsw" role="group" aria-label="มุมมองงบฐานะการเงิน"><button type="button" aria-pressed="true" data-show="now">ณ วันนี้</button><button type="button" aria-pressed="false" data-show="hist">ย้อนหลัง 6 ปี</button></div>
+      <div data-view="now"><div class="bsxg">
+        <div class="bsxg-main"><div class="bsx" role="img" aria-label="สินทรัพย์รวม $2,531.0M เท่ากับหนี้สิน $1,685.6M (66.6%) บวกส่วนของผู้ถือหุ้น $845.4M (33.4%) หนี้เงินกู้ $1,177.5M">
+        <div class="bsx-c bsx-a" data-g="assets"><span class="bl">สินทรัพย์รวม<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total assets</b><em>Total Assets</em><small>ใหญ่สุดคือ Cash and cash equivalents $1,868.5M (74%) และ Inventories $377.1M · Property, plant and equipment เพิ่มจาก $29.5M เป็น $142.5M จากการสร้างโรงงาน</small></span></span></span><span class="bv num">$2,531.0M</span><span class="bp num">100%</span></div>
+        <div class="bsx-r">
+          <div class="bsx-c bsx-li thin" style="flex:66.6 1 0;position:relative;align-content:start"><span class="bl" style="grid-column:1">หนี้สิน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total liabilities</b><em>Total Liabilities</em><small>ใหญ่สุดคือ Long-term debt $1,177.5M (หุ้นกู้แปลงสภาพ) และ Inventories owed to customers and suppliers $235.7M (ยูเรเนียมที่ต้องส่งคืนลูกค้า)</small></span></span></span><span class="bv num">$1,685.6M</span><span class="bp num" style="grid-row:1;grid-column:2">66.6%</span><span class="bsx-debt" data-g="debt" style="height:69.9%"><span>หนี้เงินกู้ $1,177.5M</span></span></div>
+          <div class="bsx-c bsx-eq" data-g="equity" style="flex:33.4 1 0"><span class="bl">ส่วนของผู้ถือหุ้น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total stockholders’ equity</b><em>Equity</em><small>= Total assets − Total liabilities ไม่มีส่วนของผู้ถือหุ้นส่วนน้อย</small></span></span></span><span class="bv num">$845.4M</span><span class="bp num">33.4%</span></div>
+        </div>
+      </div></div>
+        <div class="bsxg-side"></div>
+        <div class="bsxg-leg"><div class="g-leg k-a"><i class="sw"></i><b>ROA 2.5%</b><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Average total assets</b><em>ROA</em><small>หารด้วยสินทรัพย์ทั้งหมด ตอบว่าใช้ทรัพย์สินทั้งหมดได้คุ้มแค่ไหน · กำไร 12 เดือน ÷ สินทรัพย์เฉลี่ย · สินทรัพย์ส่วนใหญ่เป็นเงินสดจากการระดมทุน ซึ่งยังไม่ได้นำไปสร้างรายได้</small></span></span><span>กำไร ÷ สินทรัพย์รวม</span><small>ปีก่อน 10.6%</small></div><div class="g-leg k-i"><i class="sw"></i><b>ROI 3.5%</b><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Average (equity + total debt)</b><em>ROI</em><small>หารด้วยเงินทุนที่ลงไปทั้งหมด (เงินเจ้าของ + หนี้เงินกู้) · ROI ไม่มีนิยามมาตรฐานเดียว คำนวณเอง</small></span></span><span>กำไร ÷ (หนี้เงินกู้ + เงินเจ้าของ)</span><small>ปีก่อน 22.8%</small></div><div class="g-leg k-e"><i class="sw"></i><b>ROE 8.1%</b><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Average stockholders’ equity</b><em>ROE</em><small>หารด้วยเงินของผู้ถือหุ้นอย่างเดียว · ปีก่อนสูงเพราะส่วนของผู้ถือหุ้นเฉลี่ยยังเล็กมาก ($76.6M ณ มิ.ย. 2024)</small></span></span><span>กำไร ÷ เงินเจ้าของ</span><small>ปีก่อน 48.1%</small></div></div>
+        <svg class="bsxg-svg" aria-hidden="true"></svg>
+      </div>
+      <div class="bsx-note"><span>สินทรัพย์ = หนี้สิน + ส่วนของผู้ถือหุ้น</span><span>หนี้เงินกู้<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Long-term debt + Current debt</b><em>Total Debt</em><small>$1,177.5M + $0 · หุ้นกู้แปลงสภาพ 2.25% ครบกำหนด 2030 ($402.5M) และ 0% ครบกำหนด 2032 ($805.0M) รวมเงินต้น $1,207.5M ไม่มีเงินต้นต้องจ่ายก่อนครบกำหนด</small></span></span> $1,177.5M</span></div>
+      <p class="say">เงินสด<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Cash and cash equivalents</b><em>Cash &amp; Investments</em><small>บริษัทระบุใน Liquidity ว่ามีเงินสด $1.9B · ไม่รวมเงินฝากค้ำประกัน $33.4M</small></span></span> <strong>$1,868.5M</strong> มากกว่าหนี้เงินกู้ หนี้ทั้งหมดเป็น<strong>หุ้นกู้แปลงสภาพ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>2.25% Convertible Senior Notes due 2030 · 0% Convertible Senior Notes due 2032</b><em>Convertible Notes</em><small>ผู้ถือเลือกแปลงเป็นหุ้นได้ จึงอาจกลายเป็น dilution แทนการจ่ายคืนเงินสด</small></span></span></strong> ไม่ต้องจ่ายคืนจนปี 2030 สภาพคล่อง<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total current assets ÷ Total current liabilities</b><em>Current Ratio</em><small>$2,317.1M ÷ $429.5M คำนวณเอง</small></span></span> 5.39 เท่า</p>
+      </div>
+      <div data-view="hist" hidden>
+        <div class="hy-k"><div><span>กำไร/ขาดทุนสะสม 2020 → 2025</span><b class="num t-in">+$409.2M</b></div><div><span>เงินผู้ถือหุ้นใส่สุทธิ 2020 → 2025</span><b class="num t-save">+$676.5M</b></div></div>
+        <div class="hy-leg"><span><button type="button" class="hy-f" data-s="l" aria-pressed="true"><i class="l"></i>หนี้สิน</button><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total liabilities</b><em>Total Liabilities</em><small>ปี 2025 กระโดดจากหุ้นกู้แปลงสภาพ 0% มูลค่า $805M</small></span></span></span><span><button type="button" class="hy-f" data-s="r" aria-pressed="true"><i class="r"></i>กำไร/ขาดทุนสะสม</button><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Retained earnings (Accumulated deficit)</b><em>Retained Earnings</em><small>กำไรทุกปีที่เก็บไว้ในบริษัท หลังหักขาดทุนและเงินปันผล ติดลบ = ขาดทุนสะสม</small></span></span></span><span><button type="button" class="hy-f" data-s="p" aria-pressed="true"><i class="p"></i>เงินผู้ถือหุ้นใส่สุทธิ</button><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Class A Common Stock + Class B Common Stock + Excess of capital over par value + Accumulated other comprehensive income (loss)</b><em>Paid-in Capital, net</em><small>คำนวณเอง = Total stockholders’ equity − Retained earnings · การขายหุ้นเพิ่มทุนและหุ้นพนักงานเพิ่มยอดนี้</small></span></span></span><span class="hy-hint">แตะเพื่อเลือกดูทีละส่วน</span></div>
+        <div class="hy" role="img" aria-label="สินทรัพย์รวมรายปี 2020 ถึง 2025 แยกเป็นหนี้สิน กำไร/ขาดทุนสะสม และเงินผู้ถือหุ้นใส่สุทธิ ปี 2020 ขาดทุนสะสม −$407.7M เงินผู้ถือหุ้นใส่ $87.1M ส่วนของผู้ถือหุ้นติดลบ ปี 2025 กำไรสะสม $1.5M เงินผู้ถือหุ้นใส่ $763.6M"><script type="application/json">{"unit":"M","years":["2020","2021","2022","2023","2024","2025"],"l":[806.9,714.3,779.6,763.9,932.0,1680.8],"r":[-407.7,-284.6,-233.9,-149.5,-76.3,1.5],"p":[87.1,142.7,159.8,181.8,237.7,763.6],"ni":[54.4,175.0,52.2,84.4,73.2,77.8]}</script><svg class="hy-svg" aria-hidden="true"></svg><p class="hy-read"></p></div>
+        <p class="say">ปี 2020–2022 <strong>ส่วนของผู้ถือหุ้นติดลบ</strong> จากขาดทุนสะสมเดิม กำไรทุกปีค่อย ๆ ล้างขาดทุนสะสมจนเป็นบวกในปี 2025 ส่วนก้าวกระโดดในปี 2025 มาจาก<strong>เงินเพิ่มทุนผ่าน ATM</strong> และหนี้สินที่เพิ่มเกือบเท่าตัวมาจากหุ้นกู้แปลงสภาพ $805M</p>
+      </div>
+      </div><div class="col"><p class="sec">อัตราส่วน · 12 เดือนล่าสุด (ก.ค. 2025–มิ.ย. 2026)</p>
+      <div class="ratio"><div class="rr"><span class="rl">รายได้รวม<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total revenue</b><em>Revenue</em><small>12 เดือน = ปี 2025 − 6 เดือนแรกปี 2025 + 6 เดือนแรกปี 2026</small></span></span></span><span class="rv num t-in">$473.9M</span><span class="rc">ปีก่อน $436.9M</span></div><div class="rr"><span class="rl">กำไรสุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income and comprehensive income</b><em>Net Income</em><small>ไม่มีส่วนของผู้ถือหุ้นส่วนน้อย · ปีก่อนรวมกำไรจากการไถ่ถอนหุ้นกู้ $11.8M</small></span></span></span><span class="rv num t-in">$48.5M</span><span class="rc">ปีก่อน $104.8M</span></div><div class="rr"><span class="rl">อัตรากำไรสุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Total revenue</b><em>Net Margin</em><small>คำนวณเอง ทั้งสองตัวเป็นยอด 12 เดือน</small></span></span></span><span class="rv num t-in">10.2%</span><span class="rc">ปีก่อน 24.0%</span></div><div class="rr"><span class="rl">PE<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Price ÷ Diluted EPS (TTM)</b><em>P/E</em><small>ราคาปิด $109.88 ณ 20 ต.ค. 2026 ÷ EPS ปรับลด (GAAP) 12 เดือน $1.89 คำนวณเอง · ราคาเปลี่ยนทุกวัน ตัวเลขนี้ไม่อัปเดตเอง</small></span></span></span><span class="rv num t-in">58.1x</span><span class="rc">EPS 12 เดือน $1.89</span></div><div class="rr"><span class="rl">Forward PE<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Price ÷ Consensus EPS (next 4 quarters)</b><em>Forward P/E</em><small>Consensus EPS จาก Nasdaq (ข้อมูล Zacks) ณ 21 ต.ค. 2026 รวม 4 ไตรมาส ก.ค. 2026–มิ.ย. 2027 = $4.42 มีนักวิเคราะห์เพียง 1 รายต่อไตรมาส (น้อยมาก) โดยทั่วไปเป็น EPS แบบ adjusted (non-GAAP) จึงเทียบกับ PE ย้อนหลังแบบตรงตัวไม่ได้ เป็นการคาดการณ์ของบุคคลที่สาม ไม่ใช่ตัวเลขจากงบ</small></span></span></span><span class="rv num t-in">24.9x</span><span class="rc">EPS คาด $4.42</span></div><div class="rr"><span class="rl">P/B<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Price ÷ Book value per share</b><em>P/B</em><small>ราคาปิด $109.88 ÷ Book ต่อหุ้น $42.37 (Total stockholders’ equity $845.4M ÷ หุ้น Class A 19,233,658 + Class B 719,200 ตามงบดุล 30 มิ.ย. 2026 · ไม่มีหุ้นบุริมสิทธิ) คำนวณเอง · ยังไม่รวมหุ้นที่ออกหลังงวด · ราคาเปลี่ยนทุกวัน ตัวเลขนี้ไม่อัปเดตเอง</small></span></span></span><span class="rv num t-in">2.6x</span><span class="rc">Book/หุ้น $42.37</span></div></div>
+      <p class="say"><strong>สินทรัพย์ส่วนใหญ่เป็นเงินสดที่ยังไม่ได้ลงทุน</strong> ROA จึงต่ำ Forward PE ต่ำกว่า PE ย้อนหลังมาก แต่มาจากนักวิเคราะห์เพียงรายเดียว</p></div></div>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>ตัวเลขจากงบ</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>30 มิ.ย. 2026: Total assets $2,531.0M · Total liabilities $1,685.6M · Total stockholders’ equity $845.4M</li><li>Cash and cash equivalents $1,868.5M · Deposits for financial assurance $33.4M (ไม่นับ)</li><li>หนี้เงินกู้ Long-term debt $1,177.5M (principal $1,207.5M) · Current debt $0 · Net cash $691.0M (คำนวณเอง)</li><li>Current ratio 5.39x ($2,317.1M ÷ $429.5M)</li><li>12 เดือน: Revenue $448.7M − $227.6M + $252.8M = $473.9M · ปีก่อน $442.0M − $232.7M + $227.6M = $436.9M</li><li>Net income $77.8M − $56.1M + $26.8M = $48.5M · ปีก่อน $73.2M − $24.5M + $56.1M = $104.8M</li><li>ROA: $48.5M ÷ ($1,314.8M + $2,531.0M) ÷ 2 · ปีก่อน $104.8M ÷ ($668.2M + $1,314.8M) ÷ 2</li><li>ROE: ÷ Equity เฉลี่ย ($359.1M + $845.4M) ÷ 2 · ปีก่อน ($76.6M + $359.1M) ÷ 2</li><li>ROI: ÷ (Equity + Debt) เฉลี่ย ($749.1M + $2,022.9M) ÷ 2 · ปีก่อน ($169.2M + $749.1M) ÷ 2 · หนี้ $390.0M (มิ.ย. 2025) และ $92.6M (มิ.ย. 2024)</li><li>PE: $109.88 ÷ Diluted EPS ($3.90 − $3.22 + $1.21 = $1.89)</li><li>Forward PE: $0.35 + $1.70 + $0.76 + $1.61 = $4.42 (1 รายต่อไตรมาส)</li><li>P/B: $109.88 ÷ ($845.4M ÷ 19,952,858 หุ้น)</li><li>ราคา: Yahoo Finance · Consensus: <a href="https://www.nasdaq.com/market-activity/stocks/leu/earnings">Nasdaq</a></li><li>ย้อนหลัง (M, ปีงบ 2020–2025 จาก 10-K): Total liabilities 806.90 · 714.30 · 779.60 · 763.90 · 932.00 · 1,680.80</li><li>Retained earnings -407.70 · -284.60 · -233.90 · -149.50 · -76.30 · 1.50</li><li>เงินผู้ถือหุ้นใส่สุทธิ = Total equity − Retained earnings (คำนวณเอง) 87.10 · 142.70 · 159.80 · 181.80 · 237.70 · 763.60</li><li>ข้อมูลย้อนหลังจาก SEC XBRL companyfacts (10-K)</li><li class="src-l">ที่มา: <a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026053863/leu-20260630.htm">10-Q</a> · <a href="https://data.sec.gov/api/xbrl/companyfacts/CIK0001065059.json">SEC XBRL companyfacts</a> (10-K FY2025, 10-Q Q2 2024/2025)</li></ul></span></span></div>
+  </section>
+</div>
+
+<div class="pane" style="grid-area:p4">
+  <section class="card grow" style="grid-area:sum">
+    <div class="card-h"><div><p class="eyebrow">สรุป</p><h3>ภาพรวมสำหรับนักลงทุน</h3></div></div>
+    <div class="card-b">
+      <ul class="list">
+        <li><span class="ico in"><i class="ti ti-circle-check" aria-hidden="true"></i></span><div><b>จุดแข็ง</b><p>ยังทำกำไร เงินสดมากกว่าหนี้ backlog ราว $3.7B (บางส่วนมีเงื่อนไข) สัญญา HALEU กับ DOE $900M และลูกค้าใหม่ที่จ่ายเงินล่วงหน้า</p></div></li>
+        <li><span class="ico out"><i class="ti ti-alert-triangle" aria-hidden="true"></i></span><div><b>ความเสี่ยง</b><p>LEU ที่ส่งมอบถึงปี 2027 กว่าครึ่งมาจาก TENEX ของรัสเซีย ต้องได้ waiver จากกฎหมายห้ามนำเข้า โรงงานหลายพันล้านดอลลาร์อาจต้องระดมทุนและ dilute อีก</p></div></li>
+        <li><span class="ico save"><i class="ti ti-eye" aria-hidden="true"></i></span><div><b>ติดตามในงบถัดไป</b><p>รายจ่ายลงทุนต่อไตรมาส เงินสดหลังระดมทุน $500M รายได้ Westerman เครื่องเหวี่ยงเครื่องแรกที่ Oak Ridge ภายในสิ้นปี 2026 และผล waiver</p></div></li>
+        <li><span class="ico neu"><i class="ti ti-flag" aria-hidden="true"></i></span><div><b>แนวโน้มอัตรากำไรจากการดำเนินงาน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Operating income ÷ Total revenue</b><em>Operating Margin</em><small>GAAP คำนวณเอง · ทำกำไรแล้ว จึงดูแนวโน้ม margin แทนจุดคุ้มทุน</small></span></span></b><p>21.7% → 5.9% ปีต่อปี non-GAAP ของบริษัท (ไม่นับ SBC และต้นทุนเตรียมขยาย) 22.0%</p><div class="track mini"><div class="fill in" style="width:5.9%"></div></div></div></li>
+      </ul>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>มุมมอง</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>Centrus วันนี้เป็นผู้ค้าเชื้อเพลิงนิวเคลียร์ที่ทำกำไร แต่กำลังเปลี่ยนเป็นผู้ผลิตยูเรเนียมเสริมสมรรถนะเองในสหรัฐ ซึ่งต้องใช้เงินลงทุนหลายพันล้านดอลลาร์</li><li>เดิมพันหลักคือสร้างโรงงานที่ Piketon ได้ตามแผนและงบ และความต้องการ LEU/HALEU จากโรงไฟฟ้าใหม่เกิดขึ้นจริง</li><li>ระหว่างนี้รายได้ขึ้นลงตามรอบส่งมอบ และขึ้นกับนโยบายนำเข้ายูเรเนียมจากรัสเซีย</li><li>กำไรสุทธิไตรมาสนี้มีดอกเบี้ยรับเป็นส่วนสำคัญ ควรดูกำไรจากการดำเนินงานและกระแสเงินสดประกอบ</li><li>หลังงวด: ระดมทุน $500M พร้อม warrants (<a href="https://www.sec.gov/Archives/edgar/data/1065059/000110465926107103/tm2625019d5_8k.htm">8-K</a>) และซื้อ Westerman $116M (<a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026066212/leu-20261016.htm">8-K</a>) · สัญญา DOE $900M (<a href="https://www.sec.gov/Archives/edgar/data/1065059/000162828026046801/leu-20260630.htm">8-K</a>)</li></ul></span></span> · ข้อมูลเพื่อการศึกษา ไม่ใช่คำแนะนำซื้อขาย</div>
+  </section>
+</div>
+
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.ebs .yrs[data-years]').forEach(function(box){
+    var y=+box.dataset.years,cells=Math.max(10,Math.ceil(y));
+    box.style.gridTemplateColumns='repeat('+cells+',1fr)';box.innerHTML='';
+    for(var i=0;i<cells;i++){var c=document.createElement('i'),f=Math.max(0,Math.min(1,y-i));
+      if(f>0)c.style.background='linear-gradient(90deg,var(--save-bar) '+(f*100)+'%,var(--track) '+(f*100)+'%)';
+      c.style.animationDelay=(0.3+i*0.05)+'s';box.appendChild(c);}
+  });
+  document.querySelectorAll('.ebs .fill').forEach(function(b,i){b.style.animationDelay=(i*0.05)+'s';});
+  document.querySelectorAll('.ebs .tip').forEach(function(t){
+    function place(){var b=t.querySelector('.tip-b');if(!b)return;b.style.setProperty('--dx','0px');
+      var r=b.getBoundingClientRect(),m=8,dx=0;
+      if(r.right>window.innerWidth-m)dx=window.innerWidth-m-r.right;
+      if(r.left+dx<m)dx=m-r.left;
+      b.style.setProperty('--dx',dx+'px');}
+    t.addEventListener('mouseenter',place);t.addEventListener('focus',place);
+  });
+  var el=document.getElementById('ebs');
+  if(!el||!document.body.hasAttribute('data-fit'))return;
+  var root=document.documentElement;
+  function fit(){
+    var wide=window.innerWidth>=1200;
+    el.classList.toggle('fit',wide);
+    root.style.fontSize='';
+    if(!wide)return;
+    var size=Math.min(17,Math.max(10,window.innerHeight/52));
+    root.style.fontSize=size+'px';
+    while(root.scrollHeight>window.innerHeight+1&&size>9){size-=0.25;root.style.fontSize=size+'px';}
+  }
+  window.addEventListener('resize',fit);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+  fit();
+})();
+</script>
+<p class="foot">AI-DRAFT · ข้อมูลจาก SEC EDGAR · ข้อมูลเพื่อการศึกษา ไม่ใช่คำแนะนำการลงทุน</p>
+</main>
+
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  var CS=null;function css(v){return (CS&&CS.getPropertyValue(v).trim())||'#888'}
+  function draw(g){
+    CS=getComputedStyle(g);var svg=g.querySelector('.bsxg-svg'), R=g.getBoundingClientRect();
+    function r(sel){var b=g.querySelector('[data-g="'+sel+'"]').getBoundingClientRect();return {l:b.left-R.left,t:b.top-R.top,r:b.right-R.left,b:b.bottom-R.top,w:b.width,h:b.height}}
+    var A=r('assets'),E=r('equity'),D=r('debt');
+    var top=Math.min(A.t,D.t), bot=Math.max(A.b,E.b), bxR=Math.max(E.r,D.r);
+    var cs={a:css('--save-bar'),i:css('--ink-3'),e:css('--in-bar')}, tc={a:css('--save'),i:css('--ink'),e:css('--in')}, bg=css('--card');
+    svg.innerHTML='';
+    function lab(x,y,txt,k,rot){var gg=document.createElementNS(NS,'g');gg.setAttribute('transform','translate('+x+' '+y+')'+(rot?' rotate(-90)':''));
+      var w=txt.length*7.6+12,h=17,rc=document.createElementNS(NS,'rect');rc.setAttribute('x',-w/2);rc.setAttribute('y',-h/2);rc.setAttribute('width',w);rc.setAttribute('height',h);rc.setAttribute('rx',h/2);rc.setAttribute('fill',cs[k]);gg.appendChild(rc);
+      var tx=document.createElementNS(NS,'text');tx.setAttribute('text-anchor','middle');tx.setAttribute('dominant-baseline','central');tx.setAttribute('y','.5');tx.setAttribute('font-size','11.5');tx.setAttribute('font-weight','700');tx.setAttribute('fill','#fff');tx.setAttribute('letter-spacing','.4');tx.textContent=txt;gg.appendChild(tx);svg.appendChild(gg)}
+    function pth(d,k){var p=document.createElementNS(NS,'path');p.setAttribute('d',d);p.setAttribute('stroke',cs[k]);p.setAttribute('stroke-width',3);p.setAttribute('fill','none');p.setAttribute('stroke-linejoin','round');p.setAttribute('stroke-linecap','round');svg.appendChild(p)}
+    // ROA: left of assets box
+    var xa=A.l-10; pth('M'+(xa+6)+','+(A.t+1)+' H'+xa+' V'+(A.b-1)+' H'+(xa+6),'a'); if(A.b-A.t>40) lab(xa,(A.t+A.b)/2,'ROA','a',true);
+    // ROE: under equity box
+    var ye=E.b+10; pth('M'+(E.l+1)+','+(ye-6)+' V'+ye+' H'+(E.r-1)+' V'+(ye-6),'e'); lab((E.l+E.r)/2,ye,'ROE','e',false);
+    // ROI: right of debt slice + equity box
+    var xi=bxR+10; pth('M'+(xi-6)+','+(D.t+1)+' H'+xi+' V'+(E.b-1)+' H'+(xi-6),'i'); if(E.b-D.t>40) lab(xi,(D.t+E.b)/2,'ROI','i',true);
+  }
+  function all(){document.querySelectorAll('.bsxg').forEach(draw)}
+  window.addEventListener('load',all);window.addEventListener('resize',all);
+  if(window.ResizeObserver){var ro=new ResizeObserver(all);document.querySelectorAll('.bsxg').forEach(function(g){ro.observe(g)})}
+  setTimeout(all,300);
+})();
+</script>
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  function draw(box){
+    var d=JSON.parse(box.querySelector('script').textContent);
+    var rem=parseFloat(getComputedStyle(document.documentElement).fontSize)||16;
+    var W=box.clientWidth,H=box.clientHeight,nw=Math.round(rem*.6),pad=Math.round(rem*.5),gap=rem*.4;
+    var by={},layers=[];
+    d.nodes.forEach(function(n,i){n.o=i;n.in=[];n.out=[];by[n.id]=n;(layers[n.l]=layers[n.l]||[]).push(n);});
+    var L=d.links.map(function(k){var o={s:by[k[0]],t:by[k[1]],v:k[2]};o.s.out.push(o);o.t.in.push(o);return o;});
+    var last=layers.length-1,labs={};
+    box.querySelectorAll('.sk-l').forEach(function(e){labs[e.dataset.for]=e;e.style.maxWidth='';e.classList.remove('wrap');});
+    // the last layer's labels hang to its right, so reserve their widest label
+    var right=0;d.nodes.forEach(function(n){var e=labs[n.id];if(e&&n.l===last)right=Math.max(right,e.offsetWidth);});
+    var step=(W-nw-gap-right)/Math.max(1,last),room=step-nw-gap*2;
+    // earlier layers' labels must stop before the next node column, so they wrap
+    d.nodes.forEach(function(n){var e=labs[n.id];if(e&&n.l<last&&e.offsetWidth>room){e.classList.add('wrap');e.style.maxWidth=room+'px';}});
+    d.nodes.forEach(function(n){var e=labs[n.id];n.lh=e?e.offsetHeight:0;});
+    // each node takes the taller of its ribbon band and its label, so labels never stack on each other
+    function need(s){var m=0;layers.forEach(function(ly){var t=0;ly.forEach(function(n){t+=Math.max(n.v*s,n.lh)});m=Math.max(m,t+(ly.length-1)*pad);});return m;}
+    var sc=Infinity;layers.forEach(function(ly){var t=0;ly.forEach(function(n){t+=n.v});sc=Math.min(sc,(H-(ly.length-1)*pad)/t);});
+    // shrink the bands a little, then let the figure grow instead of squeezing labels together
+    var sc0=sc;while(sc>sc0*.6&&need(sc)>H)sc*=.97;
+    var nh=Math.ceil(need(sc));if(nh>H+1){box.style.height=nh+'px';H=nh;}
+    layers.forEach(function(ly,li){var y=0;ly.forEach(function(n){n.x=li*step;n.h=n.v*sc;var slot=Math.max(n.h,n.lh);n.y=y+(slot-n.h)/2;y+=slot+pad;});});
+    d.nodes.forEach(function(n){
+      n.out.sort(function(a,b){return a.t.o-b.t.o});n.in.sort(function(a,b){return a.s.o-b.s.o});
+      var y=n.y;n.out.forEach(function(k){k.sy=y;y+=k.v*sc});y=n.y;n.in.forEach(function(k){k.ty=y;y+=k.v*sc});});
+    var svg=box.querySelector('svg');if(!svg){svg=document.createElementNS(NS,'svg');svg.setAttribute('aria-hidden','true');box.insertBefore(svg,box.firstChild);}
+    svg.innerHTML='';
+    var col={'in':'var(--in-bar)','out':'var(--out-bar)','out2':'var(--out-bar-2)','save':'var(--save-bar)'};
+    L.forEach(function(k){var x0=k.s.x+nw,x1=k.t.x,cx=(x0+x1)/2,t=Math.max(k.v*sc,1),p=document.createElementNS(NS,'path');
+      p.setAttribute('d','M'+x0+','+k.sy+' C'+cx+','+k.sy+' '+cx+','+k.ty+' '+x1+','+k.ty+' L'+x1+','+(k.ty+t)+' C'+cx+','+(k.ty+t)+' '+cx+','+(k.sy+t)+' '+x0+','+(k.sy+t)+' Z');
+      p.setAttribute('class','sk-k');p.setAttribute('style','fill:'+col[k.t.c]);p.dataset.s=k.s.id;p.dataset.t=k.t.id;svg.appendChild(p);});
+    d.nodes.forEach(function(n){var r=document.createElementNS(NS,'rect');r.setAttribute('x',n.x);r.setAttribute('y',n.y);r.setAttribute('width',nw);r.setAttribute('height',Math.max(n.h,2));r.setAttribute('rx',3);
+      r.setAttribute('class','sk-r');r.setAttribute('style','fill:'+col[n.c]);r.dataset.n=n.id;svg.appendChild(r);});
+    box.querySelectorAll('.sk-l').forEach(function(e){var n=by[e.dataset.for];if(!n)return;e.style.left=(n.x+nw+gap)+'px';e.style.top=(n.y+n.h/2)+'px';});
+    // hover: light the whole path through a node, upstream and downstream
+    function lit(id){var on={},ks=[];on[id]=1;
+      (function dn(i){L.forEach(function(k){if(k.s.id===i){ks.push(k);if(!on[k.t.id]){on[k.t.id]=1;dn(k.t.id)}}})})(id);
+      (function up(i){L.forEach(function(k){if(k.t.id===i){ks.push(k);if(!on[k.s.id]){on[k.s.id]=1;up(k.s.id)}}})})(id);
+      box.classList.add('hl');
+      svg.querySelectorAll('.sk-k').forEach(function(p){p.classList.toggle('on',ks.some(function(k){return k.s.id===p.dataset.s&&k.t.id===p.dataset.t}))});
+      svg.querySelectorAll('.sk-r').forEach(function(r){r.classList.toggle('on',!!on[r.dataset.n])});
+      box.querySelectorAll('.sk-l').forEach(function(e){e.classList.toggle('on',!!on[e.dataset.for])});}
+    function off(){box.classList.remove('hl')}
+    svg.querySelectorAll('.sk-r').forEach(function(r){r.addEventListener('mouseenter',function(){lit(r.dataset.n)});r.addEventListener('mouseleave',off)});
+    svg.querySelectorAll('.sk-k').forEach(function(p){p.addEventListener('mouseenter',function(){lit(p.dataset.t)});p.addEventListener('mouseleave',off)});
+    if(!box.dataset.b){box.dataset.b=1;box.querySelectorAll('.sk-l').forEach(function(e){e.addEventListener('mouseenter',function(){lit(e.dataset.for)});e.addEventListener('mouseleave',off)});}
+  }
+  function all(){document.querySelectorAll('.ebs .sk').forEach(draw)}
+  window.addEventListener('load',all);window.addEventListener('resize',all);
+  if(window.ResizeObserver){var ro=new ResizeObserver(all);document.querySelectorAll('.ebs .sk').forEach(function(b){ro.observe(b)})}
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(all);
+  all();
+})();
+</script>
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg',SER=[['p','เงินผู้ถือหุ้นใส่'],['r','กำไรสะสม'],['l','หนี้สิน']];
+  function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+  function vis(box){if(!box._vis)box._vis={l:1,r:1,p:1};return box._vis;}
+  function draw(box){
+    var d=JSON.parse(box.querySelector('script').textContent),svg=box.querySelector('svg'),read=box.querySelector('.hy-read'),u=d.unit||'B';
+    function f(v){return (v<0?'−$':'$')+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+u;}
+    function short(v){var a=Math.abs(v);return (v<0?'−$':'$')+(a<10?a.toFixed(1):Math.round(a).toLocaleString('en-US'));}
+    var W=svg.clientWidth,H=svg.clientHeight;if(!W||!H)return;
+    while(svg.firstChild)svg.removeChild(svg.firstChild);
+    svg.setAttribute('viewBox','0 0 '+W+' '+H);
+    var fs=parseFloat(getComputedStyle(el('text',{},svg)).fontSize)||12;
+    svg.removeChild(svg.firstChild);
+    var on=vis(box),ser=SER.filter(function(s){return on[s[0]];}),all3=ser.length===3,n=d.years.length;
+    var pos=[],neg=[],tot=[];
+    d.years.forEach(function(_,i){var a=0,b=0;ser.forEach(function(s){var v=d[s[0]][i];if(v>=0)a+=v;else b+=v;});pos.push(a);neg.push(b);tot.push(a+b);});
+    var hi=Math.max.apply(null,pos),lo=Math.min.apply(null,neg),span=(hi-lo)||1,step=Math.pow(10,Math.floor(Math.log10(span/3)));
+    [1,2,2.5,5,10].some(function(m){if(span/(step*m)<=4){step*=m;return true;}});
+    var ymax=Math.ceil(hi/step)*step,ymin=lo<0?lo*1.08:0,top=fs*1.6,bot=fs*1.8+(ymin<0?fs*1.2:0),left=fs*3.4,h=H-top-bot;
+    var y=function(v){return top+(ymax-v)/(ymax-ymin||1)*h;},sc=function(v){return Math.abs(v)/(ymax-ymin||1)*h;};
+    for(var t=Math.ceil(ymin/step-1e-9)*step;t<=ymax+step*1e-6;t+=step){var tv=+t.toFixed(6);el('line',{x1:left,x2:W,y1:y(tv),y2:y(tv),'class':tv===0?'z':''},svg);
+      var tx=el('text',{x:left-fs*.4,y:y(tv)+fs*.35,'text-anchor':'end'},svg);tx.textContent=(tv<0?'−$':'$')+Math.abs(+tv.toFixed(2)).toLocaleString('en-US')+u;}
+    var band=(W-left)/n,bw=Math.min(band*.56,fs*3.2),gap=2,groups=[];
+    function sel(i,dim){groups.forEach(function(g,j){g.classList.toggle('dim',!!dim&&j!==i);});
+      read.innerHTML='<b>'+d.years[i]+'</b>'+(all3?' · สินทรัพย์ '+f(tot[i]):'')+ser.slice().reverse().map(function(s){return ' · '+s[1]+' '+f(d[s[0]][i]);}).join('')+(d.ni?' · กำไรปีนั้น '+f(d.ni[i]):'');}
+    d.years.forEach(function(yr,i){
+      var g=el('g',{'class':'yr',tabindex:0},svg),x=left+band*i+(band-bw)/2,up=y(0),dn=y(0);
+      el('rect',{x:left+band*i,y:top,width:band,height:h,fill:'transparent'},g);
+      var lastPos=-1;ser.forEach(function(s,k){if(d[s[0]][i]>0)lastPos=k;});
+      ser.forEach(function(s,k){var v=d[s[0]][i],hh=sc(v);if(!hh)return;
+        if(v>0){el('rect',{'class':s[0],x:x,y:up-hh,width:bw,height:Math.max(0,hh-(k===lastPos?0:gap)),rx:k===lastPos?3:0},g);up-=hh;}
+        else{el('rect',{'class':s[0]+' ng',x:x,y:dn+gap,width:bw,height:Math.max(0,hh-gap),rx:0},g);dn+=hh;}});
+      var lb=el('text',{'class':'hy-t',x:x+bw/2,y:(pos[i]>0?up-fs*.5:dn+fs*1.2),'text-anchor':'middle'},g);lb.textContent=short(tot[i]);
+      var yl=el('text',{x:x+bw/2,y:H-fs*.4,'text-anchor':'middle'},g);yl.textContent=yr;
+      g.addEventListener('mouseenter',function(){sel(i,1);});g.addEventListener('focus',function(){sel(i,1);});g.addEventListener('click',function(){sel(i,1);});
+      groups.push(g);});
+    svg.onmouseleave=function(){sel(n-1);};
+    sel(n-1);
+  }
+  function all(){document.querySelectorAll('.ebs .hy').forEach(draw);}
+  document.querySelectorAll('.ebs .hy').forEach(function(box){
+    var fs=box.parentNode.querySelectorAll('.hy-f');
+    fs.forEach(function(b){b.addEventListener('click',function(){
+      var on=vis(box),k=b.dataset.s,count=[].filter.call(fs,function(o){return o.getAttribute('aria-pressed')!=='false';}).length;
+      if(on[k]&&count===1){fs.forEach(function(o){on[o.dataset.s]=1;o.setAttribute('aria-pressed','true');});}
+      else{on[k]=on[k]?0:1;b.setAttribute('aria-pressed',on[k]?'true':'false');}
+      draw(box);});});
+  });
+  document.querySelectorAll('.ebs .vsw').forEach(function(sw){
+    var card=sw.closest('.card');
+    sw.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){
+      sw.querySelectorAll('button').forEach(function(o){o.setAttribute('aria-pressed',o===b?'true':'false');});
+      card.querySelectorAll('[data-view]').forEach(function(v){v.hidden=v.dataset.view!==b.dataset.show;});
+      all();window.dispatchEvent(new Event('resize'));});});
+  });
+  window.addEventListener('resize',all);
+  if(window.ResizeObserver)document.querySelectorAll('.ebs .hy-svg').forEach(function(s){new ResizeObserver(function(){draw(s.closest('.hy'));}).observe(s);});
+  all();
+})();
+</script>
+<script data-ebs-theme-listener>addEventListener('message',e=>{const t=e.data&&e.data.ebsTheme;if(!t)return;const r=document.documentElement;if(t==='light'||t==='dark')r.dataset.theme=t;else delete r.dataset.theme})</script>
+</body>
+</html>

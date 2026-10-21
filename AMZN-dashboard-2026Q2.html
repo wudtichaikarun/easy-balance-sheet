@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AMZN Financial Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--page:#FAF9F2;--foot:#8A9077}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--page:#1F231D;--foot:#9AA28C}}
+:root[data-theme="dark"]{--page:#1F231D;--foot:#9AA28C}
+html,body{margin:0;background:var(--page)}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Sukhumvit Set","Helvetica Neue","Noto Sans Thai",sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:720px;margin:0 auto;padding:24px 16px 32px}
+@media (min-width:760px){main{max-width:1180px}}
+@media (min-width:1200px){main{max-width:none;padding:28px 32px 14px}}
+main{overflow-x:clip}
+.foot{font-size:11px;color:var(--foot);margin:12px 4px 0}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body data-fit>
+<main>
+<style>
+.ebs{
+  --bg:#FAF9F2;--card:#ffffff;--card-2:#F2F0E3;--line:#EEEBDC;--track:#E9E6D6;
+  --ink:#333A2B;--ink-2:#4F5745;--ink-3:#6B7460;
+  --in:#2F7F5C;--in-bar:#5CAE86;
+  --out:#A5502F;--out-bar:#D6866A;--out-bar-2:#E8B7A0;
+  --save:#3B6E73;--save-bar:#5E9A9E;
+  --r-card:22px;
+  --fs-2xs:.7059rem;--fs-xs:.8235rem;--fs-sm:1rem;--fs-md:1.2353rem;--fs-lg:1.4118rem;--fs-xl:1.8824rem;--fs-2xl:2.3529rem;--lh-2xs:1.3333;--lh-xs:1.4286;--lh-sm:1.4706;--lh-md:1.381;--lh-lg:1.1667;--lh-xl:1.125;--lh-2xl:1.1;--ls-2xs:-.01em;--ls-xs:-.016em;--ls-sm:-.022em;--ls-md:.011em;--ls-lg:.009em;--ls-xl:.004em;--ls-2xl:0em;--fw-regular:400;--fw-semibold:600;--sp-4xs:.0625rem;--sp-3xs:.125rem;--sp-2xs:.25rem;--sp-xs:.375rem;--sp-sm:.5rem;--sp-md:.75rem;--sp-lg:1rem;--sp-xl:1.25rem;--sp-2xl:1.5rem;--sp-3xl:2rem;--card-pad-y:var(--sp-2xl);--card-pad-x:var(--sp-2xl);--grid-gap:var(--sp-xl);--r-xs:4px;--r-sm:6px;--r-md:12px;--r-pill:999px;--seg-gap:3px;
+  --on-fill:#fff;--on-fill-2:rgba(255,255,255,.85);--tip-bg:#2B2F24;--tip-ink:#EDEFE4;--tip-ink-strong:#ffffff;--tip-ink-2:#C7CDB8;--tip-pill:rgba(255,255,255,.14);--tip-rule:rgba(255,255,255,.12);--tip-link:#DCC17E;
+  --shadow-tip:0 12px 32px rgba(0,0,0,.28);--tint:12%;--tint-half:50%;--hatch-1:26%;--hatch-2:10%;
+  --dur-fast:.15s;--dur-fade:.4s;--dur-grow:1.1s;--ease-out:cubic-bezier(.25,1,.5,1);
+  --r-in:14px;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Sukhumvit Set","Helvetica Neue","Noto Sans Thai",sans-serif;
+  font-family:var(--font);color:var(--ink);font-size:var(--fs-sm);line-height:var(--lh-sm);letter-spacing:var(--ls-sm);-webkit-font-smoothing:antialiased;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ebs{--bg:#1F231D;--card:#2B2F24;--card-2:#20241C;--line:#454B38;--track:#3A3F31;--ink:#FFFFFF;--ink-2:#E4E7DA;--ink-3:#B9C0A8;--in:#7FCBA8;--in-bar:#5CAE86;--out:#E6A088;--out-bar:#D6866A;--out-bar-2:#8E5A47;--save:#8FC1C4;--save-bar:#5E9A9E;--tip-bg:#EDEFE4;--tip-ink:#2B2F24;--tip-ink-strong:#1B2013;--tip-ink-2:#6B7460;--tip-pill:rgba(0,0,0,.08);--tip-rule:rgba(0,0,0,.1);--tip-link:#3B6E73}}
+:root[data-theme="dark"] .ebs{--bg:#1F231D;--card:#2B2F24;--card-2:#20241C;--line:#454B38;--track:#3A3F31;--ink:#FFFFFF;--ink-2:#E4E7DA;--ink-3:#B9C0A8;--in:#7FCBA8;--in-bar:#5CAE86;--out:#E6A088;--out-bar:#D6866A;--out-bar-2:#8E5A47;--save:#8FC1C4;--save-bar:#5E9A9E;--tip-bg:#EDEFE4;--tip-ink:#2B2F24;--tip-ink-strong:#1B2013;--tip-ink-2:#6B7460;--tip-pill:rgba(0,0,0,.08);--tip-rule:rgba(0,0,0,.1);--tip-link:#3B6E73}
+.ebs *{box-sizing:border-box}
+.ebs{display:grid;gap:var(--grid-gap);grid-template-columns:minmax(0,1fr);grid-template-areas:"hd" "p1" "p2" "p3" "p4"}
+@media (min-width:760px){.ebs{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"hd hd" "p1 p2" "p3 p4"}}
+.ebs .pane{min-width:0;display:flex;flex-direction:column;gap:var(--grid-gap);align-self:start}
+
+.ebs .hd{grid-area:hd;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-lg) var(--sp-3xl);flex-wrap:wrap;padding:var(--sp-sm) var(--sp-2xs) var(--sp-2xs)}
+.ebs .brand{display:block}
+.ebs .logo{display:none}
+.ebs h1{font-size:var(--fs-2xl);font-weight:var(--fw-semibold);letter-spacing:var(--ls-2xl);line-height:var(--lh-2xl);margin:0}
+.ebs .lede{font-size:var(--fs-md);line-height:var(--lh-md);color:var(--ink-2);margin:var(--sp-sm) 0 0;font-weight:var(--fw-regular);letter-spacing:var(--ls-md)}
+.ebs .meta{display:flex;flex-direction:column;align-items:flex-end;gap:var(--sp-sm)}
+.ebs .chips{display:flex;gap:var(--sp-sm);flex-wrap:wrap;justify-content:flex-end}
+.ebs .chip{display:inline-flex;align-items:center;gap:var(--sp-xs);height:1.875rem;padding:0 var(--sp-md);border-radius:var(--r-pill);font-size:var(--fs-xs);color:var(--ink);background:var(--card);text-decoration:none;white-space:nowrap}
+.ebs a.chip{color:var(--save)}
+.ebs .dot{width:.5rem;height:.5rem;border-radius:var(--r-pill);display:inline-block}
+
+.ebs .card{background:var(--card);border-radius:var(--r-card);display:flex;flex-direction:column}
+.ebs .card.grow{flex:none}
+.ebs .card-h{padding:var(--card-pad-y) var(--card-pad-x) 0}
+.ebs .card-h .ico{display:none}
+.ebs .eyebrow{font-size:var(--fs-xs);font-weight:var(--fw-semibold);letter-spacing:0;margin:0 0 var(--sp-2xs);color:var(--ink-2)}
+.ebs .eyebrow.in{color:var(--in)}.ebs .eyebrow.out{color:var(--out)}.ebs .eyebrow.save{color:var(--save)}
+.ebs h3{font-size:var(--fs-lg);font-weight:var(--fw-semibold);letter-spacing:var(--ls-lg);line-height:var(--lh-lg);margin:0}
+.ebs .card-b{padding:var(--sp-lg) var(--card-pad-x) var(--sp-xl);display:flex;flex-direction:column;gap:var(--sp-lg);flex:1}
+.ebs .card-f{margin:0 var(--card-pad-x);padding:var(--sp-md) 0 var(--sp-xl);border-top:1px solid var(--line);font-size:var(--fs-2xs);line-height:1.5;color:var(--ink-3)}
+.ebs .card-f b{font-weight:var(--fw-semibold);color:var(--ink-2)}
+.ebs .card-f a{color:var(--save);text-decoration:none}
+.ebs .card-f .src{margin-left:0;font-size:inherit;vertical-align:baseline;gap:.3em;color:var(--ink-3)}
+.ebs .card-f .src i{font-size:.95em}
+.ebs .src .tip-b{max-width:24rem;width:24rem;padding:var(--sp-md) var(--sp-md)}
+.ebs .src-b ul{margin:0;padding:0;list-style:none}
+.ebs .src-b li{padding:var(--sp-2xs) 0;border-top:1px solid var(--tip-rule)}
+.ebs .src-b li:first-child{border-top:0;padding-top:0}
+.ebs .src-b li.src-l{padding-top:var(--sp-xs)}
+.ebs .tip-b a{color:var(--tip-link);text-decoration:none}
+.ebs .tip-b::after{content:"";position:absolute;left:0;right:0;top:100%;height:.6rem}
+.ebs .tip:hover .tip-b,.ebs .tip:focus-within .tip-b{opacity:1;visibility:visible;pointer-events:auto;transform:translate(calc(-50% + var(--dx,0px)),0)}
+
+
+.ebs .say{font-size:var(--fs-sm);color:var(--ink-2);margin:0;line-height:1.5}
+.ebs .say strong{font-weight:var(--fw-semibold);color:var(--ink)}
+.ebs .num{font-variant-numeric:tabular-nums}
+.ebs .kpi{font-size:var(--fs-xl);font-weight:var(--fw-semibold);letter-spacing:var(--ls-xl);line-height:var(--lh-xl);margin:0}
+.ebs .lbl{font-size:var(--fs-xs);color:var(--ink-2);margin:0}
+.ebs .t-in{color:var(--in)!important}.ebs .t-out{color:var(--out)!important}.ebs .t-save{color:var(--save)!important}
+
+.ebs .meter{display:flex;flex-direction:column;gap:var(--sp-sm)}
+.ebs .meter-r{display:flex;justify-content:space-between;align-items:baseline;gap:var(--sp-md);font-size:var(--fs-sm)}
+.ebs .meter-r span:first-child{color:var(--ink)}
+.ebs .meter-r span:last-child{font-weight:var(--fw-semibold);white-space:nowrap}
+.ebs .track{height:.375rem;background:var(--track);border-radius:var(--r-pill);overflow:hidden}
+.ebs .fill{height:100%;border-radius:var(--r-pill);min-width:.375rem;transform-origin:left;animation:ebs-grow var(--dur-grow) var(--ease-out) both}
+.ebs .fill.in{background:var(--in-bar)}.ebs .fill.out{background:var(--out-bar)}.ebs .fill.out2{background:var(--out-bar-2)}.ebs .fill.save{background:var(--save-bar)}
+.ebs .total{display:flex;justify-content:space-between;align-items:baseline;padding-top:var(--sp-lg);border-top:1px solid var(--line);font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+
+.ebs .vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:var(--sp-lg)}
+.ebs .vs .arrow{color:var(--ink-3);font-size:var(--fs-lg);padding-bottom:var(--sp-xs)}
+
+.ebs .yrs{display:grid;gap:var(--sp-xs)}
+.ebs .yrs i{display:block;height:.625rem;border-radius:var(--r-pill);background:var(--track);animation:ebs-fade var(--dur-fade) ease both}
+.ebs .scale{display:flex;justify-content:space-between;font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-sm)}
+
+.ebs .pair{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-lg)}
+.ebs .tile{padding:0}
+.ebs .tile .kpi{font-size:var(--fs-xl);margin-top:var(--sp-2xs)}
+
+.ebs .list{display:flex;flex-direction:column;gap:var(--sp-lg);margin:0;padding:0;list-style:none}
+.ebs .list li{display:grid;grid-template-columns:1.5rem 1fr;gap:var(--sp-md);align-items:start}
+.ebs .list .ico{width:1.5rem;height:1.5rem;display:grid;place-items:center;font-size:var(--fs-md);background:none}
+.ebs .list .ico.in{color:var(--in)}.ebs .list .ico.out{color:var(--out)}.ebs .list .ico.save{color:var(--save)}.ebs .list .ico.neu{color:var(--ink-2)}
+.ebs .list b{display:block;font-size:var(--fs-sm);font-weight:var(--fw-semibold);margin-bottom:var(--sp-3xs)}
+.ebs .list p{margin:0;font-size:var(--fs-sm);color:var(--ink-2)}
+.ebs .mini{height:.3125rem;margin-top:var(--sp-sm)}
+
+.ebs .vc-leg{display:flex;flex-wrap:wrap;gap:var(--sp-xs) var(--sp-lg);font-size:var(--fs-xs);color:var(--ink-2)}
+.ebs .vc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-lg);height:10rem;border-bottom:1px solid var(--line)}
+.ebs .vc-c{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:var(--sp-2xs);height:100%;min-width:0}
+.ebs .vc-v{font-size:var(--fs-xs);font-weight:var(--fw-semibold);line-height:1;color:var(--ink-2);white-space:nowrap}
+.ebs .vc-b{width:min(3.5rem,70%);display:flex;flex-direction:column;gap:2px;transform-origin:bottom;animation:ebs-rise var(--dur-grow) var(--ease-out) both}
+.ebs .vc-b i{display:block;min-height:2px;border-radius:var(--r-xs)}
+.ebs .vc-b i.out{background:var(--out-bar)}.ebs .vc-b i.out2{background:var(--out-bar-2)}
+.ebs .vc-x{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-lg);margin-top:var(--sp-xs);font-size:var(--fs-2xs);color:var(--ink-3);text-align:center}
+.ebs .vc-x .on{color:var(--ink);font-weight:var(--fw-semibold)}
+@keyframes ebs-rise{from{transform:scaleY(0)}}
+@keyframes ebs-grow{from{transform:scaleX(0)}}
+@keyframes ebs-fade{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){.ebs *{animation:none!important}}
+.ebs .tip{position:relative;display:inline-flex;align-items:center;margin-left:.3em;color:var(--ink-3);cursor:help;font-size:.9em;vertical-align:-.08em;outline:none;border-radius:var(--r-pill)}
+.ebs .tip:hover,.ebs .tip:focus-visible{color:var(--save)}
+.ebs .tip-b{position:absolute;bottom:calc(100% + .5rem);left:50%;transform:translate(calc(-50% + var(--dx,0px)),4px);width:max-content;max-width:17rem;padding:var(--sp-sm) var(--sp-md);border-radius:var(--r-md);background:var(--tip-bg);color:var(--tip-ink);font-size:var(--fs-2xs);line-height:1.45;font-weight:var(--fw-regular);letter-spacing:0;text-align:left;white-space:normal;overflow-wrap:anywhere;opacity:0;visibility:hidden;pointer-events:none;transition:opacity var(--dur-fast) ease,transform var(--dur-fast) ease,visibility var(--dur-fast);z-index:30;box-shadow:var(--shadow-tip)}
+.ebs .tip:hover .tip-b,.ebs .tip:focus .tip-b{opacity:1;visibility:visible;transform:translate(calc(-50% + var(--dx,0px)),0)}
+.ebs .tip-b b{display:block;font-weight:var(--fw-semibold);font-size:var(--fs-xs);color:var(--tip-ink-strong)}
+.ebs .tip-b em{display:inline-block;margin-top:var(--sp-2xs);padding:var(--sp-4xs) var(--sp-xs);border-radius:var(--r-pill);background:var(--tip-pill);font-style:normal;font-weight:var(--fw-semibold);font-size:var(--fs-2xs);color:var(--tip-ink)}
+.ebs .tip-b small{display:block;margin-top:var(--sp-xs);color:var(--tip-ink-2);font-size:var(--fs-2xs)}
+.ebs .bsx{display:grid;grid-template-columns:1fr 1fr;gap:var(--seg-gap);min-height:10.5rem}
+.ebs .bsx-c{display:flex;flex-direction:column;justify-content:center;gap:var(--sp-3xs);padding:var(--sp-sm) var(--sp-md);min-height:2.5rem}
+.ebs .bsx-c .bl{font-size:var(--fs-xs);color:var(--ink-2)}
+.ebs .bsx-c .bv{font-size:var(--fs-md);font-weight:var(--fw-semibold);letter-spacing:-.02em;line-height:1.15}
+.ebs .bsx-c .bp{font-size:var(--fs-2xs);font-weight:var(--fw-semibold)}
+.ebs .bsx-a{background:color-mix(in srgb,var(--save-bar) var(--tint),var(--card));border-radius:var(--r-in) 0 0 var(--r-in);color:var(--save)}
+.ebs .bsx-r{display:flex;flex-direction:column;gap:var(--seg-gap)}
+.ebs .bsx-li{background:color-mix(in srgb,var(--out-bar) var(--tint),var(--card));border-radius:0 var(--r-in) 0 0;color:var(--out)}
+.ebs .bsx-eq{background:color-mix(in srgb,var(--in-bar) var(--tint),var(--card));border-radius:0 0 var(--r-in) 0;color:var(--in)}
+.ebs .bsx-c.thin{display:grid;grid-template-columns:1fr auto;align-content:center;align-items:baseline;column-gap:var(--sp-sm);row-gap:var(--sp-4xs);padding:var(--sp-xs) var(--sp-md);min-height:3rem}
+.ebs .bsx-c.thin .bl{grid-column:1/-1;white-space:nowrap}
+.ebs .bsx-c.thin .bv{font-size:var(--fs-sm)}
+.ebs .bsx-c .bl,.ebs .bsx-c .bl .tip{color:var(--ink-2)}
+.ebs .bsxg{position:relative;display:grid;grid-template-columns:1.6rem 1fr 1.6rem;column-gap:0;row-gap:var(--sp-sm)}
+.ebs .bsxg .bsx{min-height:14rem}
+.ebs .bsxg-main{grid-column:2;margin-bottom:var(--sp-3xl)}
+.ebs .bsxg-side{grid-column:3;position:relative}
+.ebs .bsxg-bot{grid-column:1;display:grid;grid-template-columns:1fr 1fr;gap:var(--seg-gap)}
+.ebs .bsxg-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.ebs .g-chip{display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--sp-3xs);font-size:var(--fs-2xs);color:var(--ink-2);line-height:1.25}
+.ebs .g-chip b{font-size:var(--fs-sm);font-weight:var(--fw-semibold);letter-spacing:-.01em;white-space:nowrap}
+.ebs .g-chip small{font-size:var(--fs-2xs);color:var(--ink-3)}
+.ebs .bsxg-side .g-chip{position:absolute;left:0;right:0;align-items:flex-start;text-align:left}
+.ebs .g-chip.k-a b{color:var(--save)}.ebs .g-chip.k-i b{color:var(--ink)}.ebs .g-chip.k-e b{color:var(--in)}
+.ebs .bsx-debt{position:absolute;left:0;right:0;bottom:0;border:0;background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--ink-3) var(--hatch-1),transparent) 0 4px,color-mix(in srgb,var(--ink-3) var(--hatch-2),transparent) 4px 8px);display:flex;align-items:center;justify-content:flex-end;padding:0 var(--sp-sm);pointer-events:none}
+.ebs .bsx-debt span{font-size:var(--fs-2xs);font-weight:var(--fw-semibold);color:var(--ink);background:var(--card);padding:0 var(--sp-2xs);border-radius:var(--r-xs)}
+.ebs .g-chip .g-sum{font-size:var(--fs-2xs);font-weight:var(--fw-semibold);color:var(--ink)}
+.ebs .bsxg-leg{grid-column:1/-1;display:flex;flex-direction:column;gap:var(--sp-2xs)}
+.ebs .g-leg{display:grid;grid-template-columns:1.25rem 5.25rem 1.1rem 1fr auto;align-items:baseline;column-gap:var(--sp-xs);font-size:var(--fs-2xs);color:var(--ink-2)}
+.ebs .g-leg .sw{width:1rem;height:3px;border-radius:2px;align-self:center}
+.ebs .g-leg b{font-weight:var(--fw-semibold);white-space:nowrap}
+.ebs .g-leg small{font-size:var(--fs-2xs);color:var(--ink-3);white-space:nowrap}
+.ebs .g-leg.k-a b{color:var(--save)}.ebs .g-leg.k-a .sw{background:var(--save-bar)}
+.ebs .g-leg.k-i b{color:var(--ink)}.ebs .g-leg.k-i .sw{background:var(--ink-3)}
+.ebs .g-leg.k-e b{color:var(--in)}.ebs .g-leg.k-e .sw{background:var(--in-bar)}
+.ebs .split{display:flex;flex-direction:column;gap:var(--sp-sm);margin:var(--sp-sm) 0 var(--sp-md)}
+.ebs .split-bar{display:flex;gap:var(--seg-gap);height:.875rem}
+.ebs .split-bar .fill{height:100%;border-radius:var(--r-xs);animation:none}
+.ebs .split-bar .fill:first-child{border-radius:var(--r-pill) var(--r-xs) var(--r-xs) var(--r-pill)}.ebs .split-bar .fill:last-child{border-radius:var(--r-xs) var(--r-pill) var(--r-pill) var(--r-xs)}
+.ebs .split-br{display:flex;gap:var(--seg-gap)}
+.ebs .br{position:relative;height:1.15rem;border:3px solid;border-top:0;border-radius:0 0 var(--r-sm) var(--r-sm);margin:0 2px var(--sp-lg)}
+.ebs .br.out{border-color:var(--out-bar)}.ebs .br.in{border-color:var(--in-bar)}
+.ebs .br .pill{position:absolute;left:50%;top:100%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:var(--sp-3xs);padding:var(--sp-3xs) var(--sp-sm);border-radius:var(--r-pill);color:var(--on-fill);font-size:var(--fs-xs);line-height:1.35;font-weight:var(--fw-semibold);white-space:nowrap;letter-spacing:.01em}
+.ebs .br.out .pill{background:var(--out-bar)}.ebs .br.in .pill{background:var(--in-bar)}
+.ebs .br .pill .tip{color:var(--on-fill-2)}
+.ebs .split-bar+.split-bar{margin-top:calc(var(--sp-3xs) * -1)}
+.ebs .split-bar .fill.in2{background:color-mix(in srgb,var(--in-bar) var(--tint-half),var(--card))}
+.ebs .split-bar .fill.mute,.ebs .split-bar .fill.track{background:var(--track)}
+.ebs .split-bar .fill.out2{background:var(--out-bar-2)}
+.ebs .br-sp{height:1px}
+.ebs .br.in2{border-color:color-mix(in srgb,var(--in-bar) var(--tint-half),var(--card))}.ebs .br.in2 .pill{background:var(--in)}
+.ebs .br.mute{border-color:var(--ink-3)}.ebs .br.mute .pill{background:var(--ink-3)}
+.ebs .br.r .pill{left:auto;right:-2px;transform:translateY(-50%)}
+.ebs .split-items{display:flex;flex-direction:column;gap:var(--sp-2xs);margin-bottom:var(--sp-2xs)}
+.ebs .split-items .meter-r{font-size:var(--fs-xs)}
+.ebs .sw{display:inline-block;width:.6rem;height:.6rem;border-radius:3px;margin-right:var(--sp-xs);vertical-align:-.05em}
+.ebs .sw.out{background:var(--out-bar)}.ebs .sw.out2{background:var(--out-bar-2)}.ebs .sw.in{background:var(--in-bar)}.ebs .sw.in2{background:color-mix(in srgb,var(--in-bar) var(--tint-half),var(--card))}
+.ebs .br.top{border-top-width:3px;border-top-style:solid;border-bottom:0;border-radius:var(--r-sm) var(--r-sm) 0 0;margin:var(--sp-lg) 2px 0}
+.ebs .br.top .pill{top:0}
+.ebs .bsx-note{display:flex;justify-content:space-between;font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-xs)}
+
+/* tooltips inside pills / legends / chips must not inherit their nowrap, weight or tone */
+.ebs .tip .tip-b,.ebs .tip .tip-b b,.ebs .tip .tip-b em,.ebs .tip .tip-b small{white-space:normal;letter-spacing:0}
+.ebs .tip .tip-b{font-weight:var(--fw-regular);text-align:left;font-size:var(--fs-2xs);max-width:19rem;padding:var(--sp-md) var(--sp-md)}
+.ebs .tip .tip-b b{font-weight:var(--fw-semibold);font-size:var(--fs-xs);color:var(--tip-ink-strong)}
+.ebs .tip .tip-b small{font-size:var(--fs-2xs);line-height:1.5;color:var(--tip-ink-2)}
+.ebs .bsxg-svg{z-index:0}
+.ebs .tip:hover,.ebs .tip:focus,.ebs .tip:focus-within{z-index:50}
+.ebs .tip .tip-b{z-index:60;background:var(--tip-bg);box-shadow:var(--shadow-tip)}
+
+/* ratio table: label | value | context, columns aligned across rows */
+.ebs .ratio{display:grid;grid-template-columns:minmax(0,1fr) auto auto;column-gap:0;align-items:stretch}
+.ebs .ratio .rr{display:contents}
+.ebs .ratio .rr>*{display:flex;align-items:center;padding:var(--sp-xs) 0;border-top:1px solid var(--line)}
+.ebs .ratio .rr:first-child>*{border-top:0;padding-top:0}
+.ebs .ratio .rl{color:var(--ink);min-width:0}
+.ebs .ratio .rv{justify-content:flex-end;font-weight:var(--fw-semibold);text-align:right;white-space:nowrap}
+.ebs .ratio .rc{justify-content:flex-end;font-size:var(--fs-xs);color:var(--ink-3);text-align:right;white-space:nowrap}
+.ebs .ratio .rr>.rv,.ebs .ratio .rr>.rc{padding-left:var(--sp-md)}
+
+/* waterfall: a later split-bar row starts where its parent segment starts */
+.ebs .split-bar .fill.gap{background:transparent}
+.ebs .split-bar .fill.gap+.fill{border-radius:var(--r-pill) var(--r-xs) var(--r-xs) var(--r-pill)}
+.ebs .split-br+.split-bar{margin-top:var(--sp-xs)}
+
+/* section break inside a merged card: hairline + breathing room, then a small label */
+.ebs .sec{margin:var(--sp-sm) 0 0;padding-top:var(--sp-lg);border-top:1px solid var(--line)}
+.ebs p.sec{font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--ink-2)}
+
+/* income-statement sankey: ribbons scaled to $100 of revenue, labels are HTML so they carry .tip */
+.ebs .sk{position:relative;height:15rem;margin:var(--sp-xs) 0 var(--sp-xs)}
+.ebs .sk>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ebs .sk-k{fill-opacity:.26;transition:fill-opacity var(--dur-fast) ease;cursor:pointer}
+.ebs .sk-r{transition:opacity var(--dur-fast) ease;cursor:pointer}
+.ebs .sk.hl .sk-k{fill-opacity:.07}.ebs .sk.hl .sk-k.on{fill-opacity:.5}
+.ebs .sk.hl .sk-r:not(.on){opacity:.35}
+.ebs .sk-l{position:absolute;transform:translateY(-50%);display:flex;flex-direction:column;gap:0;font-size:var(--fs-2xs);line-height:var(--lh-2xs);color:var(--ink);white-space:nowrap;transition:opacity var(--dur-fast) ease}
+.ebs .sk-l b{font-size:var(--fs-xs);font-weight:var(--fw-semibold);line-height:var(--lh-2xs)}
+.ebs .sk.hl .sk-l:not(.on){opacity:.4}
+.ebs .sk-l .tip{margin-left:.2em}
+.ebs .sk-l.wrap{white-space:normal}.ebs .sk-l.wrap b{white-space:nowrap}
+
+/* wide sections (2026-10-20): still one screen, but a card with a figure spans two of the four columns
+   and splits into two columns inside, so the Sankey ribbons get horizontal room */
+@media (min-width:1200px){
+  .ebs.fit{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-areas:"hd hd hd hd" "pl pl cf cf" "yoy bs bs sum";grid-template-rows:auto auto 1fr;align-items:stretch}
+  .ebs.fit .pane{display:contents}
+  /* cards in one row share its height: the body grows and the footer sits on the bottom edge */
+  .ebs.fit .card{align-self:stretch}
+}
+.ebs .cols{display:grid;gap:var(--sp-lg) var(--sp-3xl)}
+.ebs .col{min-width:0;display:flex;flex-direction:column;gap:var(--sp-lg)}
+@media (min-width:1200px){
+  .ebs.fit .wide .cols{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);align-items:stretch;flex:1}
+  /* the Sankey takes whatever height the row leaves, so a wide card has no empty band */
+  .ebs.fit .wide .col .sk{flex:1 1 auto;height:auto;min-height:15rem}
+  .ebs.fit .wide .cols.even{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ebs.fit .wide .cols>.col>p.sec:first-child{margin-top:0;padding-top:0;border-top:0}
+  .ebs.fit .wide .cols>.col+.col{border-left:1px solid var(--line);padding-left:calc(var(--sp-3xl) * .5);margin-left:calc(var(--sp-3xl) * -.5)}
+  .ebs.fit .wide .cols>.col.say-col{align-self:center}
+}
+.ebs .vsw{display:inline-flex;gap:2px;padding:2px;margin:0 0 var(--sp-md);background:var(--track);border-radius:var(--r-pill)}
+.ebs .vsw button{all:unset;cursor:pointer;font-size:var(--fs-xs);line-height:var(--lh-xs,1.4);padding:var(--sp-2xs) var(--sp-md);border-radius:var(--r-pill);color:var(--ink-2);transition:background var(--dur-fast) var(--ease-out)}
+.ebs .vsw button[aria-pressed="true"]{background:var(--card);color:var(--ink);font-weight:var(--fw-semibold)}
+.ebs .vsw button:focus-visible{outline:2px solid var(--save-bar);outline-offset:1px}
+.ebs [data-view][hidden]{display:none!important}
+.ebs .hy-k{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-sm);margin:0 0 var(--sp-md)}
+.ebs .hy-k>div{background:var(--card-2);border-radius:var(--r-md);padding:var(--sp-sm) var(--sp-md)}
+.ebs .hy-k span{display:block;font-size:var(--fs-xs);color:var(--ink-2)}
+.ebs .hy-k b{display:block;font-size:var(--fs-lg);font-weight:var(--fw-semibold)}
+.ebs .hy-leg{display:flex;flex-wrap:wrap;gap:var(--sp-xs) var(--sp-lg);font-size:var(--fs-xs);color:var(--ink-2);margin:0 0 var(--sp-xs)}
+.ebs .hy-leg>span{display:inline-flex;align-items:center;gap:var(--sp-2xs)}
+.ebs .hy-leg i{display:inline-block;width:.6rem;height:.6rem;border-radius:2px}
+.ebs .hy-leg i.l,.ebs .hy-svg .l{background:var(--out-bar);fill:var(--out-bar)}
+.ebs .hy-leg i.r,.ebs .hy-svg .r{background:var(--in-bar);fill:var(--in-bar)}
+.ebs .hy-leg i.p,.ebs .hy-svg .p{background:var(--save-bar);fill:var(--save-bar)}
+.ebs .hy-svg{display:block;width:100%;height:12rem;overflow:visible}
+.ebs .hy-svg text{font-size:var(--fs-2xs);fill:var(--ink-3);font-variant-numeric:tabular-nums}
+.ebs .hy-svg text.hy-t{fill:var(--ink);font-weight:var(--fw-semibold)}
+.ebs .hy-svg line{stroke:var(--line)}
+.ebs .hy-svg g.yr{cursor:pointer;transition:opacity var(--dur-fast) var(--ease-out)}
+.ebs .hy-svg g.yr.dim{opacity:.4}
+.ebs .hy-read{font-size:var(--fs-xs);color:var(--ink-2);min-height:1.5em;margin:var(--sp-xs) 0 var(--sp-sm)}
+.ebs .hy-read b{color:var(--ink);font-weight:var(--fw-semibold)}
+.ebs .hy-f{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:var(--sp-2xs);padding:var(--sp-3xs) var(--sp-sm);border:1px solid var(--line);border-radius:var(--r-pill);font-size:var(--fs-xs);color:var(--ink);transition:border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out)}
+.ebs .hy-f:hover{border-color:var(--ink-3)}
+.ebs .hy-f:focus-visible{outline:2px solid var(--save-bar);outline-offset:1px}
+.ebs .hy-f[aria-pressed="false"]{color:var(--ink-3);border-style:dashed}
+.ebs .hy-f[aria-pressed="false"] i{background:transparent!important;box-shadow:inset 0 0 0 1.5px var(--ink-3);opacity:1}
+.ebs .hy-hint{font-size:var(--fs-2xs);color:var(--ink-3);align-self:center}
+.ebs .hy-svg line.z{stroke:var(--ink-3)}
+.ebs .hy-svg .ng{opacity:.55}
+</style>
+<h2 class="sr-only">สรุปงบ AMZN ไตรมาส 2/2026: รายได้ $200.61B โต 19.6% กำไรขั้นต้น $52 ต่อรายได้ $100 กำไรจากการดำเนินงาน $14 ต่อ $100 กำไรสุทธิ $31 ต่อ $100 ซึ่งรวมกำไรตีราคา Anthropic $25 กระแสเงินสดอิสระติดลบ $3.83 ต่อ $100 เงินสดและเงินลงทุน $123.0B หนี้เงินกู้ $146.0B</h2>
+
+<div class="ebs" id="ebs">
+
+<div class="hd">
+  <div class="brand">
+    <div class="logo"><i class="ti ti-shopping-cart" aria-hidden="true"></i></div>
+    <div>
+      <h1>AMZN งบไตรมาส 2/2026</h1>
+      <p class="lede">Amazon ขายสินค้าออนไลน์และหน้าร้าน รับค่าบริการจากร้านค้าที่มาขายบนแพลตฟอร์ม ขายโฆษณาและสมาชิก Prime และให้บริการคลาวด์ AWS สรุปไตรมาส 2 (1 เม.ย.–30 มิ.ย. 2026) ให้อ่านจบในหน้าเดียว: ขายได้เท่าไร เหลือกำไรแค่ไหน และเงินสดไปไหน</p>
+    </div>
+  </div>
+  <div class="meta">
+    <div class="chips">
+      <a class="chip" href="https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm"><i class="ti ti-file-text" aria-hidden="true"></i>10-Q · ไตรมาสสิ้นสุด 30 มิ.ย. 2026</a>
+      <a class="chip" href="https://www.sec.gov/Archives/edgar/data/1018724/000101872426000024/amzn-20260630xex991.htm"><i class="ti ti-file-text" aria-hidden="true"></i>EX-99.1 · Earnings release</a>
+      <span class="chip">M = ล้าน · B = พันล้าน (ดอลลาร์)</span>
+    </div>
+    <div class="chips">
+      <span class="chip"><span class="dot" style="background:var(--in-bar)"></span>เงินเข้า</span>
+      <span class="chip"><span class="dot" style="background:var(--out-bar)"></span>เงินออก</span>
+      <span class="chip"><span class="dot" style="background:var(--save-bar)"></span>เงินสด</span>
+    </div>
+  </div>
+</div>
+
+<div class="pane" style="grid-area:p1">
+  <section class="card wide" style="grid-area:pl">
+    <div class="card-h"><div><p class="eyebrow in">งบกำไรขาดทุน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Consolidated Statements of Operations</b><em>Income Statement · P&amp;L</em><small>ไตรมาส 2 ปี 2026 (3 เดือนถึง 30 มิ.ย. 2026) จาก 10-Q</small></span></span></p><h3>ทุก $100 ที่ขายได้ เหลือกำไรจากการดำเนินงาน $14 กำไรสุทธิ $31</h3></div></div>
+    <div class="card-b">
+      <div class="cols"><div class="col"><div class="sk" role="img" aria-label="รายได้ $100 แบ่งเป็นกำไรขั้นต้น $52.26 และต้นทุนขาย $47.74 กำไรขั้นต้นหักค่าจัดส่งและคลังสินค้า $14.77 เทคโนโลยีและโครงสร้างพื้นฐาน $16.53 ขายและการตลาด $5.83 บริหารและทั่วไป $1.39 อื่น ๆ $0.04 เหลือกำไรจากการดำเนินงาน $13.69 บวกกำไรตีราคาเงินลงทุน $25.17 และดอกเบี้ยและอื่น ๆ $1.45 หักภาษี $9.08 เหลือกำไรสุทธิ $31.23" style="height:19rem"><script type="application/json">{"nodes":[{"id":"rev","l":0,"v":100,"c":"in"},{"id":"gp","l":1,"v":52.26,"c":"in"},{"id":"cogs","l":1,"v":47.74,"c":"out"},{"id":"oi","l":2,"v":13.69,"c":"in"},{"id":"gain","l":2,"v":25.17,"c":"in"},{"id":"oth","l":2,"v":1.45,"c":"in"},{"id":"ful","l":2,"v":14.77,"c":"out"},{"id":"ti","l":2,"v":16.53,"c":"out2"},{"id":"sm","l":2,"v":5.83,"c":"out2"},{"id":"ga","l":2,"v":1.39,"c":"out2"},{"id":"ooe","l":2,"v":0.04,"c":"out2"},{"id":"ni","l":3,"v":31.23,"c":"in"},{"id":"tax","l":3,"v":9.08,"c":"out"}],"links":[["rev","gp",52.26],["rev","cogs",47.74],["gp","oi",13.69],["gp","ful",14.77],["gp","ti",16.53],["gp","sm",5.83],["gp","ga",1.39],["gp","ooe",0.04],["oi","ni",13.69],["gain","ni",17.54],["gain","tax",7.63],["oth","tax",1.45]]}</script><div class="sk-l" data-for="rev"><span>รายได้<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total net sales</b><em>Revenue · Sales</em><small>$200,606M ในไตรมาสนี้ · Net product sales $77,602M + Net service sales $123,004M</small></span></span></span><b class="num t-in">$100</b></div><div class="sk-l" data-for="gp"><span>กำไรขั้นต้น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total net sales − Cost of sales</b><em>Gross Profit</em><small>ไม่มีบรรทัดนี้ในงบ Amazon ไม่พิมพ์ Gross profit คำนวณ = $200,606M − $95,778M = $104,828M · ปีก่อน $51.81</small></span></span></span><b class="num t-in">$52.26</b></div><div class="sk-l" data-for="cogs"><span>ต้นทุนขาย<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Cost of sales</b><em>COGS</em><small>$95,778M รวมค่าส่งสินค้าและต้นทุนสินค้าที่ขาย · ปีก่อน $48.19</small></span></span></span><b class="num t-out">−$47.74</b></div><div class="sk-l" data-for="oi"><span>กำไรจากการดำเนินงาน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Operating income</b><em>Operating Income</em><small>$27,461M · ปีก่อน $11.43 ($19,171M)</small></span></span></span><b class="num t-in">$13.69</b></div><div class="sk-l" data-for="gain"><span>กำไรตีราคาเงินลงทุน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Upward adjustments relating to equity investments in private companies</b><em>Investment Gains · Non-operating</em><small>$50,486M อยู่ใน Other income (expense), net ส่วนใหญ่จากหุ้นบุริมสิทธิ Anthropic ตามราคาระดมทุนรอบใหม่ (Level 3) ยังไม่ได้เป็นเงินสด ไม่ใช่กำไรจากการขายสินค้า</small></span></span></span><b class="num t-in">+$25.17</b></div><div class="sk-l" data-for="oth"><span>ดอกเบี้ยและอื่น ๆ สุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Interest income − Interest expense + Other income (expense), net ส่วนที่เหลือ</b><em>Other Non-operating, net</em><small>ไม่มีบรรทัดนี้ในงบ คำนวณ = $1,295M − $1,314M + ($53,415M − $50,486M) = $2,910M · รวมกำไร warrant $1,449M และหุ้นในตลาด $1,319M</small></span></span></span><b class="num t-in">+$1.45</b></div><div class="sk-l" data-for="ful"><span>ค่าจัดส่งและคลังสินค้า<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Fulfillment</b><em>Fulfillment · OpEx</em><small>$29,633M +14.1% YoY · ปีก่อน $15.49</small></span></span></span><b class="num t-out">−$14.77</b></div><div class="sk-l" data-for="ti"><span>เทคโนโลยีและโครงสร้างพื้นฐาน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Technology and infrastructure</b><em>R&amp;D · Tech &amp; Infra</em><small>$33,158M +22.1% YoY รวม R&amp;D และค่าเสื่อมดาต้าเซ็นเตอร์ AWS · ปีก่อน $16.20</small></span></span></span><b class="num t-out2">−$16.53</b></div><div class="sk-l" data-for="sm"><span>ขายและการตลาด<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Sales and marketing</b><em>S&amp;M</em><small>$11,698M +2.5% YoY · ปีก่อน $6.81</small></span></span></span><b class="num t-out2">−$5.83</b></div><div class="sk-l" data-for="ga"><span>บริหารและทั่วไป<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>General and administrative</b><em>G&amp;A</em><small>$2,788M −6.0% YoY · ปีก่อน $1.77</small></span></span></span><b class="num t-out2">−$1.39</b></div><div class="sk-l" data-for="ooe"><span>อื่น ๆ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Other operating expense (income), net</b><em>Other OpEx</em><small>$90M · ปีก่อน $0.12</small></span></span></span><b class="num t-out2">−$0.04</b></div><div class="sk-l" data-for="ni"><span>กำไรสุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income</b><em>Net Income</em><small>$62,647M · ปีก่อน $10.83 ($18,164M)</small></span></span></span><b class="num t-in">$31.23</b></div><div class="sk-l" data-for="tax"><span>ภาษี<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Provision for income taxes + Equity-method investment activity, net of tax</b><em>Income Tax</em><small>ภาษี $18,199M (22.5% ของกำไรก่อนภาษี) + ขาดทุนเงินลงทุน equity-method $11M · ภาษีคิดจากกำไรก่อนภาษีรวม $40.31 การแบ่งสายในภาพทำให้ยอดรวมตรงกันเท่านั้น</small></span></span></span><b class="num t-out">−$9.08</b></div></div>
+      </div><div class="col say-col"><p class="say">อัตรากำไรจากการดำเนินงาน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Operating income ÷ Total net sales</b><em>Operating Margin</em><small>คำนวณเอง</small></span></span> ขึ้นจาก 11.4% เป็น <strong>13.7%</strong> เพราะรายได้โตเร็วกว่าค่าจัดส่งและค่าการตลาด และ AWS ซึ่งมีอัตรากำไรสูงโตเร็วที่สุด กำไรสุทธิสูงกว่ากำไรจากการดำเนินงานมาก เพราะมี<strong>กำไรจากการตีราคาหุ้น Anthropic $25.17</strong> ซึ่งยังไม่ใช่เงินสดและไม่ได้มาจากการขายสินค้า จึงควรดูกำไรจากการดำเนินงานและกระแสเงินสดเป็นหลัก</p></div></div>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>ตัวเลขจากงบ</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>Q2 2026: Total net sales $200,606M · ปีก่อน $167,702M</li><li>Cost of sales $95,778M ($47.74 ต่อ $100) · Gross profit ไม่มีบรรทัดในงบ คำนวณ $104,828M (52.3%) · ปีก่อน 51.8%</li><li>Fulfillment $29,633M · Technology and infrastructure $33,158M · Sales and marketing $11,698M · General and administrative $2,788M · Other operating expense (income), net $90M</li><li>Total operating expenses $173,145M (รวม Cost of sales) · ปัดเศษรายบรรทัดรวมได้ $13.70 เทียบกับ $13.69</li><li>Operating income $27,461M ($13.69) · ปีก่อน $19,171M ($11.43) +43.2%</li><li>Interest income $1,295M · Interest expense −$1,314M · Other income (expense), net $53,415M ซึ่งรวม Upward adjustments relating to equity investments in private companies $50,486M</li><li>Income before income taxes $80,857M · Provision for income taxes $18,199M · Equity-method investment activity −$11M</li><li>Net income $62,647M ($31.23) · Diluted EPS $5.75 · ปีก่อน $18,164M ($10.83) EPS $1.68</li><li>SBC $6,038M และ D&amp;A $19,988M รวมอยู่ในบรรทัดค่าใช้จ่ายข้างบนแล้ว ไม่นับซ้ำ · บริษัทไม่แยก R&amp;D เป็นบรรทัด อยู่ใน Technology and infrastructure</li><li class="src-l">ที่มา: <a href="https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm">10-Q</a> · <a href="https://www.sec.gov/Archives/edgar/data/1018724/000101872426000024/amzn-20260630xex991.htm">EX-99.1</a></li></ul></span></span></div>
+  </section>
+  <section class="card grow" style="grid-area:yoy">
+    <div class="card-h"><div><p class="eyebrow in">งบกำไรขาดทุน · เทียบปีก่อน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Year over Year</b><em>YoY</em><small>เทียบไตรมาส 2 ปี 2025 (3 เดือนถึง 30 มิ.ย. 2025) · แยกรายได้จาก Note 9 Segment Information</small></span></span></p><h3>รายได้โต 20% AWS โต 37% และทำกำไร 61% ของทั้งบริษัท</h3></div></div>
+    <div class="card-b">
+      <div class="cols"><div class="col"><div class="vs">
+        <div><p class="lbl">Q2 2025</p><p class="kpi num">$167.70B</p></div>
+        <i class="ti ti-arrow-right arrow" aria-hidden="true"></i>
+        <div><p class="lbl">Q2 2026</p><p class="kpi num t-in">$200.61B</p></div>
+      </div>
+      <div class="sk" role="img" aria-label="รายได้ไตรมาส 2 ปี 2026 $200.61B มาจาก AWS $42.23B โต 36.8% อเมริกาเหนือ $116.18B โต 16.1% และต่างประเทศ $42.20B โต 14.8%"><script type="application/json">{"nodes":[{"id":"aws","l":0,"v":42232,"c":"in"},{"id":"na","l":0,"v":116177,"c":"in"},{"id":"intl","l":0,"v":42197,"c":"in"},{"id":"rev","l":1,"v":200606,"c":"in"}],"links":[["aws","rev",42232],["na","rev",116177],["intl","rev",42197]]}</script><div class="sk-l" data-for="aws"><span>AWS (คลาวด์)<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>AWS</b><em>Segment</em><small>บริการคลาวด์ compute storage database และ AI · 21.1% ของรายได้ · กำไรจากการดำเนินงาน $16,621M (39.4% ของยอดขาย AWS) · ปีก่อน $30,873M</small></span></span></span><b class="num t-in">$42.23B <span style="color:var(--ink-3);font-weight:var(--fw-regular)">+36.8%</span></b></div><div class="sk-l" data-for="na"><span>อเมริกาเหนือ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>North America</b><em>Segment</em><small>ขายปลีกออนไลน์และหน้าร้าน ค่าบริการผู้ขาย โฆษณา และสมาชิก ในอเมริกาเหนือ · กำไรจากการดำเนินงาน $9,123M · ปีก่อน $100,068M</small></span></span></span><b class="num t-in">$116.18B <span style="color:var(--ink-3);font-weight:var(--fw-regular)">+16.1%</span></b></div><div class="sk-l" data-for="intl"><span>ต่างประเทศ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>International</b><em>Segment</em><small>ร้านออนไลน์นอกอเมริกาเหนือ · กำไรจากการดำเนินงาน $1,717M · ปีก่อน $36,761M</small></span></span></span><b class="num t-in">$42.20B <span style="color:var(--ink-3);font-weight:var(--fw-regular)">+14.8%</span></b></div><div class="sk-l" data-for="rev"><span>รายได้รวม<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total net sales</b><em>Revenue</em><small>ปีก่อน $167,702M · ไม่รวมผลค่าเงิน (+$0.1B) ยังโต 20%</small></span></span></span><b class="num t-in">$200.61B <span style="color:var(--ink-3);font-weight:var(--fw-regular)">+19.6%</span></b></div></div>
+      </div><div class="col say-col"><p class="say">AWS มีรายได้แค่ 21% ของทั้งหมด แต่ทำ<strong>กำไรจากการดำเนินงาน $16.6B จาก $27.5B</strong> (ปีก่อน 53%) โฆษณาโต 26% เป็น $19.8B การเติบโตเป็น<strong>ของธุรกิจเดิมเกือบทั้งหมด</strong> ค่าความนิยม<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Goodwill</b><em>Goodwill</em><small>$23,273M → $23,504M เพิ่มเพียง $231M</small></span></span> แทบไม่เปลี่ยน เงินซื้อกิจการและลงทุนส่วนใหญ่เป็นหุ้นใน OpenAI และ Anthropic ซึ่งไม่ได้นำรายได้มารวม</p></div></div>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>ตัวเลขจากงบ</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>Total net sales $167,702M → $200,606M (+19.6%) · ผลค่าเงิน +$0.1B ไม่รวมผลค่าเงินโต 20%</li><li>North America $100,068M → $116,177M (+16.1%) · International $36,761M → $42,197M (+14.8%) · AWS $30,873M → $42,232M (+36.8%)</li><li>Segment operating income: North America $9,123M · International $1,717M · AWS $16,621M (60.5% ของ $27,461M) · ปีก่อน AWS $10,160M (53.0%)</li><li>ตามกลุ่มสินค้า: Online stores $70,432M (+14.6%) · Third-party seller services $46,780M (+15.9%) · Advertising services $19,809M (+26.2%) · Subscription services $13,730M (+12.5%) · Physical stores $5,794M · Other $1,829M</li><li>Goodwill $23,273M (31 ธ.ค. 2025) → $23,504M · ไม่มีการซื้อกิจการที่เปิดเผยแยกรายได้</li><li>Remaining performance obligations (ส่วนใหญ่ AWS) ราว $496B อายุเฉลี่ย 6.4 ปี</li><li>Guidance Q3 2026: Net sales $197.0–202.0B (+9% ถึง +12%) · Operating income $22.5–26.5B</li><li class="src-l">ที่มา: <a href="https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm">10-Q</a> · <a href="https://www.sec.gov/Archives/edgar/data/1018724/000101872426000024/amzn-20260630xex991.htm">EX-99.1</a></li></ul></span></span></div>
+  </section>
+</div>
+
+<div class="pane" style="grid-area:p2">
+  <section class="card wide" style="grid-area:cf">
+    <div class="card-h"><div><p class="eyebrow save">งบกระแสเงินสด<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Consolidated Statements of Cash Flows</b><em>Cash Flow Statement · CF</em><small>10-Q พิมพ์ทั้งยอด 3 เดือน 6 เดือน และ 12 เดือน</small></span></span></p><h3>ลงทุน AI จนเงินสดอิสระติดลบราว $2.6B ต่อเดือน กู้เพิ่ม $82B ใน 6 เดือน</h3></div></div>
+    <div class="card-b">
+      <div class="cols even"><div class="col"><p class="lbl" style="font-weight:var(--fw-semibold)">ไตรมาส 2 · ต่อรายได้ $100</p>
+      <div class="sk" role="img" aria-label="ต่อรายได้ $100: กำไรสุทธิ $31.23 บวกค่าตอบแทนเป็นหุ้น $3.01 ค่าเสื่อมราคา $9.96 และภาษีรอตัดบัญชี $8.82 รวม $53.02 หักกำไรที่ไม่ใช่เงินสด $26.61 และเงินทุนหมุนเวียน $3.79 เป็นเงินสดจากการดำเนินงาน $22.63 รายจ่ายลงทุนสุทธิ $26.46 มากกว่าเงินสดที่หาได้ กระแสเงินสดอิสระจึงติดลบ $3.83" style="height:17rem"><script type="application/json">{"nodes":[{"id":"ni","l":0,"v":31.23,"c":"in"},{"id":"sbc","l":0,"v":3.01,"c":"in"},{"id":"da","l":0,"v":9.96,"c":"in"},{"id":"dtx","l":0,"v":8.82,"c":"in"},{"id":"pre","l":1,"v":53.02,"c":"in"},{"id":"ocf","l":2,"v":22.63,"c":"in"},{"id":"fcf","l":2,"v":3.83,"c":"out"},{"id":"ng","l":2,"v":26.61,"c":"out2"},{"id":"wc","l":2,"v":3.79,"c":"out2"},{"id":"capex","l":3,"v":26.46,"c":"out"}],"links":[["ni","pre",31.23],["sbc","pre",3.01],["da","pre",9.96],["dtx","pre",8.82],["pre","ocf",22.62],["pre","ng",26.61],["pre","wc",3.79],["ocf","capex",22.63],["fcf","capex",3.83]]}</script><div class="sk-l" data-for="ni"><span>กำไรสุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income</b><em>Net Income</em><small>$62,647M</small></span></span></span><b class="num t-in">$31.23</b></div><div class="sk-l" data-for="sbc"><span>ค่าตอบแทนเป็นหุ้น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Stock-based compensation</b><em>SBC</em><small>$6,038M หักเป็นค่าใช้จ่ายแต่ไม่ได้จ่ายเป็นเงินสด</small></span></span></span><b class="num t-in">+$3.01</b></div><div class="sk-l" data-for="da"><span>ค่าเสื่อมราคา<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Depreciation and amortization of property and equipment and capitalized content costs, operating lease assets, and other</b><em>D&amp;A</em><small>$19,988M ไม่ใช่เงินสด รวมอยู่ในค่าใช้จ่ายแต่ละบรรทัดแล้ว</small></span></span></span><b class="num t-in">+$9.96</b></div><div class="sk-l" data-for="dtx"><span>ภาษีรอตัดบัญชี<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Deferred income taxes</b><em>Deferred Tax</em><small>$17,691M ภาษีที่บันทึกแล้วแต่ยังไม่ได้จ่าย ส่วนใหญ่ผูกกับกำไรตีราคา Anthropic</small></span></span></span><b class="num t-in">+$8.82</b></div><div class="sk-l" data-for="pre"><span>ก่อนรายการอื่น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income + SBC + D&amp;A + Deferred income taxes</b><em>Subtotal</em><small>ไม่มีบรรทัดนี้ในงบ คำนวณเอง $106,364M</small></span></span></span><b class="num t-in">$53.02</b></div><div class="sk-l" data-for="ocf"><span>เงินสดจากการดำเนินงาน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net cash provided by (used in) operating activities</b><em>OCF</em><small>$45,387M · ปีก่อน $19.39 ต่อ $100 ($32,515M)</small></span></span></span><b class="num t-in">$22.63</b></div><div class="sk-l" data-for="fcf"><span>กระแสเงินสดอิสระ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Free cash flow</b><em>FCF</em><small>ติดลบ = เงินลงทุนมากกว่าเงินสดที่หาได้ ส่วนที่ขาดมาจากเงินกู้ · บริษัทรายงานเป็น non-GAAP = OCF − (Purchases of property and equipment − Proceeds from sales and incentives) = −$7,689M · ปีก่อน +$0.68</small></span></span></span><b class="num t-out">−$3.83</b></div><div class="sk-l" data-for="ng"><span>ตัดกำไรที่ไม่ใช่เงินสด<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Non-operating expense (income), net</b><em>Non-cash Gains</em><small>−$53,381M หักกำไรตีราคา Anthropic และเงินลงทุนอื่นออก เพราะไม่ได้รับเป็นเงินสด</small></span></span></span><b class="num t-out">−$26.61</b></div><div class="sk-l" data-for="wc"><span>เงินทุนหมุนเวียน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Changes in operating assets and liabilities</b><em>Working Capital</em><small>−$7,596M ส่วนใหญ่ลูกหนี้เพิ่ม −$8,204M สินทรัพย์อื่น −$4,717M หักด้วยเจ้าหนี้เพิ่ม +$9,442M</small></span></span></span><b class="num t-out">−$3.79</b></div><div class="sk-l" data-for="capex"><span>รายจ่ายลงทุนสุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Purchases of property and equipment − Proceeds from property and equipment sales and incentives</b><em>CapEx</em><small>$54,208M − $1,132M = $53,076M ส่วนใหญ่ดาต้าเซ็นเตอร์และชิป AI ของ AWS · ปีก่อน $18.70 ต่อ $100 ($31,368M)</small></span></span></span><b class="num t-out">−$26.46</b></div></div>
+      <p class="say">ธุรกิจยังสร้างเงินสด $22.63 แต่<strong>รายจ่ายลงทุน $26.46 มากกว่า</strong> ส่วนใหญ่เป็นดาต้าเซ็นเตอร์และชิป AI ของ AWS ปีก่อนลงทุน $18.70 กำไร Anthropic ไม่ได้เป็นเงินสดจึงถูกหักออก ถ้าใช้เงินในอัตรา 6 เดือนแรก ($4.15B ต่อเดือน) และไม่กู้เพิ่ม เงินสดและเงินลงทุนพอใช้ราว 2.5 ปี<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Cash &amp; Investments ÷ monthly FCF burn</b><em>Runway</em><small>คำนวณเอง $122,988M ÷ $4,149M = 29.6 เดือน · อัตราไตรมาส 2 ($2,563M/เดือน) ได้ราว 4 ปี · สมมติใช้เงินคงที่ ไม่กู้เพิ่ม ไม่ใช่การคาดการณ์ของบริษัท</small></span></span></p>
+      </div><div class="col"><p class="sec">6 เดือนแรกปี 2026 · เงินกู้ใหม่ไปไหน</p>
+      <div class="sk" role="img" aria-label="6 เดือนแรกปี 2026: กู้ยืมใหม่ $82.38B และใช้เงินสดที่มีอยู่ $9.18B นำไปอุดกระแสเงินสดอิสระที่ติดลบ $24.89B ลงทุนใน OpenAI Anthropic และอื่น ๆ $39.77B ชำระหนี้ $19.47B และซื้อหลักทรัพย์สุทธิ $7.43B"><script type="application/json">{"nodes":[{"id":"debt","l":0,"v":82.38,"c":"in"},{"id":"cash","l":0,"v":9.18,"c":"out"},{"id":"fcf","l":1,"v":24.89,"c":"out"},{"id":"inv","l":1,"v":39.77,"c":"out2"},{"id":"rep","l":1,"v":19.47,"c":"out2"},{"id":"sec","l":1,"v":7.43,"c":"save"}],"links":[["debt","fcf",24.89],["debt","inv",39.77],["debt","rep",17.72],["cash","rep",1.75],["cash","sec",7.43]]}</script><div class="sk-l" data-for="debt"><span>กู้ยืมใหม่<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Proceeds from long-term debt + Proceeds from short-term debt, and other</b><em>Debt Raised</em><small>$66,998M + $15,386M = $82,384M หุ้นกู้ ดอลลาร์ ยูโร ฟรังก์สวิส และดอลลาร์แคนาดา</small></span></span></span><b class="num t-in">+$82.38B</b></div><div class="sk-l" data-for="cash"><span>ใช้เงินสดที่มีอยู่<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net increase (decrease) in cash, cash equivalents, and restricted cash</b><em>Cash Drawdown</em><small>เงินสดรวม restricted ลดจาก $90,106M เหลือ $80,927M (−$9,179M)</small></span></span></span><b class="num t-out">−$9.18B</b></div><div class="sk-l" data-for="fcf"><span>อุดกระแสเงินสดอิสระที่ติดลบ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Free cash flow</b><em>FCF</em><small>6 เดือน = OCF $71,419M − ($98,411M − $2,101M) = −$24,891M</small></span></span></span><b class="num t-out">−$24.89B <span style="color:var(--ink-3);font-weight:var(--fw-regular)">30%</span></b></div><div class="sk-l" data-for="inv"><span>ลงทุนใน OpenAI Anthropic และอื่น ๆ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Acquisitions, net of cash acquired, non-marketable investments, and other, net</b><em>Strategic Investments</em><small>$39,767M · หุ้นบุริมสิทธิ OpenAI $28.7B และ Anthropic $10.0B</small></span></span></span><b class="num t-out2">−$39.77B <span style="color:var(--ink-3);font-weight:var(--fw-regular)">48%</span></b></div><div class="sk-l" data-for="rep"><span>ชำระหนี้<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Repayments of short-term debt, and other + long-term debt + Principal repayments of finance leases + financing obligations</b><em>Debt Repaid</em><small>$15,682M + $2,752M + $863M + $174M = $19,471M</small></span></span></span><b class="num t-out2">−$19.47B <span style="color:var(--ink-3);font-weight:var(--fw-regular)">24%</span></b></div><div class="sk-l" data-for="sec"><span>ซื้อหลักทรัพย์สุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Purchases of marketable securities − Sales and maturities of marketable securities</b><em>Net Securities</em><small>$49,262M − $41,882M = $7,380M + ผลค่าเงิน $54M · ยังเป็นเงินลงทุนสภาพคล่องสูง</small></span></span></span><b class="num t-save">−$7.43B</b></div></div>
+      <p class="say">เงินกู้ใหม่ราว<strong>ครึ่งหนึ่งไปลงทุนใน OpenAI และ Anthropic</strong> อีก 30% อุด FCF ที่ติดลบ ไม่ซื้อหุ้นคืนและไม่จ่ายเงินปันผล<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Dividend · Buyback</b><em>Dividend · Buyback</em><small>ไม่มีการซื้อหุ้นคืนใน 6 เดือนแรกปี 2025 และ 2026 · วงเงินเหลือ $6.1B</small></span></span> หุ้นเพิ่ม 0.5% จากหุ้นที่ให้พนักงาน (dilution<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Dilution</b><em>Dilution</em><small>สัดส่วนความเป็นเจ้าของของผู้ถือหุ้นเดิมลดลงเมื่อมีหุ้นใหม่เพิ่ม</small></span></span>) หลังงวดออกหุ้นกู้อีก $25B และ £4.25B และลงทุน OpenAI อีก $21.3B</p></div></div>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>ตัวเลขจากงบ</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>Q2: OCF $45,387M ($22.63 ต่อ $100) · ปีก่อน $32,515M ($19.39)</li><li>Purchases of property and equipment $54,208M − Proceeds from sales and incentives $1,132M = $53,076M ($26.46) · ปีก่อน $31,368M</li><li>FCF Q2 −$7,689M (−$3.83) ≈ −$2,563M ต่อเดือน · ปีก่อน +$1,147M</li><li>6 เดือน: OCF $71,419M − ($98,411M − $2,101M) = FCF −$24,891M ≈ −$4,149M ต่อเดือน</li><li>12 เดือน: OCF $161,403M · FCF −$7.6B (บริษัทรายงาน non-GAAP ใน EX-99.1) · ปีก่อน +$18.2B</li><li>Q2 รายการอื่น: Non-operating expense (income), net −$53,381M · Deferred income taxes +$17,691M · Changes in operating assets and liabilities −$7,596M</li><li>6 เดือน financing +$62,913M = กู้ $82,384M − ชำระ $19,471M · Investing −$143,457M</li><li>Cash and cash equivalents $78,213M + Marketable securities $44,775M = $122,988M (บริษัทระบุ $123.0B ทั้ง 31 ธ.ค. 2025 และ 30 มิ.ย. 2026) ไม่รวม restricted cash $2,714M และหุ้นนอกตลาด</li><li>หุ้นคงเหลือ 10,731M (31 ธ.ค. 2025) → 10,783M (30 มิ.ย. 2026) +0.5%</li><li>หลังงวด: หุ้นกู้ USD $25.0B (9 ก.ค. 2026) · หุ้นกู้ปอนด์ £4.25B (14 ก.ย. 2026) · ลงทุน OpenAI Series C ส่วนที่เหลือ $21.3B · Term loan $17.5B เบิกได้ถึง 30 ก.ย. 2026 (ยังไม่ทราบว่าเบิกหรือไม่)</li><li class="src-l">ที่มา: <a href="https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm">10-Q</a> · <a href="https://www.sec.gov/Archives/edgar/data/1018724/000101872426000024/amzn-20260630xex991.htm">EX-99.1</a> · <a href="https://www.sec.gov/Archives/edgar/data/1018724/000110465926082293/tm2619352d4_8k.htm">8-K หุ้นกู้ ก.ค.</a> · <a href="https://www.sec.gov/Archives/edgar/data/1018724/000110465926107526/tm2624614d5_8k.htm">8-K หุ้นกู้ ก.ย.</a></li></ul></span></span></div>
+  </section>
+</div>
+
+<div class="pane" style="grid-area:p3">
+  <section class="card wide" style="grid-area:bs">
+    <div class="card-h"><div><p class="eyebrow">งบฐานะการเงิน · อัตราส่วน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Consolidated Balance Sheets + Key financial ratios</b><em>Balance Sheet · Ratios</em><small>งบดุล ณ 30 มิ.ย. 2026 · อัตราส่วนใช้ 12 เดือนล่าสุด ก.ค. 2025–มิ.ย. 2026</small></span></span></p><h3>หนี้เงินกู้มากกว่าเงินสด $23B กำไรสุทธิ 17.4% ของรายได้</h3></div></div>
+    <div class="card-b">
+      <div class="cols even"><div class="col"><div class="vsw" role="group" aria-label="มุมมองงบฐานะการเงิน"><button type="button" aria-pressed="true" data-show="now">ณ วันนี้</button><button type="button" aria-pressed="false" data-show="hist">ย้อนหลัง 6 ปี</button></div>
+      <div data-view="now"><div class="bsxg">
+        <div class="bsxg-main"><div class="bsx" role="img" aria-label="สินทรัพย์รวม $1,095.69B เท่ากับหนี้สิน $544.07B (49.7%) บวกส่วนของผู้ถือหุ้น $551.62B (50.3%) หนี้เงินกู้ $146.00B">
+        <div class="bsx-c bsx-a" data-g="assets"><span class="bl">สินทรัพย์รวม<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total assets</b><em>Total Assets</em><small>ใหญ่สุดคือ Property and equipment, net $446.05B และ Other assets $284.13B ซึ่งรวมเงินลงทุน Anthropic (หุ้นกู้แปลงสภาพ $97.9B + หุ้นบุริมสิทธิ $92.5B) และ OpenAI $28.7B</small></span></span></span><span class="bv num">$1,095.69B</span><span class="bp num">100%</span></div>
+        <div class="bsx-r">
+          <div class="bsx-c bsx-li thin" style="flex:49.7 1 0;position:relative;align-content:start"><span class="bl" style="grid-column:1">หนี้สิน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total liabilities</b><em>Total Liabilities</em><small>งบดุลไม่มีบรรทัด Total liabilities คำนวณ = Total liabilities and stockholders’ equity $1,095.69B − Total stockholders’ equity $551.62B ตรงกับผลรวมรายบรรทัด · ใหญ่สุดคือ Accounts payable $147.44B และ Long-term debt $128.89B</small></span></span></span><span class="bv num">$544.07B</span><span class="bp num" style="grid-row:1;grid-column:2">49.7%</span><span class="bsx-debt" data-g="debt" style="height:26.8%"><span>หนี้เงินกู้ $146.00B</span></span></div>
+          <div class="bsx-c bsx-eq" data-g="equity" style="flex:50.3 1 0"><span class="bl">ส่วนของผู้ถือหุ้น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total stockholders’ equity</b><em>Equity</em><small>= Total assets − Total liabilities ไม่มีส่วนของผู้ถือหุ้นส่วนน้อย · รวม AOCI $66.29B ซึ่งส่วนใหญ่เป็นกำไรที่ยังไม่รับรู้ของหุ้นกู้ Anthropic $92.0B ก่อนภาษี</small></span></span></span><span class="bv num">$551.62B</span><span class="bp num">50.3%</span></div>
+        </div>
+      </div></div>
+        <div class="bsxg-side"></div>
+        <div class="bsxg-leg"><div class="g-leg k-a"><i class="sw"></i><b>ROA 15.2%</b><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Average total assets</b><em>ROA</em><small>หารด้วยสินทรัพย์ทั้งหมด ตอบว่าใช้ทรัพย์สินทั้งหมดได้คุ้มแค่ไหน · ถ้าใช้กำไรจากการดำเนินงาน 12 เดือน $93.71B แทน ได้ 10.5% (คำนวณเอง) เพราะกำไรสุทธิรวมกำไรตีราคาเงินลงทุน</small></span></span><span>กำไร ÷ สินทรัพย์รวม</span><small>ปีก่อน 11.4%</small></div><div class="g-leg k-i"><i class="sw"></i><b>ROI 24.6%</b><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Average (equity + total debt)</b><em>ROI</em><small>หารด้วยเงินทุนที่ลงไปทั้งหมด (เงินเจ้าของ + หนี้เงินกู้) · ROI ไม่มีนิยามมาตรฐานเดียว คำนวณเอง</small></span></span><span>กำไร ÷ (หนี้เงินกู้ + เงินเจ้าของ)</span><small>ปีก่อน 19.9%</small></div><div class="g-leg k-e"><i class="sw"></i><b>ROE 30.6%</b><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Average stockholders’ equity</b><em>ROE</em><small>หารด้วยเงินของผู้ถือหุ้นอย่างเดียว · กำไร 12 เดือนรวมกำไรจากเงินลงทุนนอกธุรกิจหลักก้อนใหญ่</small></span></span><span>กำไร ÷ เงินเจ้าของ</span><small>ปีก่อน 24.8%</small></div></div>
+        <svg class="bsxg-svg" aria-hidden="true"></svg>
+      </div>
+      <div class="bsx-note"><span>สินทรัพย์ = หนี้สิน + ส่วนของผู้ถือหุ้น</span><span>หนี้เงินกู้<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Long-term debt + Current portion of long-term debt + Short-term borrowings + Finance lease liabilities</b><em>Total Debt</em><small>$128.89B + $3.33B + $0.33B + $13.45B = $146.00B · ไม่รวม operating lease และ financing obligations $9.3B · สิ้นปี 2025 $81.14B</small></span></span> $146.00B</span></div>
+      <p class="say">หนี้เงินกู้<strong>เพิ่มจาก $81.1B เป็น $146.0B ในครึ่งปี</strong> ขณะที่เงินสดและเงินลงทุน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Cash and cash equivalents + Marketable securities</b><em>Cash &amp; Investments</em><small>ตัวเลขเดียวกับที่บริษัทระบุใน Liquidity · ไม่รวม restricted cash และหุ้นนอกตลาด</small></span></span> คงที่ $123.0B สภาพคล่อง<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total current assets ÷ Total current liabilities</b><em>Current Ratio</em><small>$249.26B ÷ $241.27B คำนวณเอง</small></span></span> 1.03 เท่า ราว 20% ของสินทรัพย์เป็นเงินลงทุนใน Anthropic และ OpenAI ที่ตีราคาจากรอบระดมทุน ไม่ใช่ราคาตลาด</p>
+      </div>
+      <div data-view="hist" hidden>
+        <div class="hy-k"><div><span>กำไรสะสม 2020 → 2025</span><b class="num t-in">+$197.99B</b></div><div><span>เงินผู้ถือหุ้นใส่สุทธิ 2020 → 2025</span><b class="num t-save">+$119.68B</b></div></div>
+        <div class="hy-leg"><span><button type="button" class="hy-f" data-s="l" aria-pressed="true"><i class="l"></i>หนี้สิน</button><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total liabilities</b><em>Total Liabilities</em><small>ไม่มีแท็กในงบ คำนวณ = Total liabilities and stockholders’ equity − Total stockholders’ equity</small></span></span></span><span><button type="button" class="hy-f" data-s="r" aria-pressed="true"><i class="r"></i>กำไรสะสม</button><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Retained earnings</b><em>Retained Earnings</em><small>กำไรทุกปีที่เก็บไว้ในบริษัท Amazon ไม่จ่ายเงินปันผล</small></span></span></span><span><button type="button" class="hy-f" data-s="p" aria-pressed="true"><i class="p"></i>เงินผู้ถือหุ้นใส่สุทธิ</button><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Common stock + Additional paid-in capital − Treasury stock + Accumulated other comprehensive income (loss)</b><em>Paid-in Capital, net</em><small>คำนวณเอง = Total equity − Retained earnings · เพิ่มจากหุ้นที่ให้พนักงาน (SBC) และปี 2025 จาก AOCI ของหุ้นกู้ Anthropic</small></span></span></span><span class="hy-hint">แตะเพื่อเลือกดูทีละส่วน</span></div>
+        <div class="hy" role="img" aria-label="สินทรัพย์รวมรายปี 2020 ถึง 2025 แยกเป็นหนี้สิน กำไรสะสม และเงินผู้ถือหุ้นใส่สุทธิ ปี 2020 กำไรสะสม $52.55B เงินผู้ถือหุ้นใส่ $40.85B หนี้สิน $227.79B ปี 2025 กำไรสะสม $250.54B เงินผู้ถือหุ้นใส่ $160.53B หนี้สิน $406.98B"><script type="application/json">{"data":{"unit":"B","years":["2020","2021","2022","2023","2024","2025"],"l":[227.79,282.3,316.63,325.98,338.92,406.98],"r":[52.55,85.92,83.19,113.62,172.87,250.54],"p":[40.85,52.33,62.85,88.26,113.1,160.53],"ni":[21.33,33.36,-2.72,30.43,59.25,77.67]},"rows":[{"end":"2020-12-31","l":227791000000,"r":52551000000,"p":40853000000,"eq":93404000000,"a":321195000000,"ni":21331000000},{"end":"2021-12-31","l":282304000000,"r":85915000000,"p":52330000000,"eq":138245000000,"a":420549000000,"ni":33364000000},{"end":"2022-12-31","l":316632000000,"r":83193000000,"p":62850000000,"eq":146043000000,"a":462675000000,"ni":-2722000000},{"end":"2023-12-31","l":325979000000,"r":113618000000,"p":88257000000,"eq":201875000000,"a":527854000000,"ni":30425000000},{"end":"2024-12-31","l":338924000000,"r":172866000000,"p":113104000000,"eq":285970000000,"a":624894000000,"ni":59248000000},{"end":"2025-12-31","l":406977000000,"r":250536000000,"p":160529000000,"eq":411065000000,"a":818042000000,"ni":77670000000}],"notes":["2020-12-31: \u0e44\u0e21\u0e48\u0e21\u0e35\u0e41\u0e17\u0e47\u0e01 Liabilities \u0e04\u0e33\u0e19\u0e27\u0e13 = Total liabilities and equity \u2212 Total equity","2021-12-31: \u0e44\u0e21\u0e48\u0e21\u0e35\u0e41\u0e17\u0e47\u0e01 Liabilities \u0e04\u0e33\u0e19\u0e27\u0e13 = Total liabilities and equity \u2212 Total equity","2022-12-31: \u0e44\u0e21\u0e48\u0e21\u0e35\u0e41\u0e17\u0e47\u0e01 Liabilities \u0e04\u0e33\u0e19\u0e27\u0e13 = Total liabilities and equity \u2212 Total equity","2023-12-31: \u0e44\u0e21\u0e48\u0e21\u0e35\u0e41\u0e17\u0e47\u0e01 Liabilities \u0e04\u0e33\u0e19\u0e27\u0e13 = Total liabilities and equity \u2212 Total equity","2024-12-31: \u0e44\u0e21\u0e48\u0e21\u0e35\u0e41\u0e17\u0e47\u0e01 Liabilities \u0e04\u0e33\u0e19\u0e27\u0e13 = Total liabilities and equity \u2212 Total equity","2025-12-31: \u0e44\u0e21\u0e48\u0e21\u0e35\u0e41\u0e17\u0e47\u0e01 Liabilities \u0e04\u0e33\u0e19\u0e27\u0e13 = Total liabilities and equity \u2212 Total equity"]}</script><svg class="hy-svg" aria-hidden="true"></svg><p class="hy-read"></p></div>
+        <p class="say">ส่วนของผู้ถือหุ้นโต<strong>จากกำไรสะสมเป็นหลัก</strong> (+$198B ใน 5 ปี) มีปีขาดทุนปีเดียวคือ 2022 (−$2.7B) เงินผู้ถือหุ้นใส่เพิ่มจากหุ้นที่ให้พนักงาน ไม่ได้ขายหุ้นเพิ่มทุน และปี 2025 กระโดดเพราะกำไรที่ยังไม่รับรู้ของหุ้นกู้ Anthropic $28B ใน AOCI</p>
+      </div>
+      </div><div class="col"><p class="sec">อัตราส่วน · 12 เดือนล่าสุด (ก.ค. 2025–มิ.ย. 2026)</p>
+      <div class="ratio"><div class="rr"><span class="rl">รายได้รวม<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total net sales</b><em>Revenue</em><small>12 เดือน = ปี 2025 − 6 เดือนแรกปี 2025 + 6 เดือนแรกปี 2026</small></span></span></span><span class="rv num t-in">$775.68B</span><span class="rc">ปีก่อน $670.04B</span></div><div class="rr"><span class="rl">กำไรสุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income</b><em>Net Income</em><small>ยอด 12 เดือนที่บริษัทพิมพ์ในงบกระแสเงินสด · รวมกำไรก่อนภาษีนอกธุรกิจหลัก 12 เดือน $81.75B ส่วนใหญ่จาก Anthropic · ไม่มีส่วนของผู้ถือหุ้นส่วนน้อย</small></span></span></span><span class="rv num t-in">$135.28B</span><span class="rc">ปีก่อน $70.62B</span></div><div class="rr"><span class="rl">อัตรากำไรสุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Total net sales</b><em>Net Margin</em><small>คำนวณเอง ทั้งสองตัวเป็นยอด 12 เดือน</small></span></span></span><span class="rv num t-in">17.4%</span><span class="rc">ปีก่อน 10.5%</span></div><div class="rr"><span class="rl">PE<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Price ÷ Diluted EPS (TTM)</b><em>P/E</em><small>ราคาปิด $262.63 ณ 20 ต.ค. 2026 ÷ EPS ปรับลด (GAAP) 12 เดือน $12.43 คำนวณเอง · ราคาเปลี่ยนทุกวัน ตัวเลขนี้ไม่อัปเดตเอง</small></span></span></span><span class="rv num t-in">21.1x</span><span class="rc">EPS 12 เดือน $12.43</span></div><div class="rr"><span class="rl">Forward PE<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Price ÷ Consensus EPS (next 4 quarters)</b><em>Forward P/E</em><small>Consensus EPS จาก Nasdaq (ข้อมูล Zacks) ณ 21 ต.ค. 2026 รวม 4 ไตรมาส ก.ค. 2026–มิ.ย. 2027 = $9.54 นักวิเคราะห์ 9–14 รายต่อไตรมาส มักเป็น EPS แบบ adjusted (non-GAAP) จึงเทียบกับ PE ย้อนหลังแบบตรงตัวไม่ได้ เป็นการคาดการณ์ของบุคคลที่สาม ไม่ใช่ตัวเลขจากงบ</small></span></span></span><span class="rv num t-in">27.5x</span><span class="rc">EPS คาด $9.54</span></div><div class="rr"><span class="rl">P/B<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Price ÷ Book value per share</b><em>P/B</em><small>ราคาปิด $262.63 ÷ Book ต่อหุ้น $51.16 (Total stockholders’ equity $551,620M ÷ 10,783M หุ้นตามงบดุล 30 มิ.ย. 2026 · ไม่มีหุ้นบุริมสิทธิ) คำนวณเอง · ราคาเปลี่ยนทุกวัน ตัวเลขนี้ไม่อัปเดตเอง</small></span></span></span><span class="rv num t-in">5.1x</span><span class="rc">Book/หุ้น $51.16</span></div></div>
+      <p class="say">กำไร 12 เดือนรวม<strong>กำไรจากการตีราคาหุ้น Anthropic</strong> ก้อนใหญ่ PE ย้อนหลัง 21x จึงต่ำกว่า Forward PE 28x ซึ่งนักวิเคราะห์ไม่ได้ใส่กำไรแบบนี้ไว้ ROA จากกำไรจากการดำเนินงานอยู่ที่ 10.5% (คำนวณเอง) ใกล้เคียงภาพธุรกิจจริงกว่า</p></div></div>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>ตัวเลขจากงบ</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>30 มิ.ย. 2026: Total assets $1,095.69B · Total liabilities $544.07B (คำนวณ ไม่มีบรรทัดในงบ) · Total stockholders’ equity $551.62B</li><li>Cash and cash equivalents $78.21B + Marketable securities $44.78B = $122.99B · Net cash −$23.01B รวม finance lease · −$9.56B ไม่รวม finance lease (คำนวณเอง)</li><li>หนี้เงินกู้: Long-term debt $128.89B + Current portion $3.33B + Short-term borrowings $0.33B + Finance lease liabilities $13.45B = $146.00B · มูลค่าหน้าตั๋วหุ้นกู้ $133.0B อายุเฉลี่ย 14.2 ปี</li><li>Current ratio 1.03x ($249.26B ÷ $241.27B)</li><li>เงินลงทุนนอกตลาด: Anthropic convertible notes $97.9B (unrealized gain ใน AOCI $92.0B) · หุ้นนอกตลาดที่ไม่ใช่ equity-method $122.3B (Anthropic $92.5B + OpenAI $28.7B) · ภาระผูกพันรวม $650.0B</li><li>12 เดือน: Revenue $716.92B − $323.37B + $382.13B = $775.68B · ปีก่อน $637.96B − $291.29B + $323.37B = $670.04B</li><li>Net income $77.67B − $35.29B + $92.90B = $135.28B · ปีก่อน $70.62B · Operating income 12 เดือน $93.71B · Total non-operating income 12 เดือน $81.75B</li><li>ROA: $135.28B ÷ ($682.17B + $1,095.69B) ÷ 2 · ปีก่อน $70.62B ÷ ($554.82B + $682.17B) ÷ 2</li><li>ROE: ÷ Equity เฉลี่ย ($333.78B + $551.62B) ÷ 2 · ปีก่อน ($236.45B + $333.78B) ÷ 2</li><li>ROI: ÷ (Equity + Debt) เฉลี่ย ($400.87B + $697.62B) ÷ 2 · ปีก่อน ($309.67B + $400.87B) ÷ 2 · หนี้ $67.10B (มิ.ย. 2025) และ $73.22B (มิ.ย. 2024) นิยามเดียวกัน</li><li>PE: $262.63 ÷ Diluted EPS ($7.17 − $3.27 + $8.53 = $12.43) ≈ $135.28B ÷ หุ้นปรับลดราว 10,890M</li><li>Forward PE: $2.02 + $2.56 + $2.36 + $2.60 = $9.54 (14, 12, 9, 9 ราย)</li><li>P/B: $262.63 ÷ ($551.62B ÷ 10,783M หุ้น)</li><li>ราคา: Yahoo Finance · Consensus: <a href="https://www.nasdaq.com/market-activity/stocks/amzn/earnings">Nasdaq</a></li><li>ย้อนหลัง (B, ปีงบ 2020–2025 จาก 10-K): Total liabilities 227.79 · 282.30 · 316.63 · 325.98 · 338.92 · 406.98 (คำนวณ = Total liabilities and equity − Total equity)</li><li>Retained earnings 52.55 · 85.92 · 83.19 · 113.62 · 172.87 · 250.54</li><li>เงินผู้ถือหุ้นใส่สุทธิ = Total equity − Retained earnings (คำนวณเอง) 40.85 · 52.33 · 62.85 · 88.26 · 113.10 · 160.53 · AOCI ปี 2025 $28.23B</li><li class="src-l">ที่มา: <a href="https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm">10-Q</a> · <a href="https://data.sec.gov/api/xbrl/companyfacts/CIK0001018724.json">SEC XBRL companyfacts</a> (10-K FY2025, 10-Q Q2 2024/2025)</li></ul></span></span></div>
+  </section>
+</div>
+
+<div class="pane" style="grid-area:p4">
+  <section class="card grow" style="grid-area:sum">
+    <div class="card-h"><div><p class="eyebrow">สรุป</p><h3>ภาพรวมสำหรับนักลงทุน</h3></div></div>
+    <div class="card-b">
+      <ul class="list">
+        <li><span class="ico in"><i class="ti ti-circle-check" aria-hidden="true"></i></span><div><b>จุดแข็ง</b><p>AWS โต 36.8% และทำกำไร 61% ของบริษัท โฆษณาโต 26% อัตรากำไรจากการดำเนินงานขึ้นเป็น 13.7% และมีสัญญาลูกค้าที่ยังไม่รับรู้รายได้<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Remaining performance obligations</b><em>Backlog</em><small>ราว $496B ส่วนใหญ่ AWS อายุเฉลี่ย 6.4 ปี</small></span></span> ราว $496B</p></div></li>
+        <li><span class="ico out"><i class="ti ti-alert-triangle" aria-hidden="true"></i></span><div><b>ความเสี่ยง</b><p>FCF ติดลบจากการลงทุน AI หนี้เงินกู้เพิ่มเกือบเท่าตัวในครึ่งปี กำไรสุทธิพึ่งราคาประเมิน Anthropic และ OpenAI ซึ่งกลับทิศได้ และภาระผูกพันระยะยาวรวม $650B</p></div></li>
+        <li><span class="ico save"><i class="ti ti-eye" aria-hidden="true"></i></span><div><b>ติดตามในงบถัดไป</b><p>เป้าไตรมาส 3: รายได้ $197–202B กำไรจากการดำเนินงาน $22.5–26.5B รายจ่ายลงทุนที่บริษัทคาดว่าจะเพิ่มอีก การเบิก term loan $17.5B และหุ้นกู้ใหม่หลังงวด และกำไรหรือขาดทุนจากการตีราคา Anthropic</p></div></li>
+        <li><span class="ico neu"><i class="ti ti-flag" aria-hidden="true"></i></span><div><b>แนวโน้มอัตรากำไรจากการดำเนินงาน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Operating income ÷ Total net sales</b><em>Operating Margin</em><small>GAAP คำนวณเอง · ทำกำไรแล้ว จึงดูแนวโน้ม margin แทนจุดคุ้มทุน</small></span></span></b><p>11.4% → 13.7% ปีต่อปี ไตรมาส 1 อยู่ที่ 13.1% สิ่งที่ต้องดูคือ FCF จะกลับเป็นบวกเมื่อไร</p><div class="track mini"><div class="fill in" style="width:13.7%"></div></div></div></li>
+      </ul>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>มุมมอง</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>Amazon ทำกำไรจากธุรกิจหลักแล้ว แต่ตอนนี้ลงทุนดาต้าเซ็นเตอร์ AI มากกว่าเงินสดที่ธุรกิจหาได้ จึงกู้เงินเพิ่ม</li><li>เดิมพันหลักคือ AWS และชิป AI ต้องสร้างรายได้และกำไรคุ้มกับรายจ่ายลงทุนและหนี้ที่เพิ่มขึ้น</li><li>กำไรสุทธิไตรมาสนี้ราว 4 ใน 5 มาจากการตีราคาหุ้น Anthropic ซึ่งยังไม่ใช่เงินสด ควรดูกำไรจากการดำเนินงานและกระแสเงินสดประกอบ</li><li>เงินลงทุนใน Anthropic และ OpenAI รวมราว $220B เป็นทั้งโอกาส (ถ้าเข้าตลาด) และความเสี่ยง (ถ้าราคารอบใหม่ลดลง)</li><li>หลังงวด: หุ้นกู้ $25.0B (<a href="https://www.sec.gov/Archives/edgar/data/1018724/000110465926082293/tm2619352d4_8k.htm">8-K</a>) และ £4.25B (<a href="https://www.sec.gov/Archives/edgar/data/1018724/000110465926107526/tm2624614d5_8k.htm">8-K</a>)</li></ul></span></span> · ข้อมูลเพื่อการศึกษา ไม่ใช่คำแนะนำซื้อขาย</div>
+  </section>
+</div>
+
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.ebs .yrs[data-years]').forEach(function(box){
+    var y=+box.dataset.years,cells=Math.max(10,Math.ceil(y));
+    box.style.gridTemplateColumns='repeat('+cells+',1fr)';box.innerHTML='';
+    for(var i=0;i<cells;i++){var c=document.createElement('i'),f=Math.max(0,Math.min(1,y-i));
+      if(f>0)c.style.background='linear-gradient(90deg,var(--save-bar) '+(f*100)+'%,var(--track) '+(f*100)+'%)';
+      c.style.animationDelay=(0.3+i*0.05)+'s';box.appendChild(c);}
+  });
+  document.querySelectorAll('.ebs .fill').forEach(function(b,i){b.style.animationDelay=(i*0.05)+'s';});
+  document.querySelectorAll('.ebs .tip').forEach(function(t){
+    function place(){var b=t.querySelector('.tip-b');if(!b)return;b.style.setProperty('--dx','0px');
+      var r=b.getBoundingClientRect(),m=8,dx=0;
+      if(r.right>window.innerWidth-m)dx=window.innerWidth-m-r.right;
+      if(r.left+dx<m)dx=m-r.left;
+      b.style.setProperty('--dx',dx+'px');}
+    t.addEventListener('mouseenter',place);t.addEventListener('focus',place);
+  });
+  var el=document.getElementById('ebs');
+  if(!el||!document.body.hasAttribute('data-fit'))return;
+  var root=document.documentElement;
+  function fit(){
+    var wide=window.innerWidth>=1200;
+    el.classList.toggle('fit',wide);
+    root.style.fontSize='';
+    if(!wide)return;
+    var size=Math.min(17,Math.max(10,window.innerHeight/52));
+    root.style.fontSize=size+'px';
+    while(root.scrollHeight>window.innerHeight+1&&size>9){size-=0.25;root.style.fontSize=size+'px';}
+  }
+  window.addEventListener('resize',fit);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+  fit();
+})();
+</script>
+<p class="foot">AI-DRAFT · ข้อมูลจาก SEC EDGAR · ข้อมูลเพื่อการศึกษา ไม่ใช่คำแนะนำการลงทุน</p>
+</main>
+
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  var CS=null;function css(v){return (CS&&CS.getPropertyValue(v).trim())||'#888'}
+  function draw(g){
+    CS=getComputedStyle(g);var svg=g.querySelector('.bsxg-svg'), R=g.getBoundingClientRect();
+    function r(sel){var b=g.querySelector('[data-g="'+sel+'"]').getBoundingClientRect();return {l:b.left-R.left,t:b.top-R.top,r:b.right-R.left,b:b.bottom-R.top,w:b.width,h:b.height}}
+    var A=r('assets'),E=r('equity'),D=r('debt');
+    var top=Math.min(A.t,D.t), bot=Math.max(A.b,E.b), bxR=Math.max(E.r,D.r);
+    var cs={a:css('--save-bar'),i:css('--ink-3'),e:css('--in-bar')}, tc={a:css('--save'),i:css('--ink'),e:css('--in')}, bg=css('--card');
+    svg.innerHTML='';
+    function lab(x,y,txt,k,rot){var gg=document.createElementNS(NS,'g');gg.setAttribute('transform','translate('+x+' '+y+')'+(rot?' rotate(-90)':''));
+      var w=txt.length*7.6+12,h=17,rc=document.createElementNS(NS,'rect');rc.setAttribute('x',-w/2);rc.setAttribute('y',-h/2);rc.setAttribute('width',w);rc.setAttribute('height',h);rc.setAttribute('rx',h/2);rc.setAttribute('fill',cs[k]);gg.appendChild(rc);
+      var tx=document.createElementNS(NS,'text');tx.setAttribute('text-anchor','middle');tx.setAttribute('dominant-baseline','central');tx.setAttribute('y','.5');tx.setAttribute('font-size','11.5');tx.setAttribute('font-weight','700');tx.setAttribute('fill','#fff');tx.setAttribute('letter-spacing','.4');tx.textContent=txt;gg.appendChild(tx);svg.appendChild(gg)}
+    function pth(d,k){var p=document.createElementNS(NS,'path');p.setAttribute('d',d);p.setAttribute('stroke',cs[k]);p.setAttribute('stroke-width',3);p.setAttribute('fill','none');p.setAttribute('stroke-linejoin','round');p.setAttribute('stroke-linecap','round');svg.appendChild(p)}
+    // ROA: left of assets box
+    var xa=A.l-10; pth('M'+(xa+6)+','+(A.t+1)+' H'+xa+' V'+(A.b-1)+' H'+(xa+6),'a'); if(A.b-A.t>40) lab(xa,(A.t+A.b)/2,'ROA','a',true);
+    // ROE: under equity box
+    var ye=E.b+10; pth('M'+(E.l+1)+','+(ye-6)+' V'+ye+' H'+(E.r-1)+' V'+(ye-6),'e'); lab((E.l+E.r)/2,ye,'ROE','e',false);
+    // ROI: right of debt slice + equity box
+    var xi=bxR+10; pth('M'+(xi-6)+','+(D.t+1)+' H'+xi+' V'+(E.b-1)+' H'+(xi-6),'i'); if(E.b-D.t>40) lab(xi,(D.t+E.b)/2,'ROI','i',true);
+  }
+  function all(){document.querySelectorAll('.bsxg').forEach(draw)}
+  window.addEventListener('load',all);window.addEventListener('resize',all);
+  if(window.ResizeObserver){var ro=new ResizeObserver(all);document.querySelectorAll('.bsxg').forEach(function(g){ro.observe(g)})}
+  setTimeout(all,300);
+})();
+</script>
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  function draw(box){
+    var d=JSON.parse(box.querySelector('script').textContent);
+    var rem=parseFloat(getComputedStyle(document.documentElement).fontSize)||16;
+    var W=box.clientWidth,H=box.clientHeight,nw=Math.round(rem*.6),pad=Math.round(rem*.5),gap=rem*.4;
+    var by={},layers=[];
+    d.nodes.forEach(function(n,i){n.o=i;n.in=[];n.out=[];by[n.id]=n;(layers[n.l]=layers[n.l]||[]).push(n);});
+    var L=d.links.map(function(k){var o={s:by[k[0]],t:by[k[1]],v:k[2]};o.s.out.push(o);o.t.in.push(o);return o;});
+    var last=layers.length-1,labs={};
+    box.querySelectorAll('.sk-l').forEach(function(e){labs[e.dataset.for]=e;e.style.maxWidth='';e.classList.remove('wrap');});
+    // the last layer's labels hang to its right, so reserve their widest label
+    var right=0;d.nodes.forEach(function(n){var e=labs[n.id];if(e&&n.l===last)right=Math.max(right,e.offsetWidth);});
+    var step=(W-nw-gap-right)/Math.max(1,last),room=step-nw-gap*2;
+    // earlier layers' labels must stop before the next node column, so they wrap
+    d.nodes.forEach(function(n){var e=labs[n.id];if(e&&n.l<last&&e.offsetWidth>room){e.classList.add('wrap');e.style.maxWidth=room+'px';}});
+    d.nodes.forEach(function(n){var e=labs[n.id];n.lh=e?e.offsetHeight:0;});
+    // each node takes the taller of its ribbon band and its label, so labels never stack on each other
+    function need(s){var m=0;layers.forEach(function(ly){var t=0;ly.forEach(function(n){t+=Math.max(n.v*s,n.lh)});m=Math.max(m,t+(ly.length-1)*pad);});return m;}
+    var sc=Infinity;layers.forEach(function(ly){var t=0;ly.forEach(function(n){t+=n.v});sc=Math.min(sc,(H-(ly.length-1)*pad)/t);});
+    // shrink the bands a little, then let the figure grow instead of squeezing labels together
+    var sc0=sc;while(sc>sc0*.6&&need(sc)>H)sc*=.97;
+    var nh=Math.ceil(need(sc));if(nh>H+1){box.style.height=nh+'px';H=nh;}
+    layers.forEach(function(ly,li){var y=0;ly.forEach(function(n){n.x=li*step;n.h=n.v*sc;var slot=Math.max(n.h,n.lh);n.y=y+(slot-n.h)/2;y+=slot+pad;});});
+    d.nodes.forEach(function(n){
+      n.out.sort(function(a,b){return a.t.o-b.t.o});n.in.sort(function(a,b){return a.s.o-b.s.o});
+      var y=n.y;n.out.forEach(function(k){k.sy=y;y+=k.v*sc});y=n.y;n.in.forEach(function(k){k.ty=y;y+=k.v*sc});});
+    var svg=box.querySelector('svg');if(!svg){svg=document.createElementNS(NS,'svg');svg.setAttribute('aria-hidden','true');box.insertBefore(svg,box.firstChild);}
+    svg.innerHTML='';
+    var col={'in':'var(--in-bar)','out':'var(--out-bar)','out2':'var(--out-bar-2)','save':'var(--save-bar)'};
+    L.forEach(function(k){var x0=k.s.x+nw,x1=k.t.x,cx=(x0+x1)/2,t=Math.max(k.v*sc,1),p=document.createElementNS(NS,'path');
+      p.setAttribute('d','M'+x0+','+k.sy+' C'+cx+','+k.sy+' '+cx+','+k.ty+' '+x1+','+k.ty+' L'+x1+','+(k.ty+t)+' C'+cx+','+(k.ty+t)+' '+cx+','+(k.sy+t)+' '+x0+','+(k.sy+t)+' Z');
+      p.setAttribute('class','sk-k');p.setAttribute('style','fill:'+col[k.t.c]);p.dataset.s=k.s.id;p.dataset.t=k.t.id;svg.appendChild(p);});
+    d.nodes.forEach(function(n){var r=document.createElementNS(NS,'rect');r.setAttribute('x',n.x);r.setAttribute('y',n.y);r.setAttribute('width',nw);r.setAttribute('height',Math.max(n.h,2));r.setAttribute('rx',3);
+      r.setAttribute('class','sk-r');r.setAttribute('style','fill:'+col[n.c]);r.dataset.n=n.id;svg.appendChild(r);});
+    box.querySelectorAll('.sk-l').forEach(function(e){var n=by[e.dataset.for];if(!n)return;e.style.left=(n.x+nw+gap)+'px';e.style.top=(n.y+n.h/2)+'px';});
+    // hover: light the whole path through a node, upstream and downstream
+    function lit(id){var on={},ks=[];on[id]=1;
+      (function dn(i){L.forEach(function(k){if(k.s.id===i){ks.push(k);if(!on[k.t.id]){on[k.t.id]=1;dn(k.t.id)}}})})(id);
+      (function up(i){L.forEach(function(k){if(k.t.id===i){ks.push(k);if(!on[k.s.id]){on[k.s.id]=1;up(k.s.id)}}})})(id);
+      box.classList.add('hl');
+      svg.querySelectorAll('.sk-k').forEach(function(p){p.classList.toggle('on',ks.some(function(k){return k.s.id===p.dataset.s&&k.t.id===p.dataset.t}))});
+      svg.querySelectorAll('.sk-r').forEach(function(r){r.classList.toggle('on',!!on[r.dataset.n])});
+      box.querySelectorAll('.sk-l').forEach(function(e){e.classList.toggle('on',!!on[e.dataset.for])});}
+    function off(){box.classList.remove('hl')}
+    svg.querySelectorAll('.sk-r').forEach(function(r){r.addEventListener('mouseenter',function(){lit(r.dataset.n)});r.addEventListener('mouseleave',off)});
+    svg.querySelectorAll('.sk-k').forEach(function(p){p.addEventListener('mouseenter',function(){lit(p.dataset.t)});p.addEventListener('mouseleave',off)});
+    if(!box.dataset.b){box.dataset.b=1;box.querySelectorAll('.sk-l').forEach(function(e){e.addEventListener('mouseenter',function(){lit(e.dataset.for)});e.addEventListener('mouseleave',off)});}
+  }
+  function all(){document.querySelectorAll('.ebs .sk').forEach(draw)}
+  window.addEventListener('load',all);window.addEventListener('resize',all);
+  if(window.ResizeObserver){var ro=new ResizeObserver(all);document.querySelectorAll('.ebs .sk').forEach(function(b){ro.observe(b)})}
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(all);
+  all();
+})();
+</script>
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg',SER=[['p','เงินผู้ถือหุ้นใส่'],['r','กำไรสะสม'],['l','หนี้สิน']];
+  function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+  function vis(box){if(!box._vis)box._vis={l:1,r:1,p:1};return box._vis;}
+  function draw(box){
+    var d=JSON.parse(box.querySelector('script').textContent),svg=box.querySelector('svg'),read=box.querySelector('.hy-read'),u=d.unit||'B';
+    function f(v){return (v<0?'−$':'$')+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+u;}
+    function short(v){var a=Math.abs(v);return (v<0?'−$':'$')+(a<10?a.toFixed(1):Math.round(a).toLocaleString('en-US'));}
+    var W=svg.clientWidth,H=svg.clientHeight;if(!W||!H)return;
+    while(svg.firstChild)svg.removeChild(svg.firstChild);
+    svg.setAttribute('viewBox','0 0 '+W+' '+H);
+    var fs=parseFloat(getComputedStyle(el('text',{},svg)).fontSize)||12;
+    svg.removeChild(svg.firstChild);
+    var on=vis(box),ser=SER.filter(function(s){return on[s[0]];}),all3=ser.length===3,n=d.years.length;
+    var pos=[],neg=[],tot=[];
+    d.years.forEach(function(_,i){var a=0,b=0;ser.forEach(function(s){var v=d[s[0]][i];if(v>=0)a+=v;else b+=v;});pos.push(a);neg.push(b);tot.push(a+b);});
+    var hi=Math.max.apply(null,pos),lo=Math.min.apply(null,neg),span=(hi-lo)||1,step=Math.pow(10,Math.floor(Math.log10(span/3)));
+    [1,2,2.5,5,10].some(function(m){if(span/(step*m)<=4){step*=m;return true;}});
+    var ymax=Math.ceil(hi/step)*step,ymin=lo<0?lo*1.08:0,top=fs*1.6,bot=fs*1.8+(ymin<0?fs*1.2:0),left=fs*3.4,h=H-top-bot;
+    var y=function(v){return top+(ymax-v)/(ymax-ymin||1)*h;},sc=function(v){return Math.abs(v)/(ymax-ymin||1)*h;};
+    for(var t=Math.ceil(ymin/step-1e-9)*step;t<=ymax+step*1e-6;t+=step){var tv=+t.toFixed(6);el('line',{x1:left,x2:W,y1:y(tv),y2:y(tv),'class':tv===0?'z':''},svg);
+      var tx=el('text',{x:left-fs*.4,y:y(tv)+fs*.35,'text-anchor':'end'},svg);tx.textContent=(tv<0?'−$':'$')+Math.abs(+tv.toFixed(2)).toLocaleString('en-US')+u;}
+    var band=(W-left)/n,bw=Math.min(band*.56,fs*3.2),gap=2,groups=[];
+    function sel(i,dim){groups.forEach(function(g,j){g.classList.toggle('dim',!!dim&&j!==i);});
+      read.innerHTML='<b>'+d.years[i]+'</b>'+(all3?' · สินทรัพย์ '+f(tot[i]):'')+ser.slice().reverse().map(function(s){return ' · '+s[1]+' '+f(d[s[0]][i]);}).join('')+(d.ni?' · กำไรปีนั้น '+f(d.ni[i]):'');}
+    d.years.forEach(function(yr,i){
+      var g=el('g',{'class':'yr',tabindex:0},svg),x=left+band*i+(band-bw)/2,up=y(0),dn=y(0);
+      el('rect',{x:left+band*i,y:top,width:band,height:h,fill:'transparent'},g);
+      var lastPos=-1;ser.forEach(function(s,k){if(d[s[0]][i]>0)lastPos=k;});
+      ser.forEach(function(s,k){var v=d[s[0]][i],hh=sc(v);if(!hh)return;
+        if(v>0){el('rect',{'class':s[0],x:x,y:up-hh,width:bw,height:Math.max(0,hh-(k===lastPos?0:gap)),rx:k===lastPos?3:0},g);up-=hh;}
+        else{el('rect',{'class':s[0]+' ng',x:x,y:dn+gap,width:bw,height:Math.max(0,hh-gap),rx:0},g);dn+=hh;}});
+      var lb=el('text',{'class':'hy-t',x:x+bw/2,y:(pos[i]>0?up-fs*.5:dn+fs*1.2),'text-anchor':'middle'},g);lb.textContent=short(tot[i]);
+      var yl=el('text',{x:x+bw/2,y:H-fs*.4,'text-anchor':'middle'},g);yl.textContent=yr;
+      g.addEventListener('mouseenter',function(){sel(i,1);});g.addEventListener('focus',function(){sel(i,1);});g.addEventListener('click',function(){sel(i,1);});
+      groups.push(g);});
+    svg.onmouseleave=function(){sel(n-1);};
+    sel(n-1);
+  }
+  function all(){document.querySelectorAll('.ebs .hy').forEach(draw);}
+  document.querySelectorAll('.ebs .hy').forEach(function(box){
+    var fs=box.parentNode.querySelectorAll('.hy-f');
+    fs.forEach(function(b){b.addEventListener('click',function(){
+      var on=vis(box),k=b.dataset.s,count=[].filter.call(fs,function(o){return o.getAttribute('aria-pressed')!=='false';}).length;
+      if(on[k]&&count===1){fs.forEach(function(o){on[o.dataset.s]=1;o.setAttribute('aria-pressed','true');});}
+      else{on[k]=on[k]?0:1;b.setAttribute('aria-pressed',on[k]?'true':'false');}
+      draw(box);});});
+  });
+  document.querySelectorAll('.ebs .vsw').forEach(function(sw){
+    var card=sw.closest('.card');
+    sw.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){
+      sw.querySelectorAll('button').forEach(function(o){o.setAttribute('aria-pressed',o===b?'true':'false');});
+      card.querySelectorAll('[data-view]').forEach(function(v){v.hidden=v.dataset.view!==b.dataset.show;});
+      all();window.dispatchEvent(new Event('resize'));});});
+  });
+  window.addEventListener('resize',all);
+  if(window.ResizeObserver)document.querySelectorAll('.ebs .hy-svg').forEach(function(s){new ResizeObserver(function(){draw(s.closest('.hy'));}).observe(s);});
+  all();
+})();
+</script>
+<script data-ebs-theme-listener>addEventListener('message',e=>{const t=e.data&&e.data.ebsTheme;if(!t)return;const r=document.documentElement;if(t==='light'||t==='dark')r.dataset.theme=t;else delete r.dataset.theme})</script>
+</body>
+</html>

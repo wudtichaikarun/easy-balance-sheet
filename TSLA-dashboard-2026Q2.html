@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TSLA Financial Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--page:#FAF9F2;--foot:#8A9077}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--page:#1F231D;--foot:#9AA28C}}
+:root[data-theme="dark"]{--page:#1F231D;--foot:#9AA28C}
+html,body{margin:0;background:var(--page)}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Sukhumvit Set","Helvetica Neue","Noto Sans Thai",sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:720px;margin:0 auto;padding:24px 16px 32px}
+@media (min-width:760px){main{max-width:1180px}}
+@media (min-width:1200px){main{max-width:none;padding:28px 32px 14px}}
+main{overflow-x:clip}
+.foot{font-size:11px;color:var(--foot);margin:12px 4px 0}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body data-fit>
+<main>
+<style>
+.ebs{
+  --bg:#FAF9F2;--card:#ffffff;--card-2:#F2F0E3;--line:#EEEBDC;--track:#E9E6D6;
+  --ink:#333A2B;--ink-2:#4F5745;--ink-3:#6B7460;
+  --in:#2F7F5C;--in-bar:#5CAE86;
+  --out:#A5502F;--out-bar:#D6866A;--out-bar-2:#E8B7A0;
+  --save:#3B6E73;--save-bar:#5E9A9E;
+  --r-card:22px;
+  --fs-2xs:.7059rem;--fs-xs:.8235rem;--fs-sm:1rem;--fs-md:1.2353rem;--fs-lg:1.4118rem;--fs-xl:1.8824rem;--fs-2xl:2.3529rem;--lh-2xs:1.3333;--lh-xs:1.4286;--lh-sm:1.4706;--lh-md:1.381;--lh-lg:1.1667;--lh-xl:1.125;--lh-2xl:1.1;--ls-2xs:-.01em;--ls-xs:-.016em;--ls-sm:-.022em;--ls-md:.011em;--ls-lg:.009em;--ls-xl:.004em;--ls-2xl:0em;--fw-regular:400;--fw-semibold:600;--sp-4xs:.0625rem;--sp-3xs:.125rem;--sp-2xs:.25rem;--sp-xs:.375rem;--sp-sm:.5rem;--sp-md:.75rem;--sp-lg:1rem;--sp-xl:1.25rem;--sp-2xl:1.5rem;--sp-3xl:2rem;--card-pad-y:var(--sp-2xl);--card-pad-x:var(--sp-2xl);--grid-gap:var(--sp-xl);--r-xs:4px;--r-sm:6px;--r-md:12px;--r-pill:999px;--seg-gap:3px;
+  --on-fill:#fff;--on-fill-2:rgba(255,255,255,.85);--tip-bg:#2B2F24;--tip-ink:#EDEFE4;--tip-ink-strong:#ffffff;--tip-ink-2:#C7CDB8;--tip-pill:rgba(255,255,255,.14);--tip-rule:rgba(255,255,255,.12);--tip-link:#DCC17E;
+  --shadow-tip:0 12px 32px rgba(0,0,0,.28);--tint:12%;--tint-half:50%;--hatch-1:26%;--hatch-2:10%;
+  --dur-fast:.15s;--dur-fade:.4s;--dur-grow:1.1s;--ease-out:cubic-bezier(.25,1,.5,1);
+  --r-in:14px;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Sukhumvit Set","Helvetica Neue","Noto Sans Thai",sans-serif;
+  font-family:var(--font);color:var(--ink);font-size:var(--fs-sm);line-height:var(--lh-sm);letter-spacing:var(--ls-sm);-webkit-font-smoothing:antialiased;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ebs{--bg:#1F231D;--card:#2B2F24;--card-2:#20241C;--line:#454B38;--track:#3A3F31;--ink:#FFFFFF;--ink-2:#E4E7DA;--ink-3:#B9C0A8;--in:#7FCBA8;--in-bar:#5CAE86;--out:#E6A088;--out-bar:#D6866A;--out-bar-2:#8E5A47;--save:#8FC1C4;--save-bar:#5E9A9E;--tip-bg:#EDEFE4;--tip-ink:#2B2F24;--tip-ink-strong:#1B2013;--tip-ink-2:#6B7460;--tip-pill:rgba(0,0,0,.08);--tip-rule:rgba(0,0,0,.1);--tip-link:#3B6E73}}
+:root[data-theme="dark"] .ebs{--bg:#1F231D;--card:#2B2F24;--card-2:#20241C;--line:#454B38;--track:#3A3F31;--ink:#FFFFFF;--ink-2:#E4E7DA;--ink-3:#B9C0A8;--in:#7FCBA8;--in-bar:#5CAE86;--out:#E6A088;--out-bar:#D6866A;--out-bar-2:#8E5A47;--save:#8FC1C4;--save-bar:#5E9A9E;--tip-bg:#EDEFE4;--tip-ink:#2B2F24;--tip-ink-strong:#1B2013;--tip-ink-2:#6B7460;--tip-pill:rgba(0,0,0,.08);--tip-rule:rgba(0,0,0,.1);--tip-link:#3B6E73}
+.ebs *{box-sizing:border-box}
+.ebs{display:grid;gap:var(--grid-gap);grid-template-columns:minmax(0,1fr);grid-template-areas:"hd" "p1" "p2" "p3" "p4"}
+@media (min-width:760px){.ebs{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"hd hd" "p1 p2" "p3 p4"}}
+.ebs .pane{min-width:0;display:flex;flex-direction:column;gap:var(--grid-gap);align-self:start}
+
+.ebs .hd{grid-area:hd;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-lg) var(--sp-3xl);flex-wrap:wrap;padding:var(--sp-sm) var(--sp-2xs) var(--sp-2xs)}
+.ebs .brand{display:block}
+.ebs .logo{display:none}
+.ebs h1{font-size:var(--fs-2xl);font-weight:var(--fw-semibold);letter-spacing:var(--ls-2xl);line-height:var(--lh-2xl);margin:0}
+.ebs .lede{font-size:var(--fs-md);line-height:var(--lh-md);color:var(--ink-2);margin:var(--sp-sm) 0 0;font-weight:var(--fw-regular);letter-spacing:var(--ls-md)}
+.ebs .meta{display:flex;flex-direction:column;align-items:flex-end;gap:var(--sp-sm)}
+.ebs .chips{display:flex;gap:var(--sp-sm);flex-wrap:wrap;justify-content:flex-end}
+.ebs .chip{display:inline-flex;align-items:center;gap:var(--sp-xs);height:1.875rem;padding:0 var(--sp-md);border-radius:var(--r-pill);font-size:var(--fs-xs);color:var(--ink);background:var(--card);text-decoration:none;white-space:nowrap}
+.ebs a.chip{color:var(--save)}
+.ebs .dot{width:.5rem;height:.5rem;border-radius:var(--r-pill);display:inline-block}
+
+.ebs .card{background:var(--card);border-radius:var(--r-card);display:flex;flex-direction:column}
+.ebs .card.grow{flex:none}
+.ebs .card-h{padding:var(--card-pad-y) var(--card-pad-x) 0}
+.ebs .card-h .ico{display:none}
+.ebs .eyebrow{font-size:var(--fs-xs);font-weight:var(--fw-semibold);letter-spacing:0;margin:0 0 var(--sp-2xs);color:var(--ink-2)}
+.ebs .eyebrow.in{color:var(--in)}.ebs .eyebrow.out{color:var(--out)}.ebs .eyebrow.save{color:var(--save)}
+.ebs h3{font-size:var(--fs-lg);font-weight:var(--fw-semibold);letter-spacing:var(--ls-lg);line-height:var(--lh-lg);margin:0}
+.ebs .card-b{padding:var(--sp-lg) var(--card-pad-x) var(--sp-xl);display:flex;flex-direction:column;gap:var(--sp-lg);flex:1}
+.ebs .card-f{margin:0 var(--card-pad-x);padding:var(--sp-md) 0 var(--sp-xl);border-top:1px solid var(--line);font-size:var(--fs-2xs);line-height:1.5;color:var(--ink-3)}
+.ebs .card-f b{font-weight:var(--fw-semibold);color:var(--ink-2)}
+.ebs .card-f a{color:var(--save);text-decoration:none}
+.ebs .card-f .src{margin-left:0;font-size:inherit;vertical-align:baseline;gap:.3em;color:var(--ink-3)}
+.ebs .card-f .src i{font-size:.95em}
+.ebs .src .tip-b{max-width:24rem;width:24rem;padding:var(--sp-md) var(--sp-md)}
+.ebs .src-b ul{margin:0;padding:0;list-style:none}
+.ebs .src-b li{padding:var(--sp-2xs) 0;border-top:1px solid var(--tip-rule)}
+.ebs .src-b li:first-child{border-top:0;padding-top:0}
+.ebs .src-b li.src-l{padding-top:var(--sp-xs)}
+.ebs .tip-b a{color:var(--tip-link);text-decoration:none}
+.ebs .tip-b::after{content:"";position:absolute;left:0;right:0;top:100%;height:.6rem}
+.ebs .tip:hover .tip-b,.ebs .tip:focus-within .tip-b{opacity:1;visibility:visible;pointer-events:auto;transform:translate(calc(-50% + var(--dx,0px)),0)}
+
+
+.ebs .say{font-size:var(--fs-sm);color:var(--ink-2);margin:0;line-height:1.5}
+.ebs .say strong{font-weight:var(--fw-semibold);color:var(--ink)}
+.ebs .num{font-variant-numeric:tabular-nums}
+.ebs .kpi{font-size:var(--fs-xl);font-weight:var(--fw-semibold);letter-spacing:var(--ls-xl);line-height:var(--lh-xl);margin:0}
+.ebs .lbl{font-size:var(--fs-xs);color:var(--ink-2);margin:0}
+.ebs .t-in{color:var(--in)!important}.ebs .t-out{color:var(--out)!important}.ebs .t-save{color:var(--save)!important}
+
+.ebs .meter{display:flex;flex-direction:column;gap:var(--sp-sm)}
+.ebs .meter-r{display:flex;justify-content:space-between;align-items:baseline;gap:var(--sp-md);font-size:var(--fs-sm)}
+.ebs .meter-r span:first-child{color:var(--ink)}
+.ebs .meter-r span:last-child{font-weight:var(--fw-semibold);white-space:nowrap}
+.ebs .track{height:.375rem;background:var(--track);border-radius:var(--r-pill);overflow:hidden}
+.ebs .fill{height:100%;border-radius:var(--r-pill);min-width:.375rem;transform-origin:left;animation:ebs-grow var(--dur-grow) var(--ease-out) both}
+.ebs .fill.in{background:var(--in-bar)}.ebs .fill.out{background:var(--out-bar)}.ebs .fill.out2{background:var(--out-bar-2)}.ebs .fill.save{background:var(--save-bar)}
+.ebs .total{display:flex;justify-content:space-between;align-items:baseline;padding-top:var(--sp-lg);border-top:1px solid var(--line);font-size:var(--fs-sm);font-weight:var(--fw-semibold)}
+
+.ebs .vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:var(--sp-lg)}
+.ebs .vs .arrow{color:var(--ink-3);font-size:var(--fs-lg);padding-bottom:var(--sp-xs)}
+
+.ebs .yrs{display:grid;gap:var(--sp-xs)}
+.ebs .yrs i{display:block;height:.625rem;border-radius:var(--r-pill);background:var(--track);animation:ebs-fade var(--dur-fade) ease both}
+.ebs .scale{display:flex;justify-content:space-between;font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-sm)}
+
+.ebs .pair{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-lg)}
+.ebs .tile{padding:0}
+.ebs .tile .kpi{font-size:var(--fs-xl);margin-top:var(--sp-2xs)}
+
+.ebs .list{display:flex;flex-direction:column;gap:var(--sp-lg);margin:0;padding:0;list-style:none}
+.ebs .list li{display:grid;grid-template-columns:1.5rem 1fr;gap:var(--sp-md);align-items:start}
+.ebs .list .ico{width:1.5rem;height:1.5rem;display:grid;place-items:center;font-size:var(--fs-md);background:none}
+.ebs .list .ico.in{color:var(--in)}.ebs .list .ico.out{color:var(--out)}.ebs .list .ico.save{color:var(--save)}.ebs .list .ico.neu{color:var(--ink-2)}
+.ebs .list b{display:block;font-size:var(--fs-sm);font-weight:var(--fw-semibold);margin-bottom:var(--sp-3xs)}
+.ebs .list p{margin:0;font-size:var(--fs-sm);color:var(--ink-2)}
+.ebs .mini{height:.3125rem;margin-top:var(--sp-sm)}
+
+.ebs .vc-leg{display:flex;flex-wrap:wrap;gap:var(--sp-xs) var(--sp-lg);font-size:var(--fs-xs);color:var(--ink-2)}
+.ebs .vc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-lg);height:10rem;border-bottom:1px solid var(--line)}
+.ebs .vc-c{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:var(--sp-2xs);height:100%;min-width:0}
+.ebs .vc-v{font-size:var(--fs-xs);font-weight:var(--fw-semibold);line-height:1;color:var(--ink-2);white-space:nowrap}
+.ebs .vc-b{width:min(3.5rem,70%);display:flex;flex-direction:column;gap:2px;transform-origin:bottom;animation:ebs-rise var(--dur-grow) var(--ease-out) both}
+.ebs .vc-b i{display:block;min-height:2px;border-radius:var(--r-xs)}
+.ebs .vc-b i.out{background:var(--out-bar)}.ebs .vc-b i.out2{background:var(--out-bar-2)}
+.ebs .vc-x{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-lg);margin-top:var(--sp-xs);font-size:var(--fs-2xs);color:var(--ink-3);text-align:center}
+.ebs .vc-x .on{color:var(--ink);font-weight:var(--fw-semibold)}
+@keyframes ebs-rise{from{transform:scaleY(0)}}
+@keyframes ebs-grow{from{transform:scaleX(0)}}
+@keyframes ebs-fade{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){.ebs *{animation:none!important}}
+.ebs .tip{position:relative;display:inline-flex;align-items:center;margin-left:.3em;color:var(--ink-3);cursor:help;font-size:.9em;vertical-align:-.08em;outline:none;border-radius:var(--r-pill)}
+.ebs .tip:hover,.ebs .tip:focus-visible{color:var(--save)}
+.ebs .tip-b{position:absolute;bottom:calc(100% + .5rem);left:50%;transform:translate(calc(-50% + var(--dx,0px)),4px);width:max-content;max-width:17rem;padding:var(--sp-sm) var(--sp-md);border-radius:var(--r-md);background:var(--tip-bg);color:var(--tip-ink);font-size:var(--fs-2xs);line-height:1.45;font-weight:var(--fw-regular);letter-spacing:0;text-align:left;white-space:normal;overflow-wrap:anywhere;opacity:0;visibility:hidden;pointer-events:none;transition:opacity var(--dur-fast) ease,transform var(--dur-fast) ease,visibility var(--dur-fast);z-index:30;box-shadow:var(--shadow-tip)}
+.ebs .tip:hover .tip-b,.ebs .tip:focus .tip-b{opacity:1;visibility:visible;transform:translate(calc(-50% + var(--dx,0px)),0)}
+.ebs .tip-b b{display:block;font-weight:var(--fw-semibold);font-size:var(--fs-xs);color:var(--tip-ink-strong)}
+.ebs .tip-b em{display:inline-block;margin-top:var(--sp-2xs);padding:var(--sp-4xs) var(--sp-xs);border-radius:var(--r-pill);background:var(--tip-pill);font-style:normal;font-weight:var(--fw-semibold);font-size:var(--fs-2xs);color:var(--tip-ink)}
+.ebs .tip-b small{display:block;margin-top:var(--sp-xs);color:var(--tip-ink-2);font-size:var(--fs-2xs)}
+.ebs .bsx{display:grid;grid-template-columns:1fr 1fr;gap:var(--seg-gap);min-height:10.5rem}
+.ebs .bsx-c{display:flex;flex-direction:column;justify-content:center;gap:var(--sp-3xs);padding:var(--sp-sm) var(--sp-md);min-height:2.5rem}
+.ebs .bsx-c .bl{font-size:var(--fs-xs);color:var(--ink-2)}
+.ebs .bsx-c .bv{font-size:var(--fs-md);font-weight:var(--fw-semibold);letter-spacing:-.02em;line-height:1.15}
+.ebs .bsx-c .bp{font-size:var(--fs-2xs);font-weight:var(--fw-semibold)}
+.ebs .bsx-a{background:color-mix(in srgb,var(--save-bar) var(--tint),var(--card));border-radius:var(--r-in) 0 0 var(--r-in);color:var(--save)}
+.ebs .bsx-r{display:flex;flex-direction:column;gap:var(--seg-gap)}
+.ebs .bsx-li{background:color-mix(in srgb,var(--out-bar) var(--tint),var(--card));border-radius:0 var(--r-in) 0 0;color:var(--out)}
+.ebs .bsx-eq{background:color-mix(in srgb,var(--in-bar) var(--tint),var(--card));border-radius:0 0 var(--r-in) 0;color:var(--in)}
+.ebs .bsx-c.thin{display:grid;grid-template-columns:1fr auto;align-content:center;align-items:baseline;column-gap:var(--sp-sm);row-gap:var(--sp-4xs);padding:var(--sp-xs) var(--sp-md);min-height:3rem}
+.ebs .bsx-c.thin .bl{grid-column:1/-1;white-space:nowrap}
+.ebs .bsx-c.thin .bv{font-size:var(--fs-sm)}
+.ebs .bsx-c .bl,.ebs .bsx-c .bl .tip{color:var(--ink-2)}
+.ebs .bsxg{position:relative;display:grid;grid-template-columns:1.6rem 1fr 1.6rem;column-gap:0;row-gap:var(--sp-sm)}
+.ebs .bsxg .bsx{min-height:14rem}
+.ebs .bsxg-main{grid-column:2;margin-bottom:var(--sp-3xl)}
+.ebs .bsxg-side{grid-column:3;position:relative}
+.ebs .bsxg-bot{grid-column:1;display:grid;grid-template-columns:1fr 1fr;gap:var(--seg-gap)}
+.ebs .bsxg-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.ebs .g-chip{display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--sp-3xs);font-size:var(--fs-2xs);color:var(--ink-2);line-height:1.25}
+.ebs .g-chip b{font-size:var(--fs-sm);font-weight:var(--fw-semibold);letter-spacing:-.01em;white-space:nowrap}
+.ebs .g-chip small{font-size:var(--fs-2xs);color:var(--ink-3)}
+.ebs .bsxg-side .g-chip{position:absolute;left:0;right:0;align-items:flex-start;text-align:left}
+.ebs .g-chip.k-a b{color:var(--save)}.ebs .g-chip.k-i b{color:var(--ink)}.ebs .g-chip.k-e b{color:var(--in)}
+.ebs .bsx-debt{position:absolute;left:0;right:0;bottom:0;border:0;background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--ink-3) var(--hatch-1),transparent) 0 4px,color-mix(in srgb,var(--ink-3) var(--hatch-2),transparent) 4px 8px);display:flex;align-items:center;justify-content:flex-end;padding:0 var(--sp-sm);pointer-events:none}
+.ebs .bsx-debt span{font-size:var(--fs-2xs);font-weight:var(--fw-semibold);color:var(--ink);background:var(--card);padding:0 var(--sp-2xs);border-radius:var(--r-xs)}
+.ebs .g-chip .g-sum{font-size:var(--fs-2xs);font-weight:var(--fw-semibold);color:var(--ink)}
+.ebs .bsxg-leg{grid-column:1/-1;display:flex;flex-direction:column;gap:var(--sp-2xs)}
+.ebs .g-leg{display:grid;grid-template-columns:1.25rem 5.25rem 1.1rem 1fr auto;align-items:baseline;column-gap:var(--sp-xs);font-size:var(--fs-2xs);color:var(--ink-2)}
+.ebs .g-leg .sw{width:1rem;height:3px;border-radius:2px;align-self:center}
+.ebs .g-leg b{font-weight:var(--fw-semibold);white-space:nowrap}
+.ebs .g-leg small{font-size:var(--fs-2xs);color:var(--ink-3);white-space:nowrap}
+.ebs .g-leg.k-a b{color:var(--save)}.ebs .g-leg.k-a .sw{background:var(--save-bar)}
+.ebs .g-leg.k-i b{color:var(--ink)}.ebs .g-leg.k-i .sw{background:var(--ink-3)}
+.ebs .g-leg.k-e b{color:var(--in)}.ebs .g-leg.k-e .sw{background:var(--in-bar)}
+.ebs .split{display:flex;flex-direction:column;gap:var(--sp-sm);margin:var(--sp-sm) 0 var(--sp-md)}
+.ebs .split-bar{display:flex;gap:var(--seg-gap);height:.875rem}
+.ebs .split-bar .fill{height:100%;border-radius:var(--r-xs);animation:none}
+.ebs .split-bar .fill:first-child{border-radius:var(--r-pill) var(--r-xs) var(--r-xs) var(--r-pill)}.ebs .split-bar .fill:last-child{border-radius:var(--r-xs) var(--r-pill) var(--r-pill) var(--r-xs)}
+.ebs .split-br{display:flex;gap:var(--seg-gap)}
+.ebs .br{position:relative;height:1.15rem;border:3px solid;border-top:0;border-radius:0 0 var(--r-sm) var(--r-sm);margin:0 2px var(--sp-lg)}
+.ebs .br.out{border-color:var(--out-bar)}.ebs .br.in{border-color:var(--in-bar)}
+.ebs .br .pill{position:absolute;left:50%;top:100%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:var(--sp-3xs);padding:var(--sp-3xs) var(--sp-sm);border-radius:var(--r-pill);color:var(--on-fill);font-size:var(--fs-xs);line-height:1.35;font-weight:var(--fw-semibold);white-space:nowrap;letter-spacing:.01em}
+.ebs .br.out .pill{background:var(--out-bar)}.ebs .br.in .pill{background:var(--in-bar)}
+.ebs .br .pill .tip{color:var(--on-fill-2)}
+.ebs .split-bar+.split-bar{margin-top:calc(var(--sp-3xs) * -1)}
+.ebs .split-bar .fill.in2{background:color-mix(in srgb,var(--in-bar) var(--tint-half),var(--card))}
+.ebs .split-bar .fill.mute,.ebs .split-bar .fill.track{background:var(--track)}
+.ebs .split-bar .fill.out2{background:var(--out-bar-2)}
+.ebs .br-sp{height:1px}
+.ebs .br.in2{border-color:color-mix(in srgb,var(--in-bar) var(--tint-half),var(--card))}.ebs .br.in2 .pill{background:var(--in)}
+.ebs .br.mute{border-color:var(--ink-3)}.ebs .br.mute .pill{background:var(--ink-3)}
+.ebs .br.r .pill{left:auto;right:-2px;transform:translateY(-50%)}
+.ebs .split-items{display:flex;flex-direction:column;gap:var(--sp-2xs);margin-bottom:var(--sp-2xs)}
+.ebs .split-items .meter-r{font-size:var(--fs-xs)}
+.ebs .sw{display:inline-block;width:.6rem;height:.6rem;border-radius:3px;margin-right:var(--sp-xs);vertical-align:-.05em}
+.ebs .sw.out{background:var(--out-bar)}.ebs .sw.out2{background:var(--out-bar-2)}.ebs .sw.in{background:var(--in-bar)}.ebs .sw.in2{background:color-mix(in srgb,var(--in-bar) var(--tint-half),var(--card))}
+.ebs .br.top{border-top-width:3px;border-top-style:solid;border-bottom:0;border-radius:var(--r-sm) var(--r-sm) 0 0;margin:var(--sp-lg) 2px 0}
+.ebs .br.top .pill{top:0}
+.ebs .bsx-note{display:flex;justify-content:space-between;font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-xs)}
+
+/* tooltips inside pills / legends / chips must not inherit their nowrap, weight or tone */
+.ebs .tip .tip-b,.ebs .tip .tip-b b,.ebs .tip .tip-b em,.ebs .tip .tip-b small{white-space:normal;letter-spacing:0}
+.ebs .tip .tip-b{font-weight:var(--fw-regular);text-align:left;font-size:var(--fs-2xs);max-width:19rem;padding:var(--sp-md) var(--sp-md)}
+.ebs .tip .tip-b b{font-weight:var(--fw-semibold);font-size:var(--fs-xs);color:var(--tip-ink-strong)}
+.ebs .tip .tip-b small{font-size:var(--fs-2xs);line-height:1.5;color:var(--tip-ink-2)}
+.ebs .bsxg-svg{z-index:0}
+.ebs .tip:hover,.ebs .tip:focus,.ebs .tip:focus-within{z-index:50}
+.ebs .tip .tip-b{z-index:60;background:var(--tip-bg);box-shadow:var(--shadow-tip)}
+
+/* ratio table: label | value | context, columns aligned across rows */
+.ebs .ratio{display:grid;grid-template-columns:minmax(0,1fr) auto auto;column-gap:0;align-items:stretch}
+.ebs .ratio .rr{display:contents}
+.ebs .ratio .rr>*{display:flex;align-items:center;padding:var(--sp-xs) 0;border-top:1px solid var(--line)}
+.ebs .ratio .rr:first-child>*{border-top:0;padding-top:0}
+.ebs .ratio .rl{color:var(--ink);min-width:0}
+.ebs .ratio .rv{justify-content:flex-end;font-weight:var(--fw-semibold);text-align:right;white-space:nowrap}
+.ebs .ratio .rc{justify-content:flex-end;font-size:var(--fs-xs);color:var(--ink-3);text-align:right;white-space:nowrap}
+.ebs .ratio .rr>.rv,.ebs .ratio .rr>.rc{padding-left:var(--sp-md)}
+
+/* waterfall: a later split-bar row starts where its parent segment starts */
+.ebs .split-bar .fill.gap{background:transparent}
+.ebs .split-bar .fill.gap+.fill{border-radius:var(--r-pill) var(--r-xs) var(--r-xs) var(--r-pill)}
+.ebs .split-br+.split-bar{margin-top:var(--sp-xs)}
+
+/* section break inside a merged card: hairline + breathing room, then a small label */
+.ebs .sec{margin:var(--sp-sm) 0 0;padding-top:var(--sp-lg);border-top:1px solid var(--line)}
+.ebs p.sec{font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--ink-2)}
+
+/* income-statement sankey: ribbons scaled to $100 of revenue, labels are HTML so they carry .tip */
+.ebs .sk{position:relative;height:15rem;margin:var(--sp-xs) 0 var(--sp-xs)}
+.ebs .sk>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ebs .sk-k{fill-opacity:.26;transition:fill-opacity var(--dur-fast) ease;cursor:pointer}
+.ebs .sk-r{transition:opacity var(--dur-fast) ease;cursor:pointer}
+.ebs .sk.hl .sk-k{fill-opacity:.07}.ebs .sk.hl .sk-k.on{fill-opacity:.5}
+.ebs .sk.hl .sk-r:not(.on){opacity:.35}
+.ebs .sk-l{position:absolute;transform:translateY(-50%);display:flex;flex-direction:column;gap:0;font-size:var(--fs-2xs);line-height:var(--lh-2xs);color:var(--ink);white-space:nowrap;transition:opacity var(--dur-fast) ease}
+.ebs .sk-l b{font-size:var(--fs-xs);font-weight:var(--fw-semibold);line-height:var(--lh-2xs)}
+.ebs .sk.hl .sk-l:not(.on){opacity:.4}
+.ebs .sk-l .tip{margin-left:.2em}
+.ebs .sk-l.wrap{white-space:normal}.ebs .sk-l.wrap b{white-space:nowrap}
+
+/* wide sections (2026-10-20): still one screen, but a card with a figure spans two of the four columns
+   and splits into two columns inside, so the Sankey ribbons get horizontal room */
+@media (min-width:1200px){
+  .ebs.fit{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-areas:"hd hd hd hd" "pl pl cf cf" "yoy bs bs sum";grid-template-rows:auto auto 1fr;align-items:stretch}
+  .ebs.fit .pane{display:contents}
+  /* cards in one row share its height: the body grows and the footer sits on the bottom edge */
+  .ebs.fit .card{align-self:stretch}
+}
+.ebs .cols{display:grid;gap:var(--sp-lg) var(--sp-3xl)}
+.ebs .col{min-width:0;display:flex;flex-direction:column;gap:var(--sp-lg)}
+@media (min-width:1200px){
+  .ebs.fit .wide .cols{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);align-items:stretch;flex:1}
+  /* the Sankey takes whatever height the row leaves, so a wide card has no empty band */
+  .ebs.fit .wide .col .sk{flex:1 1 auto;height:auto;min-height:15rem}
+  .ebs.fit .wide .cols.even{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ebs.fit .wide .cols>.col>p.sec:first-child{margin-top:0;padding-top:0;border-top:0}
+  .ebs.fit .wide .cols>.col+.col{border-left:1px solid var(--line);padding-left:calc(var(--sp-3xl) * .5);margin-left:calc(var(--sp-3xl) * -.5)}
+  .ebs.fit .wide .cols>.col.say-col{align-self:center}
+}
+.ebs .vsw{display:inline-flex;gap:2px;padding:2px;margin:0 0 var(--sp-md);background:var(--track);border-radius:var(--r-pill)}
+.ebs .vsw button{all:unset;cursor:pointer;font-size:var(--fs-xs);line-height:var(--lh-xs,1.4);padding:var(--sp-2xs) var(--sp-md);border-radius:var(--r-pill);color:var(--ink-2);transition:background var(--dur-fast) var(--ease-out)}
+.ebs .vsw button[aria-pressed="true"]{background:var(--card);color:var(--ink);font-weight:var(--fw-semibold)}
+.ebs .vsw button:focus-visible{outline:2px solid var(--save-bar);outline-offset:1px}
+.ebs [data-view][hidden]{display:none!important}
+.ebs .hy-k{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-sm);margin:0 0 var(--sp-md)}
+.ebs .hy-k>div{background:var(--card-2);border-radius:var(--r-md);padding:var(--sp-sm) var(--sp-md)}
+.ebs .hy-k span{display:block;font-size:var(--fs-xs);color:var(--ink-2)}
+.ebs .hy-k b{display:block;font-size:var(--fs-lg);font-weight:var(--fw-semibold)}
+.ebs .hy-leg{display:flex;flex-wrap:wrap;gap:var(--sp-xs) var(--sp-lg);font-size:var(--fs-xs);color:var(--ink-2);margin:0 0 var(--sp-xs)}
+.ebs .hy-leg>span{display:inline-flex;align-items:center;gap:var(--sp-2xs)}
+.ebs .hy-leg i{display:inline-block;width:.6rem;height:.6rem;border-radius:2px}
+.ebs .hy-leg i.l,.ebs .hy-svg .l{background:var(--out-bar);fill:var(--out-bar)}
+.ebs .hy-leg i.r,.ebs .hy-svg .r{background:var(--in-bar);fill:var(--in-bar)}
+.ebs .hy-leg i.p,.ebs .hy-svg .p{background:var(--save-bar);fill:var(--save-bar)}
+.ebs .hy-svg{display:block;width:100%;height:12rem;overflow:visible}
+.ebs .hy-svg text{font-size:var(--fs-2xs);fill:var(--ink-3);font-variant-numeric:tabular-nums}
+.ebs .hy-svg text.hy-t{fill:var(--ink);font-weight:var(--fw-semibold)}
+.ebs .hy-svg line{stroke:var(--line)}
+.ebs .hy-svg g.yr{cursor:pointer;transition:opacity var(--dur-fast) var(--ease-out)}
+.ebs .hy-svg g.yr.dim{opacity:.4}
+.ebs .hy-read{font-size:var(--fs-xs);color:var(--ink-2);min-height:1.5em;margin:var(--sp-xs) 0 var(--sp-sm)}
+.ebs .hy-read b{color:var(--ink);font-weight:var(--fw-semibold)}
+.ebs .hy-f{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:var(--sp-2xs);padding:var(--sp-3xs) var(--sp-sm);border:1px solid var(--line);border-radius:var(--r-pill);font-size:var(--fs-xs);color:var(--ink);transition:border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out)}
+.ebs .hy-f:hover{border-color:var(--ink-3)}
+.ebs .hy-f:focus-visible{outline:2px solid var(--save-bar);outline-offset:1px}
+.ebs .hy-f[aria-pressed="false"]{color:var(--ink-3);border-style:dashed}
+.ebs .hy-f[aria-pressed="false"] i{background:transparent!important;box-shadow:inset 0 0 0 1.5px var(--ink-3);opacity:1}
+.ebs .hy-hint{font-size:var(--fs-2xs);color:var(--ink-3);align-self:center}
+.ebs .hy-svg line.z{stroke:var(--ink-3)}
+.ebs .hy-svg .ng{opacity:.55}
+</style>
+<h2 class="sr-only">สรุปงบ Tesla ไตรมาส 2/2026: รายได้ $28.24B โต 25.5% กำไรขั้นต้น $17 ต่อรายได้ $100 กำไรจากการดำเนินงาน $1.41 ต่อ $100 กำไรสุทธิ $4 ต่อ $100 ส่วนใหญ่จากกำไรหุ้น SpaceX กระแสเงินสดอิสระติดลบ $3.87 ต่อ $100 เงินสดและเงินลงทุน $43.52B หนี้เงินกู้ $9.34B</h2>
+
+<div class="ebs" id="ebs">
+
+<div class="hd">
+  <div class="brand">
+    <div class="logo"><i class="ti ti-car" aria-hidden="true"></i></div>
+    <div>
+      <h1>TSLA งบไตรมาส 2/2026</h1>
+      <p class="lede">Tesla ผลิตและขายรถยนต์ไฟฟ้า แบตเตอรี่กักเก็บพลังงาน (Megapack, Powerwall) และบริการหลังการขาย พร้อมลงทุนใน AI รถไร้คนขับ และหุ่นยนต์ สรุปไตรมาส 2 (1 เม.ย.–30 มิ.ย. 2026) ให้อ่านจบในหน้าเดียว: ขายได้เท่าไร เหลือกำไรแค่ไหน และเงินสดไปไหน</p>
+    </div>
+  </div>
+  <div class="meta">
+    <div class="chips">
+      <a class="chip" href="https://www.sec.gov/Archives/edgar/data/1318605/000162828026049270/tsla-20260630.htm"><i class="ti ti-file-text" aria-hidden="true"></i>10-Q · ไตรมาสสิ้นสุด 30 มิ.ย. 2026</a>
+      <a class="chip" href="https://www.sec.gov/Archives/edgar/data/1318605/000162828026049213/exhibit991.htm"><i class="ti ti-file-text" aria-hidden="true"></i>EX-99.1 · Q2 Update</a>
+      <span class="chip">M = ล้าน · B = พันล้าน (ดอลลาร์)</span>
+    </div>
+    <div class="chips">
+      <span class="chip"><span class="dot" style="background:var(--in-bar)"></span>เงินเข้า</span>
+      <span class="chip"><span class="dot" style="background:var(--out-bar)"></span>เงินออก</span>
+      <span class="chip"><span class="dot" style="background:var(--save-bar)"></span>เงินสด</span>
+    </div>
+  </div>
+</div>
+
+<div class="pane" style="grid-area:p1">
+  <section class="card wide" style="grid-area:pl">
+    <div class="card-h"><div><p class="eyebrow in">งบกำไรขาดทุน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Consolidated Statements of Operations (unaudited)</b><em>Income Statement · P&amp;L</em><small>ไตรมาส 2 ปี 2026 (3 เดือนถึง 30 มิ.ย. 2026) จาก 10-Q</small></span></span></p><h3>ทุก $100 ที่ขายได้ เหลือกำไรจากการดำเนินงาน $1.41 กำไรสุทธิ $4</h3></div></div>
+    <div class="card-b">
+      <div class="cols"><div class="col"><div class="sk" role="img" aria-label="รายได้ $100 แบ่งเป็นต้นทุนขาย $83.17 และกำไรขั้นต้น $16.83 กำไรขั้นต้นแบ่งเป็นวิจัยและพัฒนา $8.40 ขายและบริหาร $7.02 เหลือกำไรจากการดำเนินงาน $1.41 บวกกำไรจากหุ้น SpaceX ที่ยังไม่ได้ขาย $3.56 หักดอกเบี้ยและอื่น ๆ สุทธิ $0.26 และภาษี $0.71 เหลือกำไรสุทธิ $3.99"><script type="application/json">{"nodes":[{"id":"rev","l":0,"v":100,"c":"in"},{"id":"gp","l":1,"v":16.83,"c":"in"},{"id":"cogs","l":1,"v":83.17,"c":"out"},{"id":"oi","l":2,"v":1.41,"c":"in"},{"id":"gain","l":2,"v":3.56,"c":"in"},{"id":"rnd","l":2,"v":8.4,"c":"out"},{"id":"sga","l":2,"v":7.02,"c":"out2"},{"id":"ni","l":3,"v":3.99,"c":"in"},{"id":"oth","l":3,"v":0.26,"c":"out"},{"id":"tax","l":3,"v":0.71,"c":"out"}],"links":[["rev","gp",16.83],["rev","cogs",83.17],["gp","oi",1.41],["gp","rnd",8.4],["gp","sga",7.02],["oi","ni",1.41],["gain","ni",2.58],["gain","oth",0.26],["gain","tax",0.71]]}</script><div class="sk-l" data-for="rev"><span>รายได้<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total revenues</b><em>Revenue · Sales</em><small>$28,236M ในไตรมาสนี้</small></span></span></span><b class="num t-in">$100</b></div><div class="sk-l" data-for="gp"><span>กำไรขั้นต้น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Gross profit</b><em>Gross Profit</em><small>= Total revenues − Total cost of revenues · ปีก่อน $17.24</small></span></span></span><b class="num t-in">$16.83</b></div><div class="sk-l" data-for="cogs"><span>ต้นทุนขาย<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total cost of revenues</b><em>COGS</em><small>รวมค่าเสื่อมราคาโรงงานและรถให้เช่า · ปีก่อน $82.76</small></span></span></span><b class="num t-out">−$83.17</b></div><div class="sk-l" data-for="oi"><span>กำไรจากการดำเนินงาน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Income from operations</b><em>Operating Income</em><small>= Gross profit − Total operating expenses · ปีก่อน $4.10</small></span></span></span><b class="num t-in">$1.41</b></div><div class="sk-l" data-for="gain"><span>กำไรจากหุ้น SpaceX<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>SpaceX equity investment unrealized gain</b><em>Unrealized Gain · Non-operating</em><small>$1,005M อยู่ใน Other income, net · ราคาตลาดของหุ้น SpaceX ที่ซื้อ $2.00B เมื่อ มี.ค. 2026 ขึ้น ยังไม่ได้ขาย ไม่ใช่เงินสดและไม่ได้มาจากการขายสินค้า</small></span></span></span><b class="num t-in">+$3.56</b></div><div class="sk-l" data-for="rnd"><span>วิจัยและพัฒนา<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Research and development</b><em>R&amp;D</em><small>+49.2% YoY ($1,589M → $2,371M) งาน AI และ SBC · ปีก่อน $7.06</small></span></span></span><b class="num t-out">−$8.40</b></div><div class="sk-l" data-for="sga"><span>ขายและบริหาร<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Selling, general and administrative</b><em>SG&amp;A</em><small>บริษัทรวมการขายกับบริหารไว้บรรทัดเดียว ไม่แยก S&amp;M · +45.1% YoY ส่วนหนึ่งจาก SBC ของรางวัล CEO ปี 2025 · ปีก่อน $6.07</small></span></span></span><b class="num t-out">−$7.02</b></div><div class="sk-l" data-for="ni"><span>กำไรสุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income</b><em>Net Income</em><small>$1,128M รวมส่วนของผู้ถือหุ้นส่วนน้อย $14M · ส่วนของผู้ถือหุ้นสามัญ $1,114M ($3.95) · ปีก่อน $5.29</small></span></span></span><b class="num t-in">$3.99</b></div><div class="sk-l" data-for="oth"><span>ดอกเบี้ยและอื่น ๆ สุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Interest income − Interest expense + Other income, net (ไม่รวมกำไร SpaceX)</b><em>Other Non-operating, net</em><small>ไม่มีบรรทัดนี้ในงบ คำนวณ = $422M − $81M + ($590M − $1,005M) = −$74M · ส่วนที่ติดลบมาจากขาดทุนอัตราแลกเปลี่ยนและราคา bitcoin</small></span></span></span><b class="num t-out">−$0.26</b></div><div class="sk-l" data-for="tax"><span>ภาษี<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Provision for income taxes</b><em>Income Tax</em><small>$201M · อัตราภาษี 15% (ปีก่อน 23%) มีผลประโยชน์ภาษีครั้งเดียว $274M จากแคลิฟอร์เนีย · ภาษีคิดจากกำไรก่อนภาษีรวม การแบ่งสายในภาพทำให้ยอดรวมตรงกันเท่านั้น</small></span></span></span><b class="num t-out">−$0.71</b></div></div>
+      </div><div class="col say-col"><p class="say">อัตรากำไรขั้นต้น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Gross profit ÷ Total revenues</b><em>Gross Margin</em><small>บริษัทรายงาน Total gross margin 16.8% ใน 10-Q</small></span></span> อยู่ที่ <strong>16.8%</strong> ใกล้ปีก่อน (17.2%) แต่ลดจาก 21.1% ในไตรมาส 1 ส่วนหนึ่งเพราะอัตรากำไรธุรกิจพลังงานลดจาก 30.3% เหลือ 20.4% ขณะที่ค่าวิจัยและพัฒนาโต 49% และค่าขายและบริหารโต 45% กำไรจากการดำเนินงานจึงเหลือ<strong>เพียง $1.41</strong> จาก $4.10 ปีก่อน กำไรสุทธิที่สูงกว่านั้นมาจาก<strong>กำไรทางบัญชีจากหุ้น SpaceX $3.56</strong> ซึ่งยังไม่ได้ขายและไม่ได้มาจากการขายสินค้า จึงควรดูกำไรจากการดำเนินงานและกระแสเงินสดเป็นหลัก</p></div></div>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>ตัวเลขจากงบ</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>Q2 2026: Total revenues $28,236M · ปีก่อน $22,496M</li><li>Total cost of revenues $23,485M ($83.17 ต่อ $100) · Gross profit $4,751M (16.8%) · ปีก่อน $3,878M (17.2%)</li><li>Gross margin รายธุรกิจ: Automotive &amp; services 16.4% (ปีก่อน 15.4%) · Energy generation and storage 20.4% (ปีก่อน 30.3%)</li><li>R&amp;D $2,371M · SG&amp;A $1,982M · Restructuring and other $0 · Total operating expenses $4,353M ($15.42 ต่อ $100)</li><li>Income from operations $398M (1.4%) · ปีก่อน $923M (4.1%)</li><li>Interest income $422M · Interest expense −$81M · Other income, net $590M ซึ่งรวม SpaceX equity investment unrealized gain $1,005M (จากงบกระแสเงินสดรายไตรมาสใน EX-99.1)</li><li>Income before income taxes $1,329M · ถ้าไม่รวมกำไร SpaceX เหลือ $324M (คำนวณเอง)</li><li>Provision for income taxes $201M (15%) รวมผลประโยชน์ภาษี $274M จากการกลับรายการ valuation allowance ในแคลิฟอร์เนีย</li><li>Net income $1,128M ($3.99) · Net income attributable to common stockholders $1,114M · ปีก่อน $1,172M (−4.9%)</li><li>SBC $1,151M และ Depreciation, amortization and impairment $1,619M รวมอยู่ในบรรทัดข้างบนแล้ว ไม่นับซ้ำ</li><li>Non-GAAP (ของบริษัท): Net income $1,153M · EPS $0.33 · Adjusted EBITDA $3,273M (11.6%) ซึ่งตัดกำไร SpaceX ออกและบวกกลับ SBC และค่าเสื่อม</li><li class="src-l">ที่มา: <a href="https://www.sec.gov/Archives/edgar/data/1318605/000162828026049270/tsla-20260630.htm">10-Q</a> · <a href="https://www.sec.gov/Archives/edgar/data/1318605/000162828026049213/exhibit991.htm">EX-99.1</a></li></ul></span></span></div>
+  </section>
+  <section class="card grow" style="grid-area:yoy">
+    <div class="card-h"><div><p class="eyebrow in">งบกำไรขาดทุน · เทียบปีก่อน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Year over Year</b><em>YoY</em><small>เทียบไตรมาส 2 ปี 2025 (3 เดือนถึง 30 มิ.ย. 2025) · แยกรายได้ตามบรรทัดในงบกำไรขาดทุน</small></span></span></p><h3>รายได้โต 26% จากยอดส่งมอบรถที่เพิ่ม 25%</h3></div></div>
+    <div class="card-b">
+      <div class="vs">
+        <div><p class="lbl">Q2 2025</p><p class="kpi num">$22.50B</p></div>
+        <i class="ti ti-arrow-right arrow" aria-hidden="true"></i>
+        <div><p class="lbl">Q2 2026</p><p class="kpi num t-in">$28.24B</p></div>
+      </div>
+      <div class="sk" role="img" aria-label="รายได้ไตรมาส 2 ปี 2026 $28.24B มาจากขายรถยนต์ $20.01B บริการและอื่น ๆ $4.58B พลังงาน $3.14B ให้เช่ารถ $0.36B และขายเครดิตคาร์บอน $0.15B"><script type="application/json">{"nodes":[{"id":"auto","l":0,"v":20006,"c":"in"},{"id":"svc","l":0,"v":4581,"c":"in"},{"id":"en","l":0,"v":3139,"c":"in"},{"id":"lease","l":0,"v":364,"c":"in"},{"id":"cred","l":0,"v":146,"c":"in"},{"id":"rev","l":1,"v":28236,"c":"in"}],"links":[["auto","rev",20006],["svc","rev",4581],["en","rev",3139],["lease","rev",364],["cred","rev",146]]}</script><div class="sk-l" data-for="auto"><span>ขายรถยนต์<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Automotive sales</b><em>Revenue line</em><small>ยอดส่งมอบรถ 480,126 คัน +25% YoY และรายได้ FSD (Supervised) แบบสมัครสมาชิกเพิ่ม · ปีก่อน $15,787M</small></span></span></span><b class="num t-in">$20.01B <span style="color:var(--ink-3);font-weight:var(--fw-regular)">+26.7%</span></b></div><div class="sk-l" data-for="svc"><span>บริการและอื่น ๆ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Services and other</b><em>Revenue line</em><small>รถมือสอง ซ่อมบำรุง ประกันและ Supercharging · ปีก่อน $3,046M</small></span></span></span><b class="num t-in">$4.58B <span style="color:var(--ink-3);font-weight:var(--fw-regular)">+50.4%</span></b></div><div class="sk-l" data-for="en"><span>พลังงาน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Energy generation and storage</b><em>Segment</em><small>Megapack และ Powerwall · ปีก่อน $2,789M</small></span></span></span><b class="num t-in">$3.14B <span style="color:var(--ink-3);font-weight:var(--fw-regular)">+12.5%</span></b></div><div class="sk-l" data-for="lease"><span>ให้เช่ารถ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Automotive leasing</b><em>Revenue line</em><small>ปีก่อน $435M</small></span></span></span><b class="num t-out">$0.36B <span style="color:var(--ink-3);font-weight:var(--fw-regular)">−16.3%</span></b></div><div class="sk-l" data-for="cred"><span>ขายเครดิตคาร์บอน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Automotive regulatory credits</b><em>Revenue line</em><small>ขายเครดิตให้ผู้ผลิตรถรายอื่น ลดลงเพราะรัฐบาลจำกัดโครงการเครดิตบางส่วน · ปีก่อน $439M</small></span></span></span><b class="num t-out">$0.15B <span style="color:var(--ink-3);font-weight:var(--fw-regular)">−66.7%</span></b></div><div class="sk-l" data-for="rev"><span>รายได้รวม<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total revenues</b><em>Revenue</em><small>ปีก่อน $22,496M</small></span></span></span><b class="num t-in">$28.24B <span style="color:var(--ink-3);font-weight:var(--fw-regular)">+25.5%</span></b></div></div>
+      <p class="say">การเติบโตมาจาก<strong>ธุรกิจเดิมทั้งหมด</strong> ดีลเดียวในไตรมาสคือซื้อบริษัทฮาร์ดแวร์ AI ด้วยหุ้น $1.95B ซึ่งบันทึกเป็นการซื้อสินทรัพย์ (asset acquisition) ไม่มีรายได้แยกเปิดเผย ขณะที่รายได้จากเครดิตคาร์บอนซึ่งเกือบเป็นกำไรล้วนลดลง 67%</p>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>ตัวเลขจากงบ</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>Total revenues $22,496M → $28,236M (+25.5%)</li><li>Automotive sales $15,787M → $20,006M · Regulatory credits $439M → $146M · Leasing $435M → $364M</li><li>Energy generation and storage $2,789M → $3,139M · Services and other $3,046M → $4,581M</li><li>ยอดส่งมอบ 384,122 → 480,126 คัน (+25%) · Active FSD subscriptions 0.95M → 1.48M (EX-99.1)</li><li>Note 3 – Acquisition: AI hardware company ราคา $1.95B จ่ายเป็นหุ้นและ equity awards ($1.73B มีเงื่อนไขผลงาน) · $222M เป็นสิทธิบัตรและเทคโนโลยี</li><li>Income from operations −56.9% · Net income attributable to common stockholders −4.9%</li><li class="src-l">ที่มา: <a href="https://www.sec.gov/Archives/edgar/data/1318605/000162828026049270/tsla-20260630.htm">10-Q</a> · <a href="https://www.sec.gov/Archives/edgar/data/1318605/000162828026049213/exhibit991.htm">EX-99.1</a></li></ul></span></span></div>
+  </section>
+</div>
+
+<div class="pane" style="grid-area:p2">
+  <section class="card wide" style="grid-area:cf">
+    <div class="card-h"><div><p class="eyebrow save">งบกระแสเงินสด<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Consolidated Statements of Cash Flows (unaudited)</b><em>Cash Flow Statement · CF</em><small>10-Q พิมพ์เฉพาะยอด 6 เดือน ตัวเลขไตรมาส 2 มาจากงบกระแสเงินสดรายไตรมาสใน EX-99.1</small></span></span></p><h3>ไตรมาส 2 ลงทุนเกินเงินสดที่หาได้ $1.1B ไม่ซื้อหุ้นคืน ไม่จ่ายปันผล</h3></div></div>
+    <div class="card-b">
+      <div class="cols even"><div class="col"><p class="lbl" style="font-weight:var(--fw-semibold)">ไตรมาส 2 · ต่อรายได้ $100</p>
+      <div class="sk" role="img" aria-label="ต่อรายได้ $100: กำไรสุทธิ $3.99 บวกค่าตอบแทนเป็นหุ้น $4.08 ค่าเสื่อมราคา $5.73 และรายการอื่น $2.83 เป็นเงินสดจากการดำเนินงาน $16.63 รายจ่ายลงทุน $20.50 มากกว่าเงินสดที่หาได้ กระแสเงินสดอิสระติดลบ $3.87 ใช้เงินสดที่มีอยู่"><script type="application/json">{"nodes":[{"id":"ni","l":0,"v":3.99,"c":"in"},{"id":"sbc","l":0,"v":4.08,"c":"in"},{"id":"da","l":0,"v":5.73,"c":"in"},{"id":"oth","l":0,"v":2.83,"c":"in"},{"id":"ocf","l":1,"v":16.63,"c":"in"},{"id":"gap","l":1,"v":3.87,"c":"out"},{"id":"capex","l":2,"v":20.5,"c":"out"}],"links":[["ni","ocf",3.99],["sbc","ocf",4.08],["da","ocf",5.73],["oth","ocf",2.83],["ocf","capex",16.63],["gap","capex",3.87]]}</script><div class="sk-l" data-for="ni"><span>กำไรสุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income</b><em>Net Income</em><small>$1,128M</small></span></span></span><b class="num t-in">$3.99</b></div><div class="sk-l" data-for="sbc"><span>ค่าตอบแทนเป็นหุ้น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Stock-based compensation</b><em>SBC</em><small>$1,151M หักเป็นค่าใช้จ่ายแต่ไม่ได้จ่ายเป็นเงินสด</small></span></span></span><b class="num t-in">+$4.08</b></div><div class="sk-l" data-for="da"><span>ค่าเสื่อมราคา<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Depreciation, amortization and impairment</b><em>D&amp;A</em><small>$1,619M ไม่ใช่เงินสด</small></span></span></span><b class="num t-in">+$5.73</b></div><div class="sk-l" data-for="oth"><span>รายการอื่น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Other adjustments and changes in operating assets and liabilities</b><em>Working Capital · Other</em><small>คำนวณ = OCF − Net income − SBC − D&amp;A ($799M) · เจ้าหนี้เพิ่ม +$1,940M สต็อกลด +$592M หักด้วยตัดกำไร SpaceX ที่ไม่ใช่เงินสด −$1,005M และสินทรัพย์อื่นเพิ่ม −$1,259M</small></span></span></span><b class="num t-in">+$2.83</b></div><div class="sk-l" data-for="ocf"><span>เงินสดจากการดำเนินงาน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net cash provided by operating activities</b><em>OCF</em><small>$4,697M · ปีก่อน $11.29 ต่อ $100</small></span></span></span><b class="num t-in">$16.63</b></div><div class="sk-l" data-for="gap"><span>กระแสเงินสดอิสระติดลบ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Free cash flow (non-GAAP)</b><em>FCF</em><small>= OCF − Capital expenditures = −$1,092M ส่วนที่ลงทุนเกินเงินสดที่หาได้ ใช้เงินสดที่มีอยู่ · ปีก่อน +$0.65 ต่อ $100</small></span></span></span><b class="num t-out">−$3.87</b></div><div class="sk-l" data-for="capex"><span>รายจ่ายลงทุน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Capital expenditures</b><em>CapEx</em><small>$5,789M เพิ่มจาก $2,394M ปีก่อน · ในงบ 10-Q ชื่อ Purchases of property and equipment excluding finance leases, net of sales</small></span></span></span><b class="num t-out">−$20.50</b></div></div>
+      <p class="say">เงินสดจากการดำเนินงานโต 85% แต่<strong>รายจ่ายลงทุนเพิ่มเป็น 2.4 เท่า</strong> สำหรับศูนย์คอมพิวเตอร์ AI โรงงานใหม่และกองรถของบริษัท บริษัทคาดรายจ่ายลงทุนทั้งปี 2026 <strong>เกิน $25B</strong> ครึ่งปีแรกใช้ไป $8.3B ครึ่งปีหลังจึงน่าจะใช้มากกว่า ทั้ง 6 เดือนกระแสเงินสดอิสระยังเป็นบวก $352M</p>
+      </div><div class="col"><p class="sec">ไตรมาส 2 · กิจกรรมจัดหาเงิน</p>
+      <div class="sk" role="img" aria-label="ไตรมาส 2: กระแสเงินสดอิสระติดลบ $1,092M คืนเงินกู้ $392M และอื่น ๆ $44M ใช้เงินจากการกู้เพิ่ม $348M พนักงานใช้สิทธิ์ซื้อหุ้น $107M ค่าทนายคืน $18M และเงินสดที่มีอยู่ $1,055M"><script type="application/json">{"nodes":[{"id":"cash","l":0,"v":1055,"c":"out"},{"id":"debt","l":0,"v":348,"c":"in"},{"id":"opt","l":0,"v":107,"c":"in"},{"id":"leg","l":0,"v":18,"c":"in"},{"id":"fcf","l":1,"v":1092,"c":"out"},{"id":"rep","l":1,"v":392,"c":"out2"},{"id":"o","l":1,"v":44,"c":"out2"}],"links":[["cash","fcf",1055],["debt","fcf",37],["debt","rep",311],["opt","rep",81],["opt","o",26],["leg","o",18]]}</script><div class="sk-l" data-for="cash"><span>ใช้เงินสดที่มีอยู่<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Cash used from existing balance</b><em>Funding Gap</em><small>ไม่มีบรรทัดนี้ในงบ คำนวณ = เงินที่ใช้ทั้งหมด − เงินที่ได้เข้ามา</small></span></span></span><b class="num t-out">$1,055M</b></div><div class="sk-l" data-for="debt"><span>กู้เพิ่ม<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Proceeds from issuances of debt</b><em>Debt Raised</em><small>ส่วนใหญ่เป็นเงินกู้ระยะสั้นในจีนและ asset-backed notes</small></span></span></span><b class="num t-in">+$348M</b></div><div class="sk-l" data-for="opt"><span>พนักงานใช้สิทธิ์ซื้อหุ้น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Proceeds from exercises of stock options and other stock issuances</b><em>Option Proceeds</em><small>เงินที่พนักงานจ่ายเพื่อใช้สิทธิ์ซื้อหุ้น</small></span></span></span><b class="num t-in">+$107M</b></div><div class="sk-l" data-for="leg"><span>ค่าทนายคืน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Recovery of legal fees associated with shareholder settlement</b><em>Settlement</em><small>เงินคืนจากคดีผู้ถือหุ้น</small></span></span></span><b class="num t-in">+$18M</b></div><div class="sk-l" data-for="fcf"><span>กระแสเงินสดอิสระติดลบ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Free cash flow (non-GAAP)</b><em>FCF</em><small>OCF $4,697M − CapEx $5,789M</small></span></span></span><b class="num t-out">−$1,092M</b></div><div class="sk-l" data-for="rep"><span>คืนเงินกู้<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Repayments of debt</b><em>Debt Repaid</em><small>สายในภาพแบ่งเพื่อให้ยอดรวมตรงกันเท่านั้น</small></span></span></span><b class="num t-out">−$392M</b></div><div class="sk-l" data-for="o"><span>อื่น ๆ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Principal payments on finance leases + Debt issuance costs + Distributions paid to noncontrolling interests</b><em>Financing · Other</em><small>$19M + $4M + $21M</small></span></span></span><b class="num t-out">−$44M</b></div></div>
+      <p class="say">ไม่ซื้อหุ้นคืนและไม่จ่ายเงินปันผล ส่วนที่ขาดใช้เงินสดที่มีอยู่ เงินสดและเงินลงทุนลดลง $1.2B ในไตรมาส จำนวนหุ้นตามงบเพิ่มเป็น 3,949M (+5.3% จากสิ้นปี 2025) ส่วนใหญ่เป็น<strong>หุ้นจำกัดสิทธิ์ที่ CEO ได้จากการใช้สิทธิ์ออปชันปี 2018</strong> และหุ้นที่ใช้ซื้อบริษัท AI ทำให้เกิด dilution<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Dilution</b><em>Dilution</em><small>สัดส่วนความเป็นเจ้าของของผู้ถือหุ้นเดิมลดลงเมื่อมีหุ้นใหม่เพิ่ม</small></span></span></p></div></div>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>ตัวเลขจากงบ</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>Q2: Net cash provided by operating activities $4,697M ($16.63 ต่อ $100) · ปีก่อน $2,540M</li><li>Capital expenditures $5,789M ($20.50) · ปีก่อน $2,394M</li><li>Free cash flow −$1,092M (−$3.87) ≈ −$364M ต่อเดือน · ปีก่อน +$146M · ไตรมาส 1 +$1,444M</li><li>6 เดือน: OCF $8,634M − CapEx $8,282M = FCF $352M ($0.70 ต่อรายได้ $100)</li><li>ถ้าใช้เงินแบบไตรมาส 2 ต่อเนื่อง เงินสดและเงินลงทุน $43.52B พอใช้ราว 10 ปี (คำนวณเอง สมมติอัตราคงที่ ไม่กู้เพิ่ม ไม่ใช่ประมาณการของบริษัท)</li><li>Q2 non-cash: SBC $1,151M · D&amp;A and impairment $1,619M · SpaceX unrealized gain −$1,005M · FX loss $312M · Digital assets loss $112M · Deferred taxes −$165M</li><li>Q2 financing +$37M = Debt issued $348M − Repaid $392M − Costs $4M + Options $107M − Finance leases $19M + Legal fees $18M − NCI $21M</li><li>Q2 investing −$5,928M = CapEx −$5,789M + Short-term investments net −$132M − Intangibles −$7M · ไตรมาส 1 ซื้อหุ้น SpaceX $2,002M</li><li>หุ้นคงเหลือ 3,224M (30 มิ.ย. 2025) → 3,751M (31 ธ.ค. 2025) → 3,949M (30 มิ.ย. 2026) รวมหุ้นจำกัดสิทธิ์ของ CEO: รางวัลปี 2025 ราว 423.7M หุ้น (ยังไม่ได้รับสิทธิ์) และหุ้นจากใช้สิทธิ์ออปชันปี 2018 ราว 304.0M หักหุ้นที่ใช้จ่ายราคาใช้สิทธิ์ 17.5M · รางวัลชั่วคราวปี 2025 96M หุ้นถูกริบ</li><li>หลังงวด (29 ก.ย. 2026): วงเงินกู้ใหม่ไม่มีหลักประกันรวม $30B (term loan $20B + revolving $8B + $2B) แทนวงเงินเดิม $5B</li><li class="src-l">ที่มา: <a href="https://www.sec.gov/Archives/edgar/data/1318605/000162828026049270/tsla-20260630.htm">10-Q</a> · <a href="https://www.sec.gov/Archives/edgar/data/1318605/000162828026049213/exhibit991.htm">EX-99.1</a> · <a href="https://www.sec.gov/Archives/edgar/data/1318605/000162828026063820/tsla-20260929.htm">8-K วงเงินกู้</a></li></ul></span></span></div>
+  </section>
+</div>
+
+<div class="pane" style="grid-area:p3">
+  <section class="card wide" style="grid-area:bs">
+    <div class="card-h"><div><p class="eyebrow">งบฐานะการเงิน · อัตราส่วน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Consolidated Balance Sheets + Key financial ratios</b><em>Balance Sheet · Ratios</em><small>งบดุล ณ 30 มิ.ย. 2026 · อัตราส่วนใช้ 12 เดือนล่าสุด ก.ค. 2025–มิ.ย. 2026</small></span></span></p><h3>เงินสดมากกว่าหนี้เงินกู้ $34B กำไรสุทธิเพียง 3.7% ของรายได้</h3></div></div>
+    <div class="card-b">
+      <div class="cols even"><div class="col"><div class="vsw" role="group" aria-label="มุมมองงบฐานะการเงิน"><button type="button" aria-pressed="true" data-show="now">ณ วันนี้</button><button type="button" aria-pressed="false" data-show="hist">ย้อนหลัง 6 ปี</button></div>
+      <div data-view="now"><div class="bsxg">
+        <div class="bsxg-main"><div class="bsx" role="img" aria-label="สินทรัพย์รวม $148.52B เท่ากับหนี้สิน $61.01B (41.1%) บวกส่วนของผู้ถือหุ้น $87.47B (58.9%) หนี้เงินกู้ $9.34B">
+        <div class="bsx-c bsx-a" data-g="assets"><span class="bl">สินทรัพย์รวม<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total assets</b><em>Total Assets</em><small>ใหญ่สุดคือ Property, plant and equipment, net $47.26B ตามด้วย Short-term investments $28.31B และ Cash $15.22B · Other non-current assets $9.45B รวมหุ้น SpaceX $3.01B</small></span></span></span><span class="bv num">$148.52B</span><span class="bp num">100%</span></div>
+        <div class="bsx-r">
+          <div class="bsx-c bsx-li thin" style="flex:41.1 1 0;position:relative;align-content:start"><span class="bl" style="grid-column:1">หนี้สิน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total liabilities</b><em>Total Liabilities</em><small>ใหญ่สุดคือ Accounts payable $15.32B และ Accrued liabilities and other $15.26B ไม่ใช่หนี้เงินกู้ · ไม่รวม Redeemable noncontrolling interests $0.05B ที่อยู่ระหว่างหนี้สินกับส่วนของผู้ถือหุ้น</small></span></span></span><span class="bv num">$61.01B</span><span class="bp num" style="grid-row:1;grid-column:2">41.1%</span><span class="bsx-debt" data-g="debt" style="height:15.3%"><span>หนี้เงินกู้ $9.34B</span></span></div>
+          <div class="bsx-c bsx-eq" data-g="equity" style="flex:58.9 1 0"><span class="bl">ส่วนของผู้ถือหุ้น<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total stockholders’ equity + Noncontrolling interests in subsidiaries</b><em>Equity</em><small>$86.86B + $0.61B = $87.47B (Total equity ตามงบส่วนของผู้ถือหุ้น) · ROE ใช้เฉพาะ $86.86B</small></span></span></span><span class="bv num">$87.47B</span><span class="bp num">58.9%</span></div>
+        </div>
+      </div></div>
+        <div class="bsxg-side"></div>
+        <div class="bsxg-leg"><div class="g-leg k-a"><i class="sw"></i><b>ROA 2.7%</b><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income attributable to common stockholders ÷ Average total assets</b><em>ROA</em><small>หารด้วยสินทรัพย์ทั้งหมด ตอบว่าใช้ทรัพย์สินทั้งหมดได้คุ้มแค่ไหน · กำไร 12 เดือน ÷ สินทรัพย์เฉลี่ย 30 มิ.ย. 2025 และ 2026 · ถ้าใช้กำไรจากการดำเนินงาน 12 เดือน $4.37B แทน ได้ 3.2% (คำนวณเอง)</small></span></span><span>กำไร ÷ สินทรัพย์รวม</span><small>ปีก่อน 4.9%</small></div><div class="g-leg k-i"><i class="sw"></i><b>ROI 4.2%</b><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Average (stockholders’ equity + total debt and finance leases)</b><em>ROI</em><small>หารด้วยเงินทุนที่ลงไปทั้งหมด (เงินเจ้าของ + หนี้เงินกู้) · ROI ไม่มีนิยามมาตรฐานเดียว คำนวณเอง</small></span></span><span>กำไร ÷ (หนี้เงินกู้ + เงินเจ้าของ)</span><small>ปีก่อน 7.4%</small></div><div class="g-leg k-e"><i class="sw"></i><b>ROE 4.6%</b><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income attributable to common stockholders ÷ Average total stockholders’ equity</b><em>ROE</em><small>หารด้วยเงินของผู้ถือหุ้นอย่างเดียว ไม่รวมส่วนของผู้ถือหุ้นส่วนน้อย</small></span></span><span>กำไร ÷ เงินเจ้าของ</span><small>ปีก่อน 8.2%</small></div></div>
+        <svg class="bsxg-svg" aria-hidden="true"></svg>
+      </div>
+      <div class="bsx-note"><span>สินทรัพย์ = หนี้สิน + ส่วนของผู้ถือหุ้น</span><span>หนี้เงินกู้<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Current portion of debt and finance leases + Debt and finance leases, net of current portion</b><em>Total Debt</em><small>$1.42B + $7.92B = $9.34B รวมสัญญาเช่าการเงิน $0.28B · เกือบทั้งหมดเป็นหนี้ non-recourse ของบริษัทย่อย ใหญ่สุดคือวงเงินทุนหมุนเวียนในจีน $5.89B · Operating lease ไม่นับ</small></span></span> $9.34B</span></div>
+      <p class="say">เงินสดและเงินลงทุน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Cash and cash equivalents + Short-term investments</b><em>Cash &amp; Investments</em><small>ตัวเลขเดียวกับที่บริษัทระบุใน Liquidity ($15.22B + $28.31B) · ไม่รวมหุ้น SpaceX $3.01B bitcoin $0.67B และ Restricted cash $1.21B</small></span></span> <strong>$43.52B</strong> มากกว่าหนี้เงินกู้ราว 4.7 เท่า สภาพคล่อง<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total current assets ÷ Total current liabilities</b><em>Current Ratio</em><small>$68.76B ÷ $35.43B คำนวณเอง</small></span></span> 1.94 เท่า หนี้สินส่วนใหญ่เป็น<strong>เจ้าหนี้การค้าและค่าใช้จ่ายค้างจ่าย</strong> ไม่ใช่เงินกู้</p>
+      </div>
+      <div data-view="hist" hidden>
+        <div class="hy-k"><div><span>กำไร/ขาดทุนสะสม 2020 → 2025</span><b class="num t-in">+$44.40B</b></div><div><span>เงินผู้ถือหุ้นใส่สุทธิ 2020 → 2025</span><b class="num t-save">+$15.33B</b></div></div>
+        <div class="hy-leg"><span><button type="button" class="hy-f" data-s="l" aria-pressed="true"><i class="l"></i>หนี้สิน</button><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total liabilities</b><em>Total Liabilities</em><small>รวมหนี้การค้า รายได้รับล่วงหน้า และหนี้เงินกู้</small></span></span></span><span><button type="button" class="hy-f" data-s="r" aria-pressed="true"><i class="r"></i>กำไร/ขาดทุนสะสม</button><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Retained earnings (Accumulated deficit)</b><em>Retained Earnings</em><small>กำไรทุกปีที่เก็บไว้ในบริษัท หลังหักขาดทุนและเงินปันผล ติดลบ = ขาดทุนสะสม</small></span></span></span><span><button type="button" class="hy-f" data-s="p" aria-pressed="true"><i class="p"></i>เงินผู้ถือหุ้นใส่สุทธิ</button><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Common stock + Additional paid-in capital − Treasury stock + AOCI</b><em>Paid-in Capital, net</em><small>คำนวณเอง = Total equity − Retained earnings · การขายหุ้นเพิ่มทุน ออกหุ้นซื้อกิจการ และหุ้นพนักงานเพิ่มยอดนี้ การซื้อหุ้นคืนลดยอดนี้</small></span></span></span><span class="hy-hint">แตะเพื่อเลือกดูทีละส่วน</span></div>
+        <div class="hy" role="img" aria-label="สินทรัพย์รวมรายปี 2020 ถึง 2025 แยกเป็นหนี้สิน กำไร/ขาดทุนสะสม และเงินผู้ถือหุ้นใส่สุทธิ ปี 2020 กำไร/ขาดทุนสะสม −$5.40B เงินผู้ถือหุ้นใส่ $28.47B ปี 2025 กำไร/ขาดทุนสะสม $39.00B เงินผู้ถือหุ้นใส่ $43.80B"><script type="application/json">{"unit":"B","years":["2020","2021","2022","2023","2024","2025"],"l":[28.42,30.55,36.44,43.01,48.39,54.94],"r":[-5.4,0.33,12.88,27.88,35.21,39.0],"p":[28.47,30.69,32.6,35.48,38.41,43.8],"ni":[0.72,5.52,12.56,15.0,7.09,3.79]}</script><svg class="hy-svg" aria-hidden="true"></svg><p class="hy-read"></p></div>
+        <p class="say">สินทรัพย์เพิ่มจาก $52B เป็น $138B ส่วนใหญ่มาจาก<strong>กำไรสะสม</strong> ที่พลิกจากขาดทุนสะสม −$5.4B เป็น +$39.0B ส่วนเงินผู้ถือหุ้นใส่เพิ่มขึ้นจากหุ้นที่ให้พนักงานและผู้บริหารเป็นหลัก กำไรปี 2023 สูงเป็นพิเศษจากผลประโยชน์ภาษีครั้งเดียว และกำไรลดลงต่อเนื่องในปี 2024–2025</p>
+      </div>
+      </div><div class="col"><p class="sec">อัตราส่วน · 12 เดือนล่าสุด (ก.ค. 2025–มิ.ย. 2026)</p>
+      <div class="ratio"><div class="rr"><span class="rl">รายได้รวม<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Total revenues</b><em>Revenue</em><small>12 เดือน = ปี 2025 − 6 เดือนแรกปี 2025 + 6 เดือนแรกปี 2026</small></span></span></span><span class="rv num t-in">$103.62B</span><span class="rc">ปีก่อน $92.72B</span></div><div class="rr"><span class="rl">กำไรสุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income attributable to common stockholders</b><em>Net Income</em><small>ไม่รวมส่วนของผู้ถือหุ้นส่วนน้อย · ตรงกับยอด TTM ที่บริษัทพิมพ์ใน EX-99.1</small></span></span></span><span class="rv num t-in">$3.80B</span><span class="rc">ปีก่อน $5.88B</span></div><div class="rr"><span class="rl">อัตรากำไรสุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Total revenues</b><em>Net Margin</em><small>คำนวณเอง ทั้งสองตัวเป็นยอด 12 เดือน</small></span></span></span><span class="rv num t-in">3.7%</span><span class="rc">ปีก่อน 6.3%</span></div><div class="rr"><span class="rl">PE<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Price ÷ Diluted EPS (TTM)</b><em>P/E</em><small>ราคาปิด $373.71 ณ 20 ต.ค. 2026 ÷ EPS ปรับลด (GAAP) 12 เดือน $1.08 คำนวณเอง · ราคาเปลี่ยนทุกวัน ตัวเลขนี้ไม่อัปเดตเอง</small></span></span></span><span class="rv num t-in">346.0x</span><span class="rc">EPS 12 เดือน $1.08</span></div><div class="rr"><span class="rl">Forward PE<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Price ÷ Consensus EPS (next 4 quarters)</b><em>Forward P/E</em><small>Consensus EPS จาก Nasdaq (ข้อมูล Zacks) ณ 21 ต.ค. 2026 รวม 4 ไตรมาส ก.ค. 2026–มิ.ย. 2027 = $0.81 นักวิเคราะห์ 10, 10, 5, 5 รายต่อไตรมาส เป็น EPS แบบ adjusted (non-GAAP) จึงเทียบกับ PE ย้อนหลังแบบตรงตัวไม่ได้ เป็นการคาดการณ์ของบุคคลที่สาม ไม่ใช่ตัวเลขจากงบ</small></span></span></span><span class="rv num t-in">461.4x</span><span class="rc">EPS คาด $0.81</span></div><div class="rr"><span class="rl">P/B<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Price ÷ Book value per share</b><em>P/B</em><small>ราคาปิด $373.71 ÷ Book ต่อหุ้น $21.99 (Total stockholders’ equity $86,858M ÷ 3,949M หุ้นตามงบดุล 30 มิ.ย. 2026 · ไม่มีหุ้นบุริมสิทธิ) คำนวณเอง · ราคาเปลี่ยนทุกวัน ตัวเลขนี้ไม่อัปเดตเอง</small></span></span></span><span class="rv num t-in">17.0x</span><span class="rc">Book/หุ้น $21.99</span></div></div>
+      <p class="say">กำไร 12 เดือนลดลง 35% ขณะที่รายได้โต 12% ราคาหุ้นจึงสูงถึง <strong>346 เท่าของกำไรย้อนหลัง</strong> และนักวิเคราะห์คาดกำไรปีหน้าต่ำกว่าเดิม (Forward PE 461x) ราคาสะท้อนความคาดหวังเรื่อง AI หุ่นยนต์และ robotaxi มากกว่ากำไรปัจจุบัน กำไรไตรมาส 2 ยังรวมกำไรหุ้น SpaceX $1.0B ที่ไม่ใช่เงินสด</p></div></div>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>ตัวเลขจากงบ</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>30 มิ.ย. 2026: Total assets $148.52B · Total liabilities $61.01B · Redeemable NCI $0.05B · Total stockholders’ equity $86.86B + NCI $0.61B = Total equity $87.47B</li><li>Cash and cash equivalents $15.22B + Short-term investments $28.31B = $43.52B · สิ้นปี 2025 $44.06B</li><li>หนี้เงินกู้ $9.34B = Total debt $9.06B (principal $9.08B, current $1.35B) + Finance leases $0.28B · Net cash $34.18B (คำนวณเอง)</li><li>วงเงินที่ยังไม่ใช้ $5.00B ณ 30 มิ.ย. · หลังงวดวงเงินใหม่รวม $30B (29 ก.ย. 2026)</li><li>Current ratio 1.94x ($68.76B ÷ $35.43B)</li><li>12 เดือน: Revenue $94.83B − $41.83B + $50.62B = $103.62B · ปีก่อน $97.69B − $46.80B + $41.83B = $92.72B</li><li>Net income attributable $3.79B − $1.58B + $1.59B = $3.80B · ปีก่อน $7.09B − $2.79B + $1.58B = $5.88B</li><li>Income from operations 12 เดือน $4.36B − $1.32B + $1.34B = $4.37B</li><li>ROA: $3.80B ÷ ($128.57B + $148.52B) ÷ 2 · ปีก่อน $5.88B ÷ ($112.83B + $128.57B) ÷ 2</li><li>ROE: ÷ Stockholders’ equity เฉลี่ย ($77.31B + $86.86B) ÷ 2 · ปีก่อน ($66.47B + $77.31B) ÷ 2</li><li>ROI: ÷ (Equity + Debt) เฉลี่ย ($84.53B + $96.20B) ÷ 2 · ปีก่อน ($74.21B + $84.53B) ÷ 2 · หนี้รวม finance leases $7.22B (มิ.ย. 2025) และ $7.75B (มิ.ย. 2024)</li><li>PE: $373.71 ÷ Diluted EPS ($1.08 − $0.45 + $0.45 = $1.08) ≈ $3.80B ÷ หุ้นปรับลดราว 3,530M</li><li>Forward PE: $0.22 + $0.25 + $0.16 + $0.18 = $0.81 (10, 10, 5, 5 ราย)</li><li>P/B: $373.71 ÷ ($86.86B ÷ 3,949M หุ้น) · หุ้นตามงบรวมหุ้นจำกัดสิทธิ์ของ CEO ถ้าใช้หุ้นถัวเฉลี่ยขั้นพื้นฐาน 3,237M จะได้ราว 13.9x (คำนวณเอง)</li><li>ราคา: Yahoo Finance · Consensus: <a href="https://www.nasdaq.com/market-activity/stocks/tsla/earnings">Nasdaq</a></li><li>ย้อนหลัง (B, ปีงบ 2020–2025 จาก 10-K): Total liabilities 28.42 · 30.55 · 36.44 · 43.01 · 48.39 · 54.94</li><li>Retained earnings -5.40 · 0.33 · 12.88 · 27.88 · 35.21 · 39.00</li><li>เงินผู้ถือหุ้นใส่สุทธิ = Total equity − Retained earnings (คำนวณเอง) 28.47 · 30.69 · 32.60 · 35.48 · 38.41 · 43.80</li><li>ผลรวม 3 ส่วนต่ำกว่า Total assets เล็กน้อย เพราะไม่รวม Redeemable noncontrolling interests และ temporary equity ($0.66B ปี 2020 ลดเหลือ $0.06B ปี 2025)</li><li>ข้อมูลย้อนหลังจาก SEC XBRL companyfacts (10-K)</li><li class="src-l">ที่มา: <a href="https://www.sec.gov/Archives/edgar/data/1318605/000162828026049270/tsla-20260630.htm">10-Q</a> · <a href="https://www.sec.gov/Archives/edgar/data/1318605/000162828026049213/exhibit991.htm">EX-99.1</a> · SEC XBRL companyfacts (10-K FY2025, 10-Q Q2 2024/2025)</li></ul></span></span></div>
+  </section>
+</div>
+
+<div class="pane" style="grid-area:p4">
+  <section class="card grow" style="grid-area:sum">
+    <div class="card-h"><div><p class="eyebrow">สรุป</p><h3>ภาพรวมสำหรับนักลงทุน</h3></div></div>
+    <div class="card-b">
+      <ul class="list">
+        <li><span class="ico in"><i class="ti ti-circle-check" aria-hidden="true"></i></span><div><b>จุดแข็ง</b><p>รายได้โต 26% ยอดส่งมอบรถไตรมาส 2 สูงสุดเป็นประวัติการณ์ ธุรกิจบริการโต 50% เงินสดสุทธิ<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Cash &amp; Investments − Total Debt</b><em>Net Cash</em><small>คำนวณเอง ณ 30 มิ.ย. 2026</small></span></span> $34.2B และเพิ่งได้วงเงินกู้ใหม่ $30B</p></div></li>
+        <li><span class="ico out"><i class="ti ti-alert-triangle" aria-hidden="true"></i></span><div><b>ความเสี่ยง</b><p>อัตรากำไรจากการดำเนินงานเหลือ 1.4% รายจ่ายลงทุนปีนี้เกิน $25B ทำให้กระแสเงินสดอิสระติดลบได้ต่อ ค่าตอบแทนหุ้นของ CEO ที่ยังไม่รับรู้ $9.8B (และอาจถึงราว $120B ถ้าเป้าหมายอื่นเป็นไปได้) กำไรผันผวนตามราคาหุ้น SpaceX และ bitcoin และราคาหุ้นสูงมากเทียบกำไร (PE 346x)</p></div></li>
+        <li><span class="ico save"><i class="ti ti-eye" aria-hidden="true"></i></span><div><b>ติดตามในงบถัดไป</b><p>งบไตรมาส 3 ประกาศ 21 ต.ค. 2026 หลังตลาดปิด ยอดส่งมอบไตรมาส 3 อยู่ที่ 486,532 คัน (−2.1% YoY) ดูรายจ่ายลงทุนครึ่งปีหลัง อัตรากำไรธุรกิจพลังงาน และการเบิกวงเงินกู้ใหม่</p></div></li>
+        <li><span class="ico neu"><i class="ti ti-flag" aria-hidden="true"></i></span><div><b>แนวโน้มอัตรากำไรจากการดำเนินงาน<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Income from operations ÷ Total revenues</b><em>Operating Margin</em><small>GAAP คำนวณเอง · ทำกำไรแล้ว จึงดูแนวโน้ม margin แทนจุดคุ้มทุน</small></span></span></b><p>4.1% → 1.4% ปีต่อปี ไตรมาส 1 อยู่ที่ 4.2% ค่าวิจัยและพัฒนาและค่าขายและบริหารโตเร็วกว่ารายได้</p><div class="track mini"><div class="fill in" style="width:1.4%"></div></div></div></li>
+      </ul>
+    </div>
+    <div class="card-f"><span class="tip src" tabindex="0"><b>มุมมอง</b><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b src-b" role="tooltip"><ul><li>Tesla ยังทำกำไรและมีเงินสดสุทธิสูง แต่กำไรจากการขายรถและพลังงานบางลงมาก</li><li>บริษัทอยู่ในช่วงลงทุนหนักที่สุด (ศูนย์คอมพิวเตอร์ AI, Cybercab, Optimus, Semi, โรงงานแบตเตอรี่และชิป) เดิมพันคือรายได้ใหม่จาก AI ซอฟต์แวร์และกองรถอัตโนมัติต้องมาถึงก่อนที่เงินลงทุนจะกดกระแสเงินสดนานเกินไป</li><li>กำไรสุทธิไตรมาสนี้พึ่งกำไรทางบัญชีจากหุ้น SpaceX ควรดูกำไรจากการดำเนินงานและกระแสเงินสดประกอบ</li><li>ราคาหุ้นสะท้อนอนาคตมากกว่ากำไรปัจจุบัน ความผันผวนของราคาจึงสูง</li><li>หลังงวด: วงเงินกู้ $30B (<a href="https://www.sec.gov/Archives/edgar/data/1318605/000162828026063820/tsla-20260929.htm">8-K</a>) และยอดส่งมอบไตรมาส 3 (<a href="https://www.sec.gov/Archives/edgar/data/1318605/000162828026064366/exhibit991111111.htm">8-K</a>)</li></ul></span></span> · ข้อมูลเพื่อการศึกษา ไม่ใช่คำแนะนำซื้อขาย</div>
+  </section>
+</div>
+
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.ebs .yrs[data-years]').forEach(function(box){
+    var y=+box.dataset.years,cells=Math.max(10,Math.ceil(y));
+    box.style.gridTemplateColumns='repeat('+cells+',1fr)';box.innerHTML='';
+    for(var i=0;i<cells;i++){var c=document.createElement('i'),f=Math.max(0,Math.min(1,y-i));
+      if(f>0)c.style.background='linear-gradient(90deg,var(--save-bar) '+(f*100)+'%,var(--track) '+(f*100)+'%)';
+      c.style.animationDelay=(0.3+i*0.05)+'s';box.appendChild(c);}
+  });
+  document.querySelectorAll('.ebs .fill').forEach(function(b,i){b.style.animationDelay=(i*0.05)+'s';});
+  document.querySelectorAll('.ebs .tip').forEach(function(t){
+    function place(){var b=t.querySelector('.tip-b');if(!b)return;b.style.setProperty('--dx','0px');
+      var r=b.getBoundingClientRect(),m=8,dx=0;
+      if(r.right>window.innerWidth-m)dx=window.innerWidth-m-r.right;
+      if(r.left+dx<m)dx=m-r.left;
+      b.style.setProperty('--dx',dx+'px');}
+    t.addEventListener('mouseenter',place);t.addEventListener('focus',place);
+  });
+  var el=document.getElementById('ebs');
+  if(!el||!document.body.hasAttribute('data-fit'))return;
+  var root=document.documentElement;
+  function fit(){
+    var wide=window.innerWidth>=1200;
+    el.classList.toggle('fit',wide);
+    root.style.fontSize='';
+    if(!wide)return;
+    var size=Math.min(17,Math.max(10,window.innerHeight/52));
+    root.style.fontSize=size+'px';
+    while(root.scrollHeight>window.innerHeight+1&&size>9){size-=0.25;root.style.fontSize=size+'px';}
+  }
+  window.addEventListener('resize',fit);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+  fit();
+})();
+</script>
+<p class="foot">AI-DRAFT · ข้อมูลจาก SEC EDGAR · ข้อมูลเพื่อการศึกษา ไม่ใช่คำแนะนำการลงทุน</p>
+</main>
+
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  var CS=null;function css(v){return (CS&&CS.getPropertyValue(v).trim())||'#888'}
+  function draw(g){
+    CS=getComputedStyle(g);var svg=g.querySelector('.bsxg-svg'), R=g.getBoundingClientRect();
+    function r(sel){var b=g.querySelector('[data-g="'+sel+'"]').getBoundingClientRect();return {l:b.left-R.left,t:b.top-R.top,r:b.right-R.left,b:b.bottom-R.top,w:b.width,h:b.height}}
+    var A=r('assets'),E=r('equity'),D=r('debt');
+    var top=Math.min(A.t,D.t), bot=Math.max(A.b,E.b), bxR=Math.max(E.r,D.r);
+    var cs={a:css('--save-bar'),i:css('--ink-3'),e:css('--in-bar')}, tc={a:css('--save'),i:css('--ink'),e:css('--in')}, bg=css('--card');
+    svg.innerHTML='';
+    function lab(x,y,txt,k,rot){var gg=document.createElementNS(NS,'g');gg.setAttribute('transform','translate('+x+' '+y+')'+(rot?' rotate(-90)':''));
+      var w=txt.length*7.6+12,h=17,rc=document.createElementNS(NS,'rect');rc.setAttribute('x',-w/2);rc.setAttribute('y',-h/2);rc.setAttribute('width',w);rc.setAttribute('height',h);rc.setAttribute('rx',h/2);rc.setAttribute('fill',cs[k]);gg.appendChild(rc);
+      var tx=document.createElementNS(NS,'text');tx.setAttribute('text-anchor','middle');tx.setAttribute('dominant-baseline','central');tx.setAttribute('y','.5');tx.setAttribute('font-size','11.5');tx.setAttribute('font-weight','700');tx.setAttribute('fill','#fff');tx.setAttribute('letter-spacing','.4');tx.textContent=txt;gg.appendChild(tx);svg.appendChild(gg)}
+    function pth(d,k){var p=document.createElementNS(NS,'path');p.setAttribute('d',d);p.setAttribute('stroke',cs[k]);p.setAttribute('stroke-width',3);p.setAttribute('fill','none');p.setAttribute('stroke-linejoin','round');p.setAttribute('stroke-linecap','round');svg.appendChild(p)}
+    // ROA: left of assets box
+    var xa=A.l-10; pth('M'+(xa+6)+','+(A.t+1)+' H'+xa+' V'+(A.b-1)+' H'+(xa+6),'a'); if(A.b-A.t>40) lab(xa,(A.t+A.b)/2,'ROA','a',true);
+    // ROE: under equity box
+    var ye=E.b+10; pth('M'+(E.l+1)+','+(ye-6)+' V'+ye+' H'+(E.r-1)+' V'+(ye-6),'e'); lab((E.l+E.r)/2,ye,'ROE','e',false);
+    // ROI: right of debt slice + equity box
+    var xi=bxR+10; pth('M'+(xi-6)+','+(D.t+1)+' H'+xi+' V'+(E.b-1)+' H'+(xi-6),'i'); if(E.b-D.t>40) lab(xi,(D.t+E.b)/2,'ROI','i',true);
+  }
+  function all(){document.querySelectorAll('.bsxg').forEach(draw)}
+  window.addEventListener('load',all);window.addEventListener('resize',all);
+  if(window.ResizeObserver){var ro=new ResizeObserver(all);document.querySelectorAll('.bsxg').forEach(function(g){ro.observe(g)})}
+  setTimeout(all,300);
+})();
+</script>
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  function draw(box){
+    var d=JSON.parse(box.querySelector('script').textContent);
+    var rem=parseFloat(getComputedStyle(document.documentElement).fontSize)||16;
+    var W=box.clientWidth,H=box.clientHeight,nw=Math.round(rem*.6),pad=Math.round(rem*.5),gap=rem*.4;
+    var by={},layers=[];
+    d.nodes.forEach(function(n,i){n.o=i;n.in=[];n.out=[];by[n.id]=n;(layers[n.l]=layers[n.l]||[]).push(n);});
+    var L=d.links.map(function(k){var o={s:by[k[0]],t:by[k[1]],v:k[2]};o.s.out.push(o);o.t.in.push(o);return o;});
+    var last=layers.length-1,labs={};
+    box.querySelectorAll('.sk-l').forEach(function(e){labs[e.dataset.for]=e;e.style.maxWidth='';e.classList.remove('wrap');});
+    // the last layer's labels hang to its right, so reserve their widest label
+    var right=0;d.nodes.forEach(function(n){var e=labs[n.id];if(e&&n.l===last)right=Math.max(right,e.offsetWidth);});
+    var step=(W-nw-gap-right)/Math.max(1,last),room=step-nw-gap*2;
+    // earlier layers' labels must stop before the next node column, so they wrap
+    d.nodes.forEach(function(n){var e=labs[n.id];if(e&&n.l<last&&e.offsetWidth>room){e.classList.add('wrap');e.style.maxWidth=room+'px';}});
+    d.nodes.forEach(function(n){var e=labs[n.id];n.lh=e?e.offsetHeight:0;});
+    // each node takes the taller of its ribbon band and its label, so labels never stack on each other
+    function need(s){var m=0;layers.forEach(function(ly){var t=0;ly.forEach(function(n){t+=Math.max(n.v*s,n.lh)});m=Math.max(m,t+(ly.length-1)*pad);});return m;}
+    var sc=Infinity;layers.forEach(function(ly){var t=0;ly.forEach(function(n){t+=n.v});sc=Math.min(sc,(H-(ly.length-1)*pad)/t);});
+    // shrink the bands a little, then let the figure grow instead of squeezing labels together
+    var sc0=sc;while(sc>sc0*.6&&need(sc)>H)sc*=.97;
+    var nh=Math.ceil(need(sc));if(nh>H+1){box.style.height=nh+'px';H=nh;}
+    layers.forEach(function(ly,li){var y=0;ly.forEach(function(n){n.x=li*step;n.h=n.v*sc;var slot=Math.max(n.h,n.lh);n.y=y+(slot-n.h)/2;y+=slot+pad;});});
+    d.nodes.forEach(function(n){
+      n.out.sort(function(a,b){return a.t.o-b.t.o});n.in.sort(function(a,b){return a.s.o-b.s.o});
+      var y=n.y;n.out.forEach(function(k){k.sy=y;y+=k.v*sc});y=n.y;n.in.forEach(function(k){k.ty=y;y+=k.v*sc});});
+    var svg=box.querySelector('svg');if(!svg){svg=document.createElementNS(NS,'svg');svg.setAttribute('aria-hidden','true');box.insertBefore(svg,box.firstChild);}
+    svg.innerHTML='';
+    var col={'in':'var(--in-bar)','out':'var(--out-bar)','out2':'var(--out-bar-2)','save':'var(--save-bar)'};
+    L.forEach(function(k){var x0=k.s.x+nw,x1=k.t.x,cx=(x0+x1)/2,t=Math.max(k.v*sc,1),p=document.createElementNS(NS,'path');
+      p.setAttribute('d','M'+x0+','+k.sy+' C'+cx+','+k.sy+' '+cx+','+k.ty+' '+x1+','+k.ty+' L'+x1+','+(k.ty+t)+' C'+cx+','+(k.ty+t)+' '+cx+','+(k.sy+t)+' '+x0+','+(k.sy+t)+' Z');
+      p.setAttribute('class','sk-k');p.setAttribute('style','fill:'+col[k.t.c]);p.dataset.s=k.s.id;p.dataset.t=k.t.id;svg.appendChild(p);});
+    d.nodes.forEach(function(n){var r=document.createElementNS(NS,'rect');r.setAttribute('x',n.x);r.setAttribute('y',n.y);r.setAttribute('width',nw);r.setAttribute('height',Math.max(n.h,2));r.setAttribute('rx',3);
+      r.setAttribute('class','sk-r');r.setAttribute('style','fill:'+col[n.c]);r.dataset.n=n.id;svg.appendChild(r);});
+    box.querySelectorAll('.sk-l').forEach(function(e){var n=by[e.dataset.for];if(!n)return;e.style.left=(n.x+nw+gap)+'px';e.style.top=(n.y+n.h/2)+'px';});
+    // hover: light the whole path through a node, upstream and downstream
+    function lit(id){var on={},ks=[];on[id]=1;
+      (function dn(i){L.forEach(function(k){if(k.s.id===i){ks.push(k);if(!on[k.t.id]){on[k.t.id]=1;dn(k.t.id)}}})})(id);
+      (function up(i){L.forEach(function(k){if(k.t.id===i){ks.push(k);if(!on[k.s.id]){on[k.s.id]=1;up(k.s.id)}}})})(id);
+      box.classList.add('hl');
+      svg.querySelectorAll('.sk-k').forEach(function(p){p.classList.toggle('on',ks.some(function(k){return k.s.id===p.dataset.s&&k.t.id===p.dataset.t}))});
+      svg.querySelectorAll('.sk-r').forEach(function(r){r.classList.toggle('on',!!on[r.dataset.n])});
+      box.querySelectorAll('.sk-l').forEach(function(e){e.classList.toggle('on',!!on[e.dataset.for])});}
+    function off(){box.classList.remove('hl')}
+    svg.querySelectorAll('.sk-r').forEach(function(r){r.addEventListener('mouseenter',function(){lit(r.dataset.n)});r.addEventListener('mouseleave',off)});
+    svg.querySelectorAll('.sk-k').forEach(function(p){p.addEventListener('mouseenter',function(){lit(p.dataset.t)});p.addEventListener('mouseleave',off)});
+    if(!box.dataset.b){box.dataset.b=1;box.querySelectorAll('.sk-l').forEach(function(e){e.addEventListener('mouseenter',function(){lit(e.dataset.for)});e.addEventListener('mouseleave',off)});}
+  }
+  function all(){document.querySelectorAll('.ebs .sk').forEach(draw)}
+  window.addEventListener('load',all);window.addEventListener('resize',all);
+  if(window.ResizeObserver){var ro=new ResizeObserver(all);document.querySelectorAll('.ebs .sk').forEach(function(b){ro.observe(b)})}
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(all);
+  all();
+})();
+</script>
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg',SER=[['p','เงินผู้ถือหุ้นใส่'],['r','กำไรสะสม'],['l','หนี้สิน']];
+  function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+  function vis(box){if(!box._vis)box._vis={l:1,r:1,p:1};return box._vis;}
+  function draw(box){
+    var d=JSON.parse(box.querySelector('script').textContent),svg=box.querySelector('svg'),read=box.querySelector('.hy-read'),u=d.unit||'B';
+    function f(v){return (v<0?'−$':'$')+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+u;}
+    function short(v){var a=Math.abs(v);return (v<0?'−$':'$')+(a<10?a.toFixed(1):Math.round(a).toLocaleString('en-US'));}
+    var W=svg.clientWidth,H=svg.clientHeight;if(!W||!H)return;
+    while(svg.firstChild)svg.removeChild(svg.firstChild);
+    svg.setAttribute('viewBox','0 0 '+W+' '+H);
+    var fs=parseFloat(getComputedStyle(el('text',{},svg)).fontSize)||12;
+    svg.removeChild(svg.firstChild);
+    var on=vis(box),ser=SER.filter(function(s){return on[s[0]];}),all3=ser.length===3,n=d.years.length;
+    var pos=[],neg=[],tot=[];
+    d.years.forEach(function(_,i){var a=0,b=0;ser.forEach(function(s){var v=d[s[0]][i];if(v>=0)a+=v;else b+=v;});pos.push(a);neg.push(b);tot.push(a+b);});
+    var hi=Math.max.apply(null,pos),lo=Math.min.apply(null,neg),span=(hi-lo)||1,step=Math.pow(10,Math.floor(Math.log10(span/3)));
+    [1,2,2.5,5,10].some(function(m){if(span/(step*m)<=4){step*=m;return true;}});
+    var ymax=Math.ceil(hi/step)*step,ymin=lo<0?lo*1.08:0,top=fs*1.6,bot=fs*1.8+(ymin<0?fs*1.2:0),left=fs*3.4,h=H-top-bot;
+    var y=function(v){return top+(ymax-v)/(ymax-ymin||1)*h;},sc=function(v){return Math.abs(v)/(ymax-ymin||1)*h;};
+    for(var t=Math.ceil(ymin/step-1e-9)*step;t<=ymax+step*1e-6;t+=step){var tv=+t.toFixed(6);el('line',{x1:left,x2:W,y1:y(tv),y2:y(tv),'class':tv===0?'z':''},svg);
+      var tx=el('text',{x:left-fs*.4,y:y(tv)+fs*.35,'text-anchor':'end'},svg);tx.textContent=(tv<0?'−$':'$')+Math.abs(+tv.toFixed(2)).toLocaleString('en-US')+u;}
+    var band=(W-left)/n,bw=Math.min(band*.56,fs*3.2),gap=2,groups=[];
+    function sel(i,dim){groups.forEach(function(g,j){g.classList.toggle('dim',!!dim&&j!==i);});
+      read.innerHTML='<b>'+d.years[i]+'</b>'+(all3?' · สินทรัพย์ '+f(tot[i]):'')+ser.slice().reverse().map(function(s){return ' · '+s[1]+' '+f(d[s[0]][i]);}).join('')+(d.ni?' · กำไรปีนั้น '+f(d.ni[i]):'');}
+    d.years.forEach(function(yr,i){
+      var g=el('g',{'class':'yr',tabindex:0},svg),x=left+band*i+(band-bw)/2,up=y(0),dn=y(0);
+      el('rect',{x:left+band*i,y:top,width:band,height:h,fill:'transparent'},g);
+      var lastPos=-1;ser.forEach(function(s,k){if(d[s[0]][i]>0)lastPos=k;});
+      ser.forEach(function(s,k){var v=d[s[0]][i],hh=sc(v);if(!hh)return;
+        if(v>0){el('rect',{'class':s[0],x:x,y:up-hh,width:bw,height:Math.max(0,hh-(k===lastPos?0:gap)),rx:k===lastPos?3:0},g);up-=hh;}
+        else{el('rect',{'class':s[0]+' ng',x:x,y:dn+gap,width:bw,height:Math.max(0,hh-gap),rx:0},g);dn+=hh;}});
+      var lb=el('text',{'class':'hy-t',x:x+bw/2,y:(pos[i]>0?up-fs*.5:dn+fs*1.2),'text-anchor':'middle'},g);lb.textContent=short(tot[i]);
+      var yl=el('text',{x:x+bw/2,y:H-fs*.4,'text-anchor':'middle'},g);yl.textContent=yr;
+      g.addEventListener('mouseenter',function(){sel(i,1);});g.addEventListener('focus',function(){sel(i,1);});g.addEventListener('click',function(){sel(i,1);});
+      groups.push(g);});
+    svg.onmouseleave=function(){sel(n-1);};
+    sel(n-1);
+  }
+  function all(){document.querySelectorAll('.ebs .hy').forEach(draw);}
+  document.querySelectorAll('.ebs .hy').forEach(function(box){
+    var fs=box.parentNode.querySelectorAll('.hy-f');
+    fs.forEach(function(b){b.addEventListener('click',function(){
+      var on=vis(box),k=b.dataset.s,count=[].filter.call(fs,function(o){return o.getAttribute('aria-pressed')!=='false';}).length;
+      if(on[k]&&count===1){fs.forEach(function(o){on[o.dataset.s]=1;o.setAttribute('aria-pressed','true');});}
+      else{on[k]=on[k]?0:1;b.setAttribute('aria-pressed',on[k]?'true':'false');}
+      draw(box);});});
+  });
+  document.querySelectorAll('.ebs .vsw').forEach(function(sw){
+    var card=sw.closest('.card');
+    sw.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){
+      sw.querySelectorAll('button').forEach(function(o){o.setAttribute('aria-pressed',o===b?'true':'false');});
+      card.querySelectorAll('[data-view]').forEach(function(v){v.hidden=v.dataset.view!==b.dataset.show;});
+      all();window.dispatchEvent(new Event('resize'));});});
+  });
+  window.addEventListener('resize',all);
+  if(window.ResizeObserver)document.querySelectorAll('.ebs .hy-svg').forEach(function(s){new ResizeObserver(function(){draw(s.closest('.hy'));}).observe(s);});
+  all();
+})();
+</script>
+<script data-ebs-theme-listener>addEventListener('message',e=>{const t=e.data&&e.data.ebsTheme;if(!t)return;const r=document.documentElement;if(t==='light'||t==='dark')r.dataset.theme=t;else delete r.dataset.theme})</script>
+</body>
+</html>
