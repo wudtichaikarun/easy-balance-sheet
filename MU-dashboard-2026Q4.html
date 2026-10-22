@@ -40,6 +40,7 @@ main{overflow-x:clip}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ebs{--bg:#1F231D;--card:#2B2F24;--card-2:#20241C;--line:#454B38;--track:#3A3F31;--ink:#FFFFFF;--ink-2:#E4E7DA;--ink-3:#B9C0A8;--in:#7FCBA8;--in-bar:#5CAE86;--out:#E6A088;--out-bar:#D6866A;--out-bar-2:#8E5A47;--save:#8FC1C4;--save-bar:#5E9A9E;--tip-bg:#EDEFE4;--tip-ink:#2B2F24;--tip-ink-strong:#1B2013;--tip-ink-2:#6B7460;--tip-pill:rgba(0,0,0,.08);--tip-rule:rgba(0,0,0,.1);--tip-link:#3B6E73}}
 :root[data-theme="dark"] .ebs{--bg:#1F231D;--card:#2B2F24;--card-2:#20241C;--line:#454B38;--track:#3A3F31;--ink:#FFFFFF;--ink-2:#E4E7DA;--ink-3:#B9C0A8;--in:#7FCBA8;--in-bar:#5CAE86;--out:#E6A088;--out-bar:#D6866A;--out-bar-2:#8E5A47;--save:#8FC1C4;--save-bar:#5E9A9E;--tip-bg:#EDEFE4;--tip-ink:#2B2F24;--tip-ink-strong:#1B2013;--tip-ink-2:#6B7460;--tip-pill:rgba(0,0,0,.08);--tip-rule:rgba(0,0,0,.1);--tip-link:#3B6E73}
 .ebs *{box-sizing:border-box}
+@media (max-width:759px){.ebs{--card-pad-x:var(--sp-xl);--card-pad-y:var(--sp-xl);--grid-gap:var(--sp-lg)}}
 .ebs{display:grid;gap:var(--grid-gap);grid-template-columns:minmax(0,1fr);grid-template-areas:"hd" "p1" "p2" "p3" "p4"}
 @media (min-width:760px){.ebs{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"hd hd" "p1 p2" "p3 p4"}}
 .ebs .pane{min-width:0;display:flex;flex-direction:column;gap:var(--grid-gap);align-self:start}
@@ -49,8 +50,9 @@ main{overflow-x:clip}
 .ebs .logo{display:none}
 .ebs h1{font-size:var(--fs-2xl);font-weight:var(--fw-semibold);letter-spacing:var(--ls-2xl);line-height:var(--lh-2xl);margin:0}
 .ebs .lede{font-size:var(--fs-md);line-height:var(--lh-md);color:var(--ink-2);margin:var(--sp-sm) 0 0;font-weight:var(--fw-regular);letter-spacing:var(--ls-md)}
-.ebs .meta{display:flex;flex-direction:column;align-items:flex-end;gap:var(--sp-sm)}
-.ebs .chips{display:flex;gap:var(--sp-sm);flex-wrap:wrap;justify-content:flex-end}
+/* chips sit under the lede on every width: one left-aligned row that wraps, not two right-aligned stacks */
+.ebs .meta{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-sm)}
+.ebs .chips{display:flex;gap:var(--sp-sm);flex-wrap:wrap;justify-content:flex-start}
 .ebs .chip{display:inline-flex;align-items:center;gap:var(--sp-xs);height:1.875rem;padding:0 var(--sp-md);border-radius:var(--r-pill);font-size:var(--fs-xs);color:var(--ink);background:var(--card);text-decoration:none;white-space:nowrap}
 .ebs a.chip{color:var(--save)}
 .ebs .dot{width:.5rem;height:.5rem;border-radius:var(--r-pill);display:inline-block}
@@ -158,9 +160,12 @@ main{overflow-x:clip}
 .ebs .bsxg-side .g-chip{position:absolute;left:0;right:0;align-items:flex-start;text-align:left}
 .ebs .g-chip.k-a b{color:var(--save)}.ebs .g-chip.k-i b{color:var(--ink)}.ebs .g-chip.k-e b{color:var(--in)}
 .ebs .bsx-debt{position:absolute;left:0;right:0;bottom:0;border:0;background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--ink-3) var(--hatch-1),transparent) 0 4px,color-mix(in srgb,var(--ink-3) var(--hatch-2),transparent) 4px 8px);display:flex;align-items:center;justify-content:flex-end;padding:0 var(--sp-sm);pointer-events:none}
+/* labels stay above the hatched debt band; a liabilities cell that holds the band gets room for it */
+.ebs .bsx-c>.bl,.ebs .bsx-c>.bv,.ebs .bsx-c>.bp{position:relative;z-index:1}
+.ebs .bsx-c.thin:has(>.bsx-debt){min-height:4rem}
 .ebs .bsx-debt span{font-size:var(--fs-2xs);font-weight:var(--fw-semibold);color:var(--ink);background:var(--card);padding:0 var(--sp-2xs);border-radius:var(--r-xs)}
 .ebs .g-chip .g-sum{font-size:var(--fs-2xs);font-weight:var(--fw-semibold);color:var(--ink)}
-.ebs .bsxg-leg{grid-column:1/-1;display:flex;flex-direction:column;gap:var(--sp-2xs)}
+.ebs .bsxg-leg{grid-column:1/-1;display:flex;flex-direction:column;gap:var(--sp-xs)}
 .ebs .g-leg{display:grid;grid-template-columns:1.25rem 5.25rem 1.1rem 1fr auto;align-items:baseline;column-gap:var(--sp-xs);font-size:var(--fs-2xs);color:var(--ink-2)}
 .ebs .g-leg .sw{width:1rem;height:3px;border-radius:2px;align-self:center}
 .ebs .g-leg b{font-weight:var(--fw-semibold);white-space:nowrap}
@@ -192,7 +197,8 @@ main{overflow-x:clip}
 .ebs .sw.out{background:var(--out-bar)}.ebs .sw.out2{background:var(--out-bar-2)}.ebs .sw.in{background:var(--in-bar)}.ebs .sw.in2{background:color-mix(in srgb,var(--in-bar) var(--tint-half),var(--card))}
 .ebs .br.top{border-top-width:3px;border-top-style:solid;border-bottom:0;border-radius:var(--r-sm) var(--r-sm) 0 0;margin:var(--sp-lg) 2px 0}
 .ebs .br.top .pill{top:0}
-.ebs .bsx-note{display:flex;justify-content:space-between;font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-xs)}
+.ebs .bsx-note{display:flex;justify-content:space-between;gap:var(--sp-md);font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-xs)}
+.ebs .bsx-note+*{margin-top:var(--sp-lg)}
 
 /* tooltips inside pills / legends / chips must not inherit their nowrap, weight or tone */
 .ebs .tip .tip-b,.ebs .tip .tip-b b,.ebs .tip .tip-b em,.ebs .tip .tip-b small{white-space:normal;letter-spacing:0}
