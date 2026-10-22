@@ -308,6 +308,10 @@ main{overflow-x:clip}
 /* plain-Thai layer inside tooltips (scripts/plain_tips.py, text in assets/plain_tips.json).
    It leads the tooltip in the format the user approved; only the filing note follows, as a muted footnote. */
 .ebs .tip .tip-b:has(.tip-pl){max-width:21rem}
+/* never wider than the screen, so the placement script can always pull it fully inside */
+.ebs .tip .tip-b,.ebs .src .tip-b{max-width:min(var(--tip-w,19rem),calc(100vw - 1rem))}
+.ebs .src .tip-b{--tip-w:24rem;width:min(24rem,calc(100vw - 1rem))}
+.ebs .tip .tip-b:has(.tip-pl){--tip-w:21rem}
 .ebs .tip-b.dn{bottom:auto;top:calc(100% + .5rem)}
 .ebs .tip-b.dn::after{top:auto;bottom:100%}
 .ebs .tip .tip-b .tip-pl{display:block;line-height:1.55;font-size:var(--fs-xs);font-weight:var(--fw-regular);text-align:left;color:var(--tip-ink)}
@@ -448,12 +452,12 @@ main{overflow-x:clip}
   });
   document.querySelectorAll('.ebs .fill').forEach(function(b,i){b.style.animationDelay=(i*0.05)+'s';});
   document.querySelectorAll('.ebs .tip').forEach(function(t){
-    function place(){var b=t.querySelector('.tip-b');if(!b)return;b.style.setProperty('--dx','0px');
+    function place(){var b=t.querySelector('.tip-b');if(!b)return;b.style.transition='none';b.style.setProperty('--dx','0px');
       var r=b.getBoundingClientRect(),m=8,dx=0;
       if(r.right>window.innerWidth-m)dx=window.innerWidth-m-r.right;
       if(r.left+dx<m)dx=m-r.left;
-      b.style.setProperty('--dx',dx+'px');b.classList.remove('dn');if(b.getBoundingClientRect().top<m)b.classList.add('dn');}
-    t.addEventListener('mouseenter',place);t.addEventListener('focus',place);
+      b.style.setProperty('--dx',dx+'px');b.classList.remove('dn');if(b.getBoundingClientRect().top<m)b.classList.add('dn');b.offsetWidth;b.style.transition='';}
+    t.addEventListener('mouseenter',place);t.addEventListener('focus',place);t.addEventListener('touchstart',place,{passive:true});
   });
   var el=document.getElementById('ebs');
   if(!el||!document.body.hasAttribute('data-fit'))return;
