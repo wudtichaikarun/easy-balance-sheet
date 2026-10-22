@@ -44,6 +44,14 @@ main{overflow-x:clip}
 .ebs{display:grid;gap:var(--grid-gap);grid-template-columns:minmax(0,1fr);grid-template-areas:"hd" "p1" "p2" "p3" "p4"}
 @media (min-width:760px){.ebs{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"hd hd" "p1 p2" "p3 p4"}}
 .ebs .pane{min-width:0;display:flex;flex-direction:column;gap:var(--grid-gap);align-self:start}
+/* two columns (760-1199): cards flow down each column on their own, so a short card never leaves a hole
+   beside a tall one; 1200+ switches to the .fit grid below */
+@media (min-width:760px) and (max-width:1199px){
+  .ebs{display:block;columns:2;column-gap:var(--grid-gap)}
+  .ebs .hd{column-span:all;margin-bottom:var(--grid-gap)}
+  .ebs .pane{display:block}
+  .ebs .card{break-inside:avoid;margin-bottom:var(--grid-gap)}
+}
 
 .ebs .hd{grid-area:hd;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-lg) var(--sp-3xl);flex-wrap:wrap;padding:var(--sp-sm) var(--sp-2xs) var(--sp-2xs)}
 .ebs .brand{display:block}
@@ -165,11 +173,17 @@ main{overflow-x:clip}
 .ebs .bsx-c.thin:has(>.bsx-debt){min-height:4rem}
 .ebs .bsx-debt span{font-size:var(--fs-2xs);font-weight:var(--fw-semibold);color:var(--ink);background:var(--card);padding:0 var(--sp-2xs);border-radius:var(--r-xs)}
 .ebs .g-chip .g-sum{font-size:var(--fs-2xs);font-weight:var(--fw-semibold);color:var(--ink)}
-.ebs .bsxg-leg{grid-column:1/-1;display:flex;flex-direction:column;gap:var(--sp-xs)}
-.ebs .g-leg{display:grid;grid-template-columns:1.25rem 5.25rem 1.1rem 1fr auto;align-items:baseline;column-gap:var(--sp-xs);font-size:var(--fs-2xs);color:var(--ink-2)}
-.ebs .g-leg .sw{width:1rem;height:3px;border-radius:2px;align-self:center}
+/* ratio legend: name+ⓘ | formula | last year; in a narrow card the formula drops to a second line */
+.ebs .bsxg-leg{grid-column:1/-1;display:flex;flex-direction:column;gap:var(--sp-sm);margin-top:var(--sp-xs);container-type:inline-size}
+.ebs .g-leg{display:grid;grid-template-columns:1rem 7.5rem minmax(0,1fr) auto;align-items:baseline;column-gap:var(--sp-md);font-size:var(--fs-xs);line-height:var(--lh-xs);color:var(--ink-2)}
+.ebs .g-leg .sw{width:1rem;height:3px;margin:0;border-radius:2px;align-self:center}
 .ebs .g-leg b{font-weight:var(--fw-semibold);white-space:nowrap}
-.ebs .g-leg small{font-size:var(--fs-2xs);color:var(--ink-3);white-space:nowrap}
+.ebs .g-leg b .tip{margin-left:.25em;font-weight:var(--fw-regular)}
+.ebs .g-leg small{font-size:var(--fs-2xs);color:var(--ink-3);white-space:nowrap;text-align:right}
+@container (max-width:24rem){
+  .ebs .g-leg{grid-template-columns:1rem minmax(0,1fr) auto;row-gap:var(--sp-4xs)}
+  .ebs .g-leg>span{grid-row:2;grid-column:2/-1;font-size:var(--fs-2xs);color:var(--ink-3)}
+}
 .ebs .g-leg.k-a b{color:var(--save)}.ebs .g-leg.k-a .sw{background:var(--save-bar)}
 .ebs .g-leg.k-i b{color:var(--ink)}.ebs .g-leg.k-i .sw{background:var(--ink-3)}
 .ebs .g-leg.k-e b{color:var(--in)}.ebs .g-leg.k-e .sw{background:var(--in-bar)}
@@ -197,7 +211,7 @@ main{overflow-x:clip}
 .ebs .sw.out{background:var(--out-bar)}.ebs .sw.out2{background:var(--out-bar-2)}.ebs .sw.in{background:var(--in-bar)}.ebs .sw.in2{background:color-mix(in srgb,var(--in-bar) var(--tint-half),var(--card))}
 .ebs .br.top{border-top-width:3px;border-top-style:solid;border-bottom:0;border-radius:var(--r-sm) var(--r-sm) 0 0;margin:var(--sp-lg) 2px 0}
 .ebs .br.top .pill{top:0}
-.ebs .bsx-note{display:flex;justify-content:space-between;gap:var(--sp-md);font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-xs)}
+.ebs .bsx-note{display:flex;justify-content:space-between;flex-wrap:wrap;gap:var(--sp-2xs) var(--sp-md);font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-md);padding-top:var(--sp-sm);border-top:1px dashed var(--line)}
 .ebs .bsx-note+*{margin-top:var(--sp-lg)}
 
 /* tooltips inside pills / legends / chips must not inherit their nowrap, weight or tone */
@@ -371,7 +385,7 @@ main{overflow-x:clip}
         </div>
       </div></div>
         <div class="bsxg-side"></div>
-        <div class="bsxg-leg"><div class="g-leg k-a"><i class="sw"></i><b>ROA 24.5%</b><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Average total assets</b><em>ROA</em><small>หารด้วยสินทรัพย์ทั้งหมด ตอบว่าใช้ทรัพย์สินทั้งหมดได้คุ้มแค่ไหน · กำไร 12 เดือนรวมค่าธรรมเนียม WBD ถ้าใช้กำไรจากการดำเนินงาน 12 เดือน $14.35B แทน ได้ 25.7% (คำนวณเอง)</small></span></span><span>กำไร ÷ สินทรัพย์รวม</span><small>ปีก่อน 20.1%</small></div><div class="g-leg k-i"><i class="sw"></i><b>ROI 32.6%</b><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Average (equity + total debt)</b><em>ROI</em><small>หารด้วยเงินทุนที่ลงไปทั้งหมด (เงินเจ้าของ + หนี้เงินกู้) · ROI ไม่มีนิยามมาตรฐานเดียว คำนวณเอง</small></span></span><span>กำไร ÷ (หนี้เงินกู้ + เงินเจ้าของ)</span><small>ปีก่อน 27.1%</small></div><div class="g-leg k-e"><i class="sw"></i><b>ROE 49.5%</b><span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Average stockholders’ equity</b><em>ROE</em><small>หารด้วยเงินของผู้ถือหุ้นอย่างเดียว · การซื้อหุ้นคืนทำให้ส่วนของผู้ถือหุ้นเล็กลง ROE จึงดูสูง</small></span></span><span>กำไร ÷ เงินเจ้าของ</span><small>ปีก่อน 43.5%</small></div></div>
+        <div class="bsxg-leg"><div class="g-leg k-a"><i class="sw"></i><b>ROA 24.5%<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Average total assets</b><em>ROA</em><small>หารด้วยสินทรัพย์ทั้งหมด ตอบว่าใช้ทรัพย์สินทั้งหมดได้คุ้มแค่ไหน · กำไร 12 เดือนรวมค่าธรรมเนียม WBD ถ้าใช้กำไรจากการดำเนินงาน 12 เดือน $14.35B แทน ได้ 25.7% (คำนวณเอง)</small></span></span></b><span>กำไร ÷ สินทรัพย์รวม</span><small>ปีก่อน 20.1%</small></div><div class="g-leg k-i"><i class="sw"></i><b>ROI 32.6%<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Average (equity + total debt)</b><em>ROI</em><small>หารด้วยเงินทุนที่ลงไปทั้งหมด (เงินเจ้าของ + หนี้เงินกู้) · ROI ไม่มีนิยามมาตรฐานเดียว คำนวณเอง</small></span></span></b><span>กำไร ÷ (หนี้เงินกู้ + เงินเจ้าของ)</span><small>ปีก่อน 27.1%</small></div><div class="g-leg k-e"><i class="sw"></i><b>ROE 49.5%<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Net income ÷ Average stockholders’ equity</b><em>ROE</em><small>หารด้วยเงินของผู้ถือหุ้นอย่างเดียว · การซื้อหุ้นคืนทำให้ส่วนของผู้ถือหุ้นเล็กลง ROE จึงดูสูง</small></span></span></b><span>กำไร ÷ เงินเจ้าของ</span><small>ปีก่อน 43.5%</small></div></div>
         <svg class="bsxg-svg" aria-hidden="true"></svg>
       </div>
       <div class="bsx-note"><span>สินทรัพย์ = หนี้สิน + ส่วนของผู้ถือหุ้น</span><span>หนี้เงินกู้<span class="tip" tabindex="0"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="tip-b" role="tooltip"><b>Short-term debt + Long-term debt</b><em>Total Debt</em><small>$2.48B + $11.83B = $14.31B หุ้นกู้ไม่มีหลักประกัน ดอกเบี้ยคงที่ ส่วนหนึ่งเป็นสกุลยูโร · ไม่มียอดค้างใน revolving credit $3B และ commercial paper · Operating lease ไม่นับ</small></span></span> $14.31B</span></div>

@@ -38,6 +38,8 @@ aside{width:var(--side);flex:none;display:flex;flex-direction:column;border-righ
 .theme{position:absolute;top:16px;right:16px;border:1px solid var(--line);background:var(--card);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;color:var(--ink-2);font-size:1.05rem}
 .theme:hover{border-color:var(--ink-3)}
 .bar .theme{position:static;margin-left:auto}
+/* small laptops / landscape tablets: a slimmer list leaves the dashboard enough width */
+@media (min-width:821px) and (max-width:1100px){:root{--side:300px}}
 @media (min-width:821px){aside .theme{position:fixed;top:14px;right:22px;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.08)}}
 .bar .theme+a{margin-left:0}
 .brand h1{margin:0;font-size:1.25rem;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
