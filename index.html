@@ -35,13 +35,40 @@ button{font:inherit;color:inherit}
 .app{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 aside{width:var(--side);flex:none;display:flex;flex-direction:column;border-right:1px solid var(--line);background:var(--page)}
 .brand{padding:20px 16px 12px;position:relative}
+.brand h1{padding-right:44px}
 .theme{position:absolute;top:16px;right:16px;border:1px solid var(--line);background:var(--card);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;color:var(--ink-2);font-size:1.05rem}
 .theme:hover{border-color:var(--ink-3)}
 .bar .theme{position:static;margin-left:auto}
 /* small laptops / landscape tablets: a slimmer list leaves the dashboard enough width */
 @media (min-width:821px) and (max-width:1100px){:root{--side:300px}}
-@media (min-width:821px){aside .theme{position:fixed;top:14px;right:22px;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.08)}}
-.bar .theme+a{margin-left:0}
+/* desktop: the list sits on the right and can be folded away to give the dashboard the full width */
+.side-btn{display:none;border:1px solid var(--line);background:var(--card);border-radius:10px;width:34px;height:34px;place-items:center;cursor:pointer;color:var(--ink-2);font-size:1.05rem}
+.side-btn:hover{border-color:var(--ink-3)}
+/* while folded, "show list" + theme float top-right where the list's own buttons were */
+.tools{display:none}
+@media (min-width:821px){
+  .tools{gap:8px;position:fixed;top:16px;right:16px;z-index:5}
+  .tools .theme{position:static}
+  .tools button{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  .app.collapsed .tools{display:flex}
+  .app.collapsed #sideOpen{display:grid}
+  #sideClose{display:grid;position:absolute;top:16px;right:58px}
+  .brand h1{padding-right:86px}
+  /* List and dashboard slide together with transform only (GPU, no layout per frame). The dashboard
+     takes its final width at the very start, so it re-lays out once and then just glides into place. */
+  .app{overflow:hidden}
+  aside{position:absolute;top:0;bottom:0;right:0;z-index:2;border-right:0;border-left:1px solid var(--line)}
+  .viewer{margin-right:var(--side)}
+  .app.anim aside{transition:transform .3s cubic-bezier(.2,.7,.3,1),visibility .3s}
+  .app.anim .viewer{transition:transform .3s cubic-bezier(.2,.7,.3,1)}
+  .app.anim aside,.app.anim .viewer{will-change:transform}
+  .app.sliding aside,.app.sliding .viewer,.app.collapsed aside{transform:translateX(var(--side))}
+  .app.collapsed aside{visibility:hidden}
+  .app.collapsed .viewer{margin-right:0}
+  /* first frame of a collapse: dashboard already full width but still pushed left by the list */
+  .app.unslide aside{transform:none;visibility:visible}
+  .app.unslide .viewer{transform:translateX(calc(-1 * var(--side)))}
+}
 .brand h1{margin:0;font-size:1.25rem;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
 .brand h1 i{color:var(--accent)}
 .brand p{margin:4px 0 0;padding-right:44px;font-size:.82rem;color:var(--ink-3)}
@@ -88,10 +115,11 @@ iframe{flex:1;width:100%;border:0;background:var(--page)}
 </head>
 <body>
 <div class="app" id="app">
-  <aside>
+  <aside id="side">
     <div class="brand">
       <h1><i class="ti ti-chart-pie-2" aria-hidden="true"></i>Easy Balance Sheet</h1>
       <button class="theme" type="button"></button>
+      <button class="side-btn" id="sideClose" type="button" title="ซ่อนรายการหุ้น" aria-label="ซ่อนรายการหุ้น" aria-controls="side"><i class="ti ti-layout-sidebar-right-collapse" aria-hidden="true"></i></button>
       <p>ถ้าบริษัทขายได้ $100 เหลือเท่าไร · <span id="count"></span></p>
     </div>
     <label class="search"><i class="ti ti-search" aria-hidden="true"></i>
@@ -100,6 +128,10 @@ iframe{flex:1;width:100%;border:0;background:var(--page)}
     <nav class="list" id="list" aria-label="รายชื่อหุ้น"></nav>
     <p class="note"><i class="ti ti-info-circle" aria-hidden="true"></i><span>สรุปจากงบการเงินที่ยื่นต่อ SEC เพื่อการศึกษาเท่านั้น <b>ไม่ใช่คำแนะนำการลงทุน</b> ตัวเลขอาจคลาดเคลื่อน ควรตรวจสอบกับเอกสารต้นฉบับก่อนตัดสินใจ</span></p>
   </aside>
+  <div class="tools">
+    <button class="side-btn" id="sideOpen" type="button" title="แสดงรายการหุ้น" aria-label="แสดงรายการหุ้น" aria-controls="side"><i class="ti ti-layout-sidebar-right-expand" aria-hidden="true"></i></button>
+    <button class="theme" type="button"></button>
+  </div>
   <section class="viewer">
     <div class="bar">
       <button id="back" type="button"><i class="ti ti-chevron-left" aria-hidden="true"></i>ทั้งหมด</button>
@@ -107,7 +139,7 @@ iframe{flex:1;width:100%;border:0;background:var(--page)}
       <button class="theme" type="button"></button>
       <a id="openNew" target="_blank" rel="noopener" title="เปิดในแท็บใหม่"><i class="ti ti-external-link" aria-hidden="true"></i></a>
     </div>
-    <div class="welcome" id="welcome"><div><i class="ti ti-arrow-left" aria-hidden="true"></i><p>เลือกหุ้นจากรายการด้านซ้าย</p></div></div>
+    <div class="welcome" id="welcome"><div><i class="ti ti-arrow-right" aria-hidden="true"></i><p>เลือกหุ้นจากรายการด้านขวา</p></div></div>
     <iframe id="frame" title="Dashboard" hidden></iframe>
   </section>
 </div>
@@ -149,6 +181,33 @@ document.addEventListener('click', e => {
 });
 $('frame').addEventListener('load', applyTheme);
 applyTheme();
+
+// Desktop sidebar fold; remembered per browser like the theme.
+const app = $('app');
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+let slideDone = null;
+function setSide(collapsed) {
+  if (app.classList.contains('collapsed') === collapsed && !app.classList.contains('sliding')) return;
+  try { localStorage.setItem('ebs-side', collapsed ? 'closed' : 'open'); } catch {}
+  clearTimeout(slideDone);
+  app.classList.remove('anim', 'sliding', 'unslide');
+  if (reduceMotion.matches || narrow.matches) { app.classList.toggle('collapsed', collapsed); return; }
+  // Jump to the end layout while visually holding the start position, then animate the offset away.
+  if (collapsed) app.classList.add('collapsed', 'unslide');
+  else app.classList.remove('collapsed'), app.classList.add('sliding');
+  void app.offsetWidth;
+  app.classList.add('anim');
+  app.classList.remove('unslide', 'sliding');
+  slideDone = setTimeout(() => app.classList.remove('anim'), 320);
+}
+try { if (localStorage.getItem('ebs-side') === 'closed') app.classList.add('collapsed'); } catch {}
+$('sideClose').addEventListener('click', () => setSide(true));
+$('sideOpen').addEventListener('click', () => setSide(false));
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'b' && !narrow.matches) {
+    e.preventDefault(); setSide(!app.classList.contains('collapsed'));
+  }
+});
 
 $('count').textContent = `${companies.length} บริษัท`;
 
