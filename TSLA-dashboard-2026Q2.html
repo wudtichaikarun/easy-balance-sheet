@@ -181,15 +181,14 @@ main{overflow-x:clip}
 .ebs .g-chip .g-sum{font-size:var(--fs-2xs);font-weight:var(--fw-semibold);color:var(--ink)}
 /* ratio legend: name+ⓘ | formula | last year; in a narrow card the formula drops to a second line */
 .ebs .bsxg-leg{grid-column:1/-1;display:flex;flex-direction:column;gap:var(--sp-sm);margin-top:var(--sp-xs);container-type:inline-size}
-.ebs .g-leg{display:grid;grid-template-columns:1rem 7.5rem minmax(0,1fr) auto;align-items:baseline;column-gap:var(--sp-md);font-size:var(--fs-xs);line-height:var(--lh-xs);color:var(--ink-2)}
-.ebs .g-leg .sw{width:1rem;height:3px;margin:0;border-radius:2px;align-self:center}
+/* 2026-10-24: two lines per ratio, always. Line 1 = swatch · name + ⓘ · ปีก่อน on the right; line 2 = the formula across the
+   full width, so badge + word chunks no longer break mid-word in a narrow column */
+.ebs .g-leg{display:grid;grid-template-columns:1rem minmax(0,1fr) auto;align-items:center;column-gap:var(--sp-sm);row-gap:var(--sp-4xs);font-size:var(--fs-xs);line-height:var(--lh-xs);color:var(--ink-2)}
+.ebs .g-leg .sw{width:1rem;height:3px;margin:0;border-radius:2px}
 .ebs .g-leg b{font-weight:var(--fw-semibold);white-space:nowrap}
 .ebs .g-leg b .tip{margin-left:.25em;font-weight:var(--fw-regular)}
-.ebs .g-leg small{font-size:var(--fs-2xs);color:var(--ink-3);white-space:nowrap;text-align:right}
-@container (max-width:24rem){
-  .ebs .g-leg{grid-template-columns:1rem minmax(0,1fr) auto;row-gap:var(--sp-4xs)}
-  .ebs .g-leg>span{grid-row:2;grid-column:2/-1;font-size:var(--fs-2xs);color:var(--ink-3)}
-}
+.ebs .g-leg small{grid-row:1;grid-column:3;font-size:var(--fs-2xs);color:var(--ink-3);white-space:nowrap;text-align:right}
+.ebs .g-leg>span{grid-row:2;grid-column:2/-1;font-size:var(--fs-2xs);color:var(--ink-3)}
 .ebs .g-leg.k-a b{color:var(--save)}.ebs .g-leg.k-a .sw{background:var(--save-bar)}
 .ebs .g-leg.k-i b{color:var(--ink)}.ebs .g-leg.k-i .sw{background:var(--ink-3)}
 .ebs .g-leg.k-e b{color:var(--in)}.ebs .g-leg.k-e .sw{background:var(--in-bar)}
@@ -333,6 +332,38 @@ main{overflow-x:clip}
 /* คิดยังไง already explains the formula, so the English label and pill stay in the markup (the script keys on the pill) but are hidden */
 .ebs .tip .tip-b .tip-pl~b,.ebs .tip .tip-b .tip-pl~em{display:none}
 .ebs .tip .tip-b .tip-pl~small{margin-top:var(--sp-md);padding-top:var(--sp-sm);border-top:1px solid var(--tip-rule);text-align:left;color:var(--tip-ink-2)}
+
+/* analyst consensus price target (third-party, 2026-10-24): its own quarter-width card next to a narrow P&L card */
+@media (min-width:1200px){
+  .ebs.fit.has-tgt{grid-template-areas:"hd hd hd hd" "pl cf cf tgt" "bs bs yoy sum"}
+  .ebs.fit .card.narrow .cols{flex:1}
+  .ebs.fit .card.narrow .col .sk{flex:1 1 auto;height:auto;min-height:11rem}
+    /* the price chart takes the height the row leaves, like the Sankeys; its labels stay at the page's type sizes */
+  .ebs.fit .tgt-card .card-b{display:flex;flex-direction:column;gap:var(--sp-lg);flex:1}
+  .ebs.fit .tgt-card .tc{flex:1 1 auto;height:auto;min-height:8.5rem}
+}
+.ebs .tc{position:relative;height:8.5rem;padding:var(--sp-lg) 4.2rem var(--sp-lg) 2.1rem}
+.ebs .tc-in{position:relative;height:100%}
+.ebs .tc svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ebs .tc line,.ebs .tc polyline{vector-effect:non-scaling-stroke}
+.ebs .tc-g{stroke:var(--line);stroke-width:1}
+.ebs .tc-p{fill:none;stroke:var(--save-bar);stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}
+.ebs .tc-d{stroke-width:1.25;stroke-dasharray:3 3;stroke-linecap:round}
+.ebs .tc-d.tc-in{stroke:var(--in-bar)}.ebs .tc-d.tc-out{stroke:var(--out-bar)}.ebs .tc-d.tc-save{stroke:var(--save-bar)}
+.ebs .tc-n{position:absolute;left:50%;width:7px;height:7px;border-radius:50%;background:var(--save-bar);box-shadow:0 0 0 1.5px var(--card);transform:translate(-50%,-50%)}
+.ebs .tc-a{position:absolute;font-size:var(--fs-2xs);line-height:1;color:var(--ink-3);white-space:nowrap}
+.ebs .tc-y{right:calc(100% + var(--sp-xs));transform:translateY(-50%)}
+.ebs .tc-x{top:calc(100% + var(--sp-xs));transform:translateX(-50%)}
+.ebs .tc-s{bottom:calc(100% + var(--sp-2xs));padding:0 var(--sp-xs)}
+.ebs .tc-e{position:absolute;left:calc(100% + var(--sp-xs));transform:translateY(-50%);display:flex;flex-direction:column;font-size:var(--fs-2xs);line-height:var(--lh-2xs);color:var(--ink);white-space:nowrap}
+.ebs .tc-e b{font-size:var(--fs-xs);font-weight:var(--fw-semibold)}
+.ebs .tgt-t{width:100%;border-collapse:collapse;font-size:var(--fs-xs)}
+.ebs .tgt-t th,.ebs .tgt-t td{padding:var(--sp-2xs) 0;text-align:right;border-top:1px solid var(--line);white-space:nowrap}
+.ebs .tgt-t thead th{border-top:0;font-weight:var(--fw-semibold);color:var(--ink)}
+.ebs .tgt-t th:first-child{text-align:left;font-weight:var(--fw-regular);color:var(--ink-2)}
+.ebs .tgt-t thead th:first-child{font-weight:var(--fw-semibold);color:var(--ink)}
+.ebs .tgt-t td{color:var(--ink)}
+.ebs .tgt-n{margin:0;font-size:var(--fs-2xs);color:var(--ink-3)}
 </style>
 <h2 class="sr-only">สรุปงบ Tesla ไตรมาส 2/2026: รายได้ $28.24B โต 25.5% กำไรขั้นต้น $17 ต่อรายได้ $100 กำไรจากการดำเนินงาน $1.41 ต่อ $100 กำไรสุทธิ $4 ต่อ $100 ส่วนใหญ่จากกำไรหุ้น SpaceX กระแสเงินสดอิสระติดลบ $3.87 ต่อ $100 เงินสดและเงินลงทุน $43.52B หนี้เงินกู้ $9.34B</h2>
 
@@ -475,9 +506,9 @@ main{overflow-x:clip}
     el.classList.toggle('fit',wide);
     root.style.fontSize='';
     if(!wide)return;
-    var size=Math.min(17,Math.max(10,window.innerHeight/52));
+    var size=Math.min(17,Math.max(13,window.innerHeight/52));
     root.style.fontSize=size+'px';
-    while(root.scrollHeight>window.innerHeight+1&&size>9){size-=0.25;root.style.fontSize=size+'px';}
+    while(root.scrollHeight>window.innerHeight+1&&size>13){size-=0.25;root.style.fontSize=size+'px';}
   }
   window.addEventListener('resize',fit);
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
